@@ -1,0 +1,5 @@
+resolver: lts-12.26  # Adapt this as needed
+packages:
+  - .
+extra-deps:
+  - hakyll-4.12.4.0  # Or a later version you installed
