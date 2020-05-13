@@ -2,7 +2,7 @@ module Lib
   ( postCtx
   , postPattern
   , archiveIdentifier
-  , indexIdentifier
+  , indexPattern
   , archiveTemplate
   , defaultTemplate
   , postTemplate
@@ -27,8 +27,8 @@ defaultTemplate = fromFilePath "templates/default.html"
 archiveIdentifier :: Identifier
 archiveIdentifier = fromFilePath "archive.html"
 
-indexIdentifier :: Identifier
-indexIdentifier = fromFilePath "index.html"
+indexPattern :: Pattern
+indexPattern = fromRegex "index.html"
 
 postTemplate :: Identifier 
 postTemplate = fromFilePath "templates/post.html"

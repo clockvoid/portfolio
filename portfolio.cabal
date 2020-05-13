@@ -10,6 +10,7 @@ library
                   , Css
                   , Posts
                   , Archive
+                  , Index
   build-depends:    base == 4.*
                   , hakyll == 4.13.*
   default-language: Haskell2010

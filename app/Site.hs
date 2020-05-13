@@ -7,6 +7,7 @@ import Images
 import Css
 import Posts
 import Archive
+import Index
 import Lib
 
 main :: IO ()
@@ -15,11 +16,12 @@ main = hakyll $ do
     css
     posts
     archive
+    index
 
-    match (fromList ["about.rst", "contact.markdown"]) $ do
-        route   $ setExtension "html"
-        compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/default.html" defaultContext
-            >>= relativizeUrls
+    --match (fromList ["about.rst", "contact.markdown"]) $ do
+    --    route   $ setExtension "html"
+    --    compile $ pandocCompiler
+    --        >>= loadAndApplyTemplate "templates/default.html" defaultContext
+    --        >>= relativizeUrls
 
     match "templates/*" $ compile templateBodyCompiler

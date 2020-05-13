@@ -1,13 +1,13 @@
 module Index
-  ( posts
+  ( index
   ) where
 
 import Data.Monoid (mappend)
 import Hakyll
 import Lib
 
-posts :: Rules ()
-posts = match indexIdentifier $ do
+index :: Rules ()
+index = match indexPattern $ do
     route idRoute
     compile $ do
         posts <- recentFirst =<< loadAll postPattern
