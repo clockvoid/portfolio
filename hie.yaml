@@ -3,5 +3,5 @@ cradle:
     - path: "./app/Site.hs"
       component: "portfolio:exe:site"
 
-      #    - path: "./src"
-      #component: "portfolio:lib"
+    - path: "./src"
+      component: "portfolio:lib"
