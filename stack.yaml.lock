@@ -5,12 +5,12 @@
 
 packages:
 - completed:
-    hackage: hakyll-4.12.4.0@sha256:1d6f4aec7e2f230a3f631476b8cdbe54345b5c67108759f4ee85d812ed1e18ef,8644
+    hackage: hakyll-4.13.3.0@sha256:7d8903f03974691aec049a6188ace8d93457563bad9f078c6faf4c9156e27a33,8867
     pantry-tree:
-      size: 7562
-      sha256: 8d68d61656f1c42307509abde3e335b0e69771b0c3a9842e03eafd6b7e2a2ca9
+      size: 7841
+      sha256: bdbacc241f680dd0c8d7666c9ec4e7d230dad85172067e106cc35f7c125cd7ab
   original:
-    hackage: hakyll-4.12.4.0
+    hackage: hakyll-4.13.3.0
 - completed:
     hackage: hakyll-sass-0.2.4@sha256:4d2fbd8b63f5ef15483fc6dda09e10eefd63b4f873ad38dec2a3607eb504a8ba,939
     pantry-tree:
@@ -18,9 +18,23 @@ packages:
       sha256: c03e74e71d010f009b8d972efc31fbd6dd25183e6d9afbec55f4b7f0d4a74b47
   original:
     hackage: hakyll-sass-0.2.4
+- completed:
+    hackage: hsass-0.8.0@sha256:05fb3d435dbdf9f66a98db4e1ee57a313170a677e52ab3a5a05ced1fc42b0834,2899
+    pantry-tree:
+      size: 1448
+      sha256: b25aeb947cb4e0b550f8a6f226d06503ef0edcb54712ad9cdd4fb2b05bf16c7c
+  original:
+    hackage: hsass-0.8.0
+- completed:
+    hackage: hlibsass-0.1.9.0@sha256:a506590771134569cf308498bcc62604b81f8a2beb885d11db058fd0d7bcd75d,2564
+    pantry-tree:
+      size: 10549
+      sha256: c47fdf9abd68f9cd23246904948fa2caa8643de746efd03350682d097fc453ab
+  original:
+    hackage: hlibsass-0.1.9.0
 snapshots:
 - completed:
-    size: 509471
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/12/26.yaml
-    sha256: 95f014df58d0679b1c4a2b7bf2b652b61da8d30de5f571abb0d59015ef678646
-  original: lts-12.26
+    size: 523340
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2020/5/12.yaml
+    sha256: 81f68a93699855cf96115756e8fbc26f6053a1a55b7545d80138415ab348ba27
+  original: nightly-2020-05-12
