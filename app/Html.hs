@@ -19,6 +19,11 @@ commandParser :: OA.Parser Command
 commandParser = OA.subparser $ foldr ((<>) . produceCommand) mempty commands
   where
     produceCommand (text, command, description) = OA.command text (OA.info command description)
+
+    {- |
+        コマンドを表現するトリプルのリスト．
+        要素は(期待する引数 :: String, コマンド型のApplicative :: OA.Parser Command, コマンドの説明 :: OA.InfoMod String
+    -}
     commands = 
       [("hello"
        , pure Hello
