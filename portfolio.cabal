@@ -3,8 +3,9 @@ version:            0.1.0.0
 build-type:         Simple
 cabal-version:      >= 1.10
 
-library site-lib
-  hs-source-dirs:   site
+library
+  hs-source-dirs:   src/site
+                  , src/html
   exposed-modules:  Lib
                   , Images
                   , Css
@@ -13,11 +14,6 @@ library site-lib
                   , Index
   build-depends:    base == 4.*
                   , hakyll == 4.13.*
-  default-language: Haskell2010
-
-library html-lib
-  hs-source-dirs:   html
-  build-depends:    base == 4.*
                   , lucid == 2.9.12
   default-language: Haskell2010
 
@@ -26,7 +22,7 @@ executable site
   build-depends:    base == 4.*
                   , hakyll == 4.13.*
                   , template-haskell == 2.15.0.0
-                  , site-lib
+                  , portfolio
                   , lucid == 2.9.12
                   , text
   ghc-options:      -threaded
@@ -35,7 +31,7 @@ executable site
 executable html
   main-is:          app/Html.hs
   build-depends:    base == 4.*
-                  , html-lib
+                  , portfolio
                   , optparse-applicative == 0.15.1.0
   ghc-options:      -threaded
   default-language: Haskell2010
