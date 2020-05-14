@@ -4,3 +4,4 @@ packages:
 extra-deps:
   - hakyll-4.13.3.0  # Or a later version you installed
   - lucid-2.9.12
+  - optparse-applicative-0.15.1.0

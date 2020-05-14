@@ -18,6 +18,13 @@ packages:
       sha256: acc60fda3ca44528739ca12ab0280c64d182daccf8dc0ac1453c51760cdb7863
   original:
     hackage: lucid-2.9.12
+- completed:
+    hackage: optparse-applicative-0.15.1.0@sha256:29ff6146aabf54d46c4c8788e8d1eadaea27c94f6d360c690c5f6c93dac4b07e,4810
+    pantry-tree:
+      size: 2904
+      sha256: 04ad3816bc580cbe0834d3d1f4729ddd386abfe31b43e5b14968885f636d1b0d
+  original:
+    hackage: optparse-applicative-0.15.1.0
 snapshots:
 - completed:
     size: 523340
