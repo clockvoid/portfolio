@@ -3,7 +3,4 @@ packages:
   - .
 extra-deps:
   - hakyll-4.13.3.0  # Or a later version you installed
-  - hakyll-sass-0.2.4
-  - hsass-0.8.0
-  - hlibsass-0.1.9.0
   - lucid-2.9.12

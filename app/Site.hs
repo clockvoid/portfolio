@@ -1,7 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 import           Data.Monoid (mappend)
 import           Hakyll
-import           Hakyll.Web.Sass
 
 import Images
 import Css

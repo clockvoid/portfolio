@@ -12,27 +12,6 @@ packages:
   original:
     hackage: hakyll-4.13.3.0
 - completed:
-    hackage: hakyll-sass-0.2.4@sha256:4d2fbd8b63f5ef15483fc6dda09e10eefd63b4f873ad38dec2a3607eb504a8ba,939
-    pantry-tree:
-      size: 217
-      sha256: c03e74e71d010f009b8d972efc31fbd6dd25183e6d9afbec55f4b7f0d4a74b47
-  original:
-    hackage: hakyll-sass-0.2.4
-- completed:
-    hackage: hsass-0.8.0@sha256:05fb3d435dbdf9f66a98db4e1ee57a313170a677e52ab3a5a05ced1fc42b0834,2899
-    pantry-tree:
-      size: 1448
-      sha256: b25aeb947cb4e0b550f8a6f226d06503ef0edcb54712ad9cdd4fb2b05bf16c7c
-  original:
-    hackage: hsass-0.8.0
-- completed:
-    hackage: hlibsass-0.1.9.0@sha256:a506590771134569cf308498bcc62604b81f8a2beb885d11db058fd0d7bcd75d,2564
-    pantry-tree:
-      size: 10549
-      sha256: c47fdf9abd68f9cd23246904948fa2caa8643de746efd03350682d097fc453ab
-  original:
-    hackage: hlibsass-0.1.9.0
-- completed:
     hackage: lucid-2.9.12@sha256:096395b2f434dbe1b10652c05ad8ebe245663dcec665aba474dd2a66cb841cb8,2887
     pantry-tree:
       size: 779
