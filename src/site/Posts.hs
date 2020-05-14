@@ -8,7 +8,7 @@ import Lib
 
 posts :: Rules ()
 posts = match postPattern $ do
-    route $ setExtension ""
+    route $ setExtension "html"
     compile $ pandocCompiler
         >>= loadAndApplyTemplate postTemplate postCtx
         >>= loadAndApplyTemplate defaultTemplate postCtx
