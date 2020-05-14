@@ -32,6 +32,13 @@ packages:
       sha256: c47fdf9abd68f9cd23246904948fa2caa8643de746efd03350682d097fc453ab
   original:
     hackage: hlibsass-0.1.9.0
+- completed:
+    hackage: lucid-2.9.12@sha256:096395b2f434dbe1b10652c05ad8ebe245663dcec665aba474dd2a66cb841cb8,2887
+    pantry-tree:
+      size: 779
+      sha256: acc60fda3ca44528739ca12ab0280c64d182daccf8dc0ac1453c51760cdb7863
+  original:
+    hackage: lucid-2.9.12
 snapshots:
 - completed:
     size: 523340

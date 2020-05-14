@@ -22,6 +22,8 @@ executable site
                   , hakyll-sass == 0.2.4
                   , template-haskell == 2.15.0.0
                   , portfolio == 0.1.0.0
+                  , lucid == 2.9.12
+                  , text
   ghc-options:      -threaded
   default-language: Haskell2010
 
