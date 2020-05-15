@@ -1,10 +1,11 @@
-module Index
+module Site.Index
   ( index
   ) where
 
 import Data.Monoid (mappend)
 import Hakyll
-import Lib
+
+import Site.Lib
 
 index :: Rules ()
 index = match indexPattern $ do

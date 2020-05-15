@@ -1,4 +1,4 @@
-module Lib
+module Site.Lib
   ( postCtx
   , postPattern
   , archiveIdentifier

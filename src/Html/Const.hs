@@ -1,4 +1,4 @@
-module Const
+module Html.Const
   ( deployDirectory
   ) where
 

@@ -1,10 +1,11 @@
-module Posts
+module Site.Posts
   ( posts
   ) where
 
 import Data.Monoid (mappend)
 import Hakyll
-import Lib
+
+import Site.Lib
 
 posts :: Rules ()
 posts = match postPattern $ do

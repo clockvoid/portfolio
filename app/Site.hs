@@ -2,12 +2,12 @@
 import           Data.Monoid (mappend)
 import           Hakyll
 
-import Images
-import Css
-import Posts
-import Archive
-import Index
-import Lib
+import Site.Images
+import Site.Css
+import Site.Posts
+import Site.Archive
+import Site.Index
+import Site.Lib
 
 main :: IO ()
 main = hakyll $ do

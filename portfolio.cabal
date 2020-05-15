@@ -4,16 +4,15 @@ build-type:         Simple
 cabal-version:      >= 1.10
 
 library
-  hs-source-dirs:   src/site
-                  , src/html
-  exposed-modules:  Lib
-                  , Images
-                  , Css
-                  , Posts
-                  , Archive
-                  , Index
-                  , File
-                  , Const
+  hs-source-dirs:   src
+  exposed-modules:  Html.File
+                  , Html.Const
+                  , Site.Lib
+                  , Site.Images
+                  , Site.Css
+                  , Site.Posts
+                  , Site.Archive
+                  , Site.Index
   build-depends:    base == 4.*
                   , hakyll == 4.13.*
                   , lucid == 2.9.12

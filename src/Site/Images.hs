@@ -1,4 +1,4 @@
-module Images
+module Site.Images
   ( images
   ) where
 

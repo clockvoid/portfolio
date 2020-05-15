@@ -1,10 +1,11 @@
-module Archive
+module Site.Archive
   ( archive
   ) where
 
 import Data.Monoid (mappend)
 import Hakyll
-import Lib
+
+import Site.Lib
 
 archive :: Rules ()
 archive = create [archiveIdentifier] $ do

@@ -1,4 +1,4 @@
-module File
+module Html.File
   ( deleteAllFilesInDirectory
   ) where
 

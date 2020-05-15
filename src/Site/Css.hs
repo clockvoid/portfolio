@@ -1,4 +1,4 @@
-module Css
+module Site.Css
   ( css
   ) where
 
