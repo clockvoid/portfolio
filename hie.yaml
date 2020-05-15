@@ -6,8 +6,5 @@ cradle:
     - path: "./app/Html.hs"
       component: "portfolio:exe:html"
 
-    - path: "./src/site"
-      component: "portfolio:lib"
-
-    - path: "./src/html"
+    - path: "./src"
       component: "portfolio:lib"
