@@ -6,8 +6,9 @@
 
 import qualified Options.Applicative as OA
 
-import           System.Environment        (getProgName)
-import           System.IO.Unsafe          (unsafePerformIO)
+import System.Environment (getProgName)
+import System.IO.Unsafe (unsafePerformIO)
+import System.Exit (ExitCode (ExitSuccess), exitWith)
 
 -- | コマンドを表現する直積型
 data Command
@@ -51,8 +52,13 @@ progName :: String
 progName = unsafePerformIO getProgName
 {-# NOINLINE progName #-}
 
-main :: IO ()
-main = do
+invokCommand :: IO ExitCode
+invokCommand = do
   arg <- defaultParser
-  print arg
+  case arg of
+    Hello -> print arg >> ok
+  where
+    ok = return ExitSuccess
 
+main :: IO ()
+main = invokCommand >>= exitWith
