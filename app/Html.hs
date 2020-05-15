@@ -10,9 +10,12 @@ import System.Environment (getProgName)
 import System.IO.Unsafe (unsafePerformIO)
 import System.Exit (ExitCode (ExitSuccess), exitWith)
 
+import File (deleteAllFilesInDirectory)
+import Const (deployDirectory)
+
 -- | コマンドを表現する直積型
 data Command
-  = Hello
+  = Clean
   deriving (Eq, Show)
 
 -- | 実際にマッチする文字列を探す関数
@@ -26,9 +29,9 @@ commandParser = OA.subparser $ foldr ((<>) . produceCommand) mempty commands
         要素は(期待する引数 :: String, コマンド型のApplicative :: OA.Parser Command, コマンドの説明 :: OA.InfoMod String
     -}
     commands = 
-      [("hello"
-       , pure Hello
-       , OA.fullDesc <> OA.progDesc "hello"
+      [("clean"
+       , pure Clean
+       , OA.fullDesc <> OA.progDesc "clean renderd HTML."
        )
       ]
 
@@ -56,9 +59,7 @@ invokCommand :: IO ExitCode
 invokCommand = do
   arg <- defaultParser
   case arg of
-    Hello -> print arg >> ok
-  where
-    ok = return ExitSuccess
+    Clean -> deleteAllFilesInDirectory deployDirectory 
 
 main :: IO ()
 main = invokCommand >>= exitWith

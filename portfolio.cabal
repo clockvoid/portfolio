@@ -13,6 +13,7 @@ library
                   , Archive
                   , Index
                   , File
+                  , Const
   build-depends:    base == 4.*
                   , hakyll == 4.13.*
                   , lucid == 2.9.12
