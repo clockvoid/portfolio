@@ -35,3 +35,10 @@ $primary: hsl(0, 0%, 29%);
   }
 }
 
+span.media-icon {
+  padding: 1.5rem 1.5rem 1.5rem 1.5rem;
+  color: $white;
+  &:hover {
+    color: $turquoise;
+  }
+}
