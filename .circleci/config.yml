@@ -24,7 +24,7 @@ jobs:
           command: npm install
       - run:
           name: build site program
-          command: stack build
+          command: stack build --dependencies-only -j1 --fast
       - run:
           name: build site
           command: stack exec site build
