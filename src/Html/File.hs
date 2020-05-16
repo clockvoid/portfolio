@@ -11,11 +11,14 @@ deleteAllFilesInDirectory directory = do
   if isDirectoryExist
      then do
        files <- listDirectory directory
-       foldMap removeFile files
+       foldMap (removeFileInDirectory directory) files
        return ExitSuccess
   else doWhenDirectoryNotFound directory
+    where
+      removeFileInDirectory directory file = removeFile $ directory <> file
 
 doWhenDirectoryNotFound :: FilePath -> IO ExitCode
 doWhenDirectoryNotFound directory = do
   putStrLn $ "Directory " <> directory <> " not found."
   return $ ExitFailure 1
+

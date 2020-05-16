@@ -11,11 +11,12 @@ import System.IO.Unsafe (unsafePerformIO)
 import System.Exit (ExitCode (ExitSuccess), exitWith)
 
 import Html.File (deleteAllFilesInDirectory)
-import Html.Const (deployDirectory)
+import Html.Const (deployDirectory, indexPage, compile)
 
 -- | コマンドを表現する直積型
 data Command
   = Clean
+  | Build
   deriving (Eq, Show)
 
 -- | 実際にマッチする文字列を探す関数
@@ -32,6 +33,10 @@ commandParser = OA.subparser $ foldr ((<>) . produceCommand) mempty commands
       [("clean"
        , pure Clean
        , OA.fullDesc <> OA.progDesc "clean renderd HTML."
+       )
+      ,("build"
+       , pure Build
+       , OA.fullDesc <> OA.progDesc "build HTML and render to file."
        )
       ]
 
@@ -60,6 +65,8 @@ invokCommand = do
   arg <- defaultParser
   case arg of
     Clean -> deleteAllFilesInDirectory deployDirectory 
+    Build -> compile deployDirectory [indexPage]
 
 main :: IO ()
 main = invokCommand >>= exitWith
+
