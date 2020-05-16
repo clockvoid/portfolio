@@ -9,7 +9,7 @@ jobs:
       - restore_cache:
           name: restore cache
           keys:
-            - portfolio-v1-{{ checksum "package.yaml" }}-{{ checksum "stack.yaml" }}
+            - portfolio-v1-{{ checksum "portfolio.cabal" }}-{{ checksum "stack.yaml" }}
       - run:
           name: install PPA for node
           command: curl -sL https://deb.nodesource.com/setup_13.x | sh
@@ -24,7 +24,7 @@ jobs:
           command: npm install
       - save_cache:
           name: save caehe
-          key: portfolio-v1-{{ checksum "package.yaml" }}-{{ checksum "stack.yaml" }}
+          key: portfolio-v1-{{ checksum "portfolio.cabal" }}-{{ checksum "stack.yaml" }}
           paths:
             - "/root/.stack"
             - ".stack-work"
