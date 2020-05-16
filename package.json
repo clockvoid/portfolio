@@ -11,7 +11,7 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "css-build": "node-sass --omit-source-map-url sass/mystyles.scss _site/css/mystyles.css",
+    "css-build": "node-sass --omit-source-map-url sass/mystyles.scss _site/css/mystyles.css && cp -r node_modules/@fortawesome/fontawesome-free/webfonts _site/",
     "css-watch": "npm run css-build -- --watch",
     "start": "npm run css-watch"
   },
