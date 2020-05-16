@@ -26,10 +26,10 @@ jobs:
   build:
     working_directory: ~/build
     steps:
-      - run
+      - run:
           name: build site program
           command: stack build
-      - run
+      - run:
           name: build site
           command: stack exec site build
       - save_cache:
