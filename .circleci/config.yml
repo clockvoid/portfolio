@@ -22,14 +22,28 @@ jobs:
       - run:
           name: npm install
           command: npm install
+
+  build:
+    working_directory: ~/build
+    steps:
+      - run
+          name: build site program
+          command: stack build
+      - run
+          name: build site
+          command: stack exec site build
       - save_cache:
           name: save caehe
           key: portfolio-v1-{{ checksum "portfolio.cabal" }}-{{ checksum "stack.yaml" }}
           paths:
             - "/root/.stack"
             - ".stack-work"
+    
 workflows:
   version: 2.1
   build-and-deploy:
     jobs:
       - build_deps
+      - build:
+          requires:
+            - build_deps
