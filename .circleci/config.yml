@@ -25,6 +25,8 @@ jobs:
 
   build:
     working_directory: ~/build
+    docker:
+      - image: haskell:8.8.3
     steps:
       - run:
           name: build site program
