@@ -33,11 +33,11 @@ indexHtml = do
             figure_ [class_ "image is-128x128", style_ "margin: 0 auto 1.5rem auto"] $
               img_ [class_ "is-rounded", src_ imgClockvoid]
             h1_ [class_ "title is-size-1-desktop is-size-2-touch"] "clockvoid"
-            nav_ [class_ "breadcrumb is-centered has-bullet-separator"] $
+            nav_ [class_ "home-breadcrumb is-centered has-bullet-separator"] $
               ul_ $ do
-                li_ $ a_ [class_ "navbar-item"] "About"
-                li_ $ a_ [class_ "navbar-item"] "Blog"
-                li_ $ a_ [class_ "navbar-item"] "Works"
+                li_ $ a_ [] "About"
+                li_ $ a_ [] "Blog"
+                li_ $ a_ [style_ "padding-right: 0;"] "Works"
         div_ [class_ "hero-foot"] $
           div_ [class_ "tabs is-centered"] $
             ul_ $ do

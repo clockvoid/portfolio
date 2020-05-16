@@ -10,3 +10,25 @@ $fa-font-path: "../webfonts";
 .disable-scrolling {
   overflow: hidden !important;
 }
+
+.home-breadcrumb {
+  @extend .breadcrumb;
+  a {
+    color: $white;
+    font-weight: bold;
+    &:hover {
+      color: $grey-dark;
+    }
+  }
+  li {
+    &.is-active {
+      a {
+        color: $grey-dark;
+      }
+    }
+    & + li::before {
+      color: $white;
+    }
+  }
+}
+
