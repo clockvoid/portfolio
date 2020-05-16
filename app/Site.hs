@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
-import           Data.Monoid (mappend)
-import           Hakyll
+import Data.Monoid (mappend)
+import Hakyll
 
 import Site.Images
 import Site.Css
@@ -8,9 +8,12 @@ import Site.Posts
 import Site.Archive
 import Site.Index
 import Site.Lib
+import qualified Html.Const as HC
 
 main :: IO ()
-main = hakyll $ do
+main = do
+  HC.compile HC.deployDirectory [HC.indexPage]
+  hakyll $ do
     images
     css
     posts
