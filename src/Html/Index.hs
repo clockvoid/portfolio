@@ -28,6 +28,13 @@ indexHtml = do
       link_ [rel_ "stylesheet", href_ "/css/mystyles.css"]
     body_ $
       section_ [class_ "hero is-primary is-fullheight is-bold"] $ do
+        div_ [class_ "hero-head"] $
+          div_ [class_ "tabs"] $
+            ul_ $ do
+              li_ $ a_ [href_ "https://github.com/clockvoid", style_ "padding: 0.5rem 0.5rem 0.5rem 0.5rem;"] $
+                span_ [class_ "icon"] $ i_ [class_ "fab fa-github"] ""
+              li_ $ a_ [href_ "https://twitter.com/clock_void", style_ "padding: 0.5rem 0.5rem 0.5rem 0;"] $
+                span_ [class_ "icon"] $ i_ [class_ "fab fa-twitter"] ""
         div_ [class_ "hero-body"] $
           div_ [class_ "container has-text-centered"] $ do
             figure_ [class_ "image is-128x128", style_ "margin: 0 auto 1.5rem auto"] $
@@ -38,10 +45,3 @@ indexHtml = do
                 li_ $ a_ [] "About"
                 li_ $ a_ [] "Blog"
                 li_ $ a_ [style_ "padding-right: 0;"] "Works"
-        div_ [class_ "hero-foot"] $
-          div_ [class_ "tabs is-centered"] $
-            ul_ $ do
-              li_ $ a_ [href_ "https://github.com/clockvoid"] $
-                span_ [class_ "icon"] $ i_ [class_ "fab fa-github"] ""
-              li_ $ a_ [href_ "https://twitter.com/clock_void"] $
-                span_ [class_ "icon"] $ i_ [class_ "fab fa-twitter"] ""
