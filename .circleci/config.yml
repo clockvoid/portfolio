@@ -30,7 +30,7 @@ jobs:
     steps:
       - run:
           name: build site program
-          command: stack build
+          command: stack init && stack build
       - run:
           name: build site
           command: stack exec site build
