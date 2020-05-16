@@ -1,0 +1,27 @@
+{
+  "name": "portfolio",
+  "version": "1.0.0",
+  "description": "",
+  "main": "sass/mystyle.scss",
+  "dependencies": {
+    "bulma": "^0.8.2",
+    "node-sass": "^4.14.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "css-build": "node-sass --omit-source-map-url sass/mystyles.scss css/mystyles.css",
+    "css-watch": "npm run css-build -- --watch",
+    "start": "npm run css-watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clockvoid/portfolio.git"
+  },
+  "author": "clockvoid",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/clockvoid/portfolio/issues"
+  },
+  "homepage": "https://github.com/clockvoid/portfolio#readme"
+}
