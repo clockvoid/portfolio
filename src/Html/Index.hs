@@ -19,7 +19,7 @@ indexPath = "index.html"
 indexHtml :: Html ()
 indexHtml = do
   doctype_
-  html_ $ do
+  html_ [class_ "disable-scrolling"] $ do
     head_ $ do
       title_ "clockvoid - $title$"
       meta_ [charset_ "utf-8"]
@@ -27,7 +27,7 @@ indexHtml = do
       meta_ [name_ "viewport", content_ "width=device-width, initial-scale=1"]
       link_ [rel_ "stylesheet", href_ "/css/mystyles.css"]
     body_ $
-      section_ [class_ "hero is-primary is-fullheight"] $
+      section_ [class_ "hero is-primary is-fullheight is-bold"] $ do
         div_ [class_ "hero-body"] $
           div_ [class_ "container has-text-centered"] $ do
             figure_ [class_ "image is-128x128", style_ "margin: 0 auto 1.5rem auto"] $
