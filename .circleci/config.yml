@@ -1,6 +1,7 @@
 version: 2.1
 jobs:
   build_deps:
+    working_directory: ~/build
     docker:
       - image: haskell:8.8.3
     steps:
@@ -8,10 +9,7 @@ jobs:
       - restore_cache:
           name: restore cache
           keys:
-            - porfolio-v1-{{ checksum "package.yaml" }}-{{ checksum "stack.yaml" }}
-      - run:
-          name: install stack
-          command: curl -sSL https://get.haskellstack.org/ | sh
+            - portfolio-v1-{{ checksum "package.yaml" }}-{{ checksum "stack.yaml" }}
       - run:
           name: install npm
           command: apt install -y nodejs npm
@@ -28,7 +26,7 @@ jobs:
             - "/root/.stack"
             - ".stack-work"
 workflows:
-  version: 2
+  version: 2.1
   build-and-deploy:
     jobs:
       - build_deps
