@@ -10,7 +10,7 @@ import System.Environment (getProgName)
 import System.IO.Unsafe (unsafePerformIO)
 import System.Exit (ExitCode (ExitSuccess), exitWith)
 
-import Html.Lib (deployDirectory, indexPage, compile, deleteAllFilesInDirectory)
+import Html.Lib (deployDirectory, pages, compile, deleteAllFilesInDirectory)
 
 -- | コマンドを表現する直積型
 data Command
@@ -64,7 +64,7 @@ invokCommand = do
   arg <- defaultParser
   case arg of
     Clean -> deleteAllFilesInDirectory deployDirectory 
-    Build -> compile deployDirectory [indexPage]
+    Build -> compile deployDirectory pages
 
 main :: IO ()
 main = invokCommand >>= exitWith

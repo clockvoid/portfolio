@@ -12,7 +12,7 @@ import qualified Html.Lib as HL
 
 main :: IO ()
 main = do
-  HL.compile HL.deployDirectory [HL.indexPage]
+  HL.compile HL.deployDirectory HL.pages
   hakyll $ do
     images
     css
