@@ -3,6 +3,7 @@ import Data.Monoid (mappend)
 import Hakyll
 
 import System.FilePath (takeFileName)
+import System.Process
 import Data.List (isPrefixOf, isSuffixOf)
 
 import Site.Images
@@ -20,6 +21,7 @@ myIgnoreFile path
   | "~"    `isSuffixOf` fileName = True
   | ".swp" `isSuffixOf` fileName = True
   | "node_modules" ==   fileName = True
+  | "sass" ==           fileName = True
   | otherwise                    = False
   where
     fileName = takeFileName path
@@ -27,6 +29,7 @@ myIgnoreFile path
 main :: IO ()
 main = do
   HL.compile HL.deployDirectory HL.pages
+  putStrLn =<< readProcess "npm" ["run", "css-build"] ""
   hakyllWith defaultConfiguration {ignoreFile = myIgnoreFile} $ do
     images
     css

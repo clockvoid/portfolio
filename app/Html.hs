@@ -9,6 +9,7 @@ import qualified Options.Applicative as OA
 import System.Environment (getProgName)
 import System.IO.Unsafe (unsafePerformIO)
 import System.Exit (ExitCode (ExitSuccess), exitWith)
+import System.Process
 
 import Html.Lib (deployDirectory, pages, compile, deleteAllFilesInDirectory)
 
@@ -64,7 +65,9 @@ invokCommand = do
   arg <- defaultParser
   case arg of
     Clean -> deleteAllFilesInDirectory deployDirectory 
-    Build -> compile deployDirectory pages
+    Build -> do
+      putStrLn =<< readProcess "npm" ["run", "css-build"] ""
+      compile deployDirectory pages
 
 main :: IO ()
 main = invokCommand >>= exitWith

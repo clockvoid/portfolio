@@ -25,7 +25,9 @@ compile directory pages = do
   createDirectoryIfMissing False directory
   foldMap (writePage directory) pages >> ok
   where
-    writePage directory (path, page) = renderToFile (directory <> path) page
+    writePage directory (path, page) = do
+      renderToFile (directory <> path) page
+      putStrLn $ "updated " <> directory <> path
     ok = return ExitSuccess
 
 deleteAllFilesInDirectory :: FilePath -> IO ExitCode

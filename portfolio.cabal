@@ -29,6 +29,7 @@ executable site
                   , lucid == 2.9.12
                   , text
                   , filepath
+                  , process
   ghc-options:      -threaded
   default-language: Haskell2010
 
@@ -37,5 +38,6 @@ executable html
   build-depends:    base == 4.*
                   , portfolio
                   , optparse-applicative == 0.15.1.0
+                  , process
   ghc-options:      -threaded
   default-language: Haskell2010
