@@ -5,8 +5,7 @@ cabal-version:      >= 1.10
 
 library
   hs-source-dirs:   src
-  exposed-modules:  Html.File
-                  , Html.Const
+  exposed-modules:  Html.Lib
                   , Site.Lib
                   , Site.Images
                   , Site.Css

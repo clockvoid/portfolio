@@ -1,9 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Html.Const
+module Html.Lib
   ( deployDirectory
   , indexPage
   , compile
+  , deleteAllFilesInDirectory
   ) where
 
 import Data.Text
@@ -39,4 +40,21 @@ compile directory pages = do
   where
     writePage directory (path, page) = renderToFile (directory <> path) page
     ok = return ExitSuccess
+
+deleteAllFilesInDirectory :: FilePath -> IO ExitCode
+deleteAllFilesInDirectory directory = do
+  isDirectoryExist <- doesDirectoryExist directory
+  if isDirectoryExist
+     then do
+       files <- listDirectory directory
+       foldMap (removeFileInDirectory directory) files
+       return ExitSuccess
+  else doWhenDirectoryNotFound directory
+    where
+      removeFileInDirectory directory file = removeFile $ directory <> file
+
+doWhenDirectoryNotFound :: FilePath -> IO ExitCode
+doWhenDirectoryNotFound directory = do
+  putStrLn $ "Directory " <> directory <> " not found."
+  return $ ExitFailure 1
 

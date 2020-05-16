@@ -10,8 +10,7 @@ import System.Environment (getProgName)
 import System.IO.Unsafe (unsafePerformIO)
 import System.Exit (ExitCode (ExitSuccess), exitWith)
 
-import Html.File (deleteAllFilesInDirectory)
-import Html.Const (deployDirectory, indexPage, compile)
+import Html.Lib (deployDirectory, indexPage, compile, deleteAllFilesInDirectory)
 
 -- | コマンドを表現する直積型
 data Command

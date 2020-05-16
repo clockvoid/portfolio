@@ -8,11 +8,11 @@ import Site.Posts
 import Site.Archive
 import Site.Index
 import Site.Lib
-import qualified Html.Const as HC
+import qualified Html.Lib as HL
 
 main :: IO ()
 main = do
-  HC.compile HC.deployDirectory [HC.indexPage]
+  HL.compile HL.deployDirectory [HL.indexPage]
   hakyll $ do
     images
     css
