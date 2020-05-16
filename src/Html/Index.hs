@@ -38,4 +38,12 @@ indexHtml = do
                 li_ $ a_ [class_ "navbar-item"] "About"
                 li_ $ a_ [class_ "navbar-item"] "Blog"
                 li_ $ a_ [class_ "navbar-item"] "Works"
-
+        div_ [class_ "hero-foot"] $
+          div_ [class_ "tabs is-centered"] $
+            ul_ $ do
+              li_ $ a_ [href_ "https://github.com/clockvoid"] $
+                span_ [class_ "icon"] $ i_ [class_ "fas fa-home"] ""
+              li_ $ a_ [href_ "https://github.com/clockvoid"] $
+                span_ [class_ "icon"] $ i_ [class_ "fab fa-github"] ""
+              li_ $ a_ [href_ "https://github.com/clockvoid"] $
+                span_ [class_ "icon"] $ i_ [class_ "fab fa-github"] ""
