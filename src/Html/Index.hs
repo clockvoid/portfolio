@@ -21,5 +21,5 @@ indexHtml = do
       meta_ [charset_ "utf-8"]
       meta_ [httpEquiv_ "x-ua-compatible", content_ "ie=edge"]
       meta_ [name_ "viewport", content_ "width=device-width, initial-scale=1"]
-      link_ [rel_ "stylesheet", href_ "/css/default.css"]
+      link_ [rel_ "stylesheet", href_ "/css/mystyles.css"]
 

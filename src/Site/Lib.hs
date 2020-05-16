@@ -28,7 +28,7 @@ archiveIdentifier :: Identifier
 archiveIdentifier = fromFilePath "archive.html"
 
 indexPattern :: Pattern
-indexPattern = fromRegex "index.html"
+indexPattern = fromRegex "_html/index.html"
 
 postTemplate :: Identifier 
 postTemplate = fromFilePath "templates/post.html"

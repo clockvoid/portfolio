@@ -9,7 +9,7 @@ import Site.Lib
 
 index :: Rules ()
 index = match indexPattern $ do
-    route idRoute
+    route $ constRoute "index.html"
     compile $ do
         posts <- recentFirst =<< loadAll postPattern
         let indexCtx =
