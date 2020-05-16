@@ -13,9 +13,9 @@ jobs:
       - run:
           name: install PPA for node
           command: curl -sL https://deb.nodesource.com/setup_13.x | sh
-          #      - run:
-          #          name: install npm
-          #          command: apt install -y nodejs npm
+      - run:
+          name: install npm
+          command: apt install -y npm
       - run:
           name: stack setup
           command: stack setup
