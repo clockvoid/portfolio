@@ -11,6 +11,9 @@ jobs:
           keys:
             - portfolio-v1-{{ checksum "package.yaml" }}-{{ checksum "stack.yaml" }}
       - run:
+          name: install PPA for node
+          command: curl -sL https://deb.nodesource.com/setup_13.x | sh
+      - run:
           name: install npm
           command: apt install -y nodejs npm
       - run:
