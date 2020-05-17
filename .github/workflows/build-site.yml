@@ -41,7 +41,7 @@ jobs:
     - name: Compile site
       run: stack exec site build
     - name: Deploy site
-      env: |
+      env:
         GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
         GIT_NAME: ${{ secrets.GIT_NAME }}
       run: |
