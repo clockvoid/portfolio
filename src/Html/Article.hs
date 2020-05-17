@@ -47,7 +47,7 @@ articleHtml = do
               a_ [class_ "navbar-item", href_ "/works.html"] "Works"
             div_ [class_ "navbar-end"] $
               div_ [class_ "navbar-item"] $
-                a_ [class_ "button is-primary", href_ "src/Site/Archive.hs"] $ do
+                a_ [class_ "button is-primary", href_ "$if(github-link)$ $github-link$ $else$ https://github.com/clockvoid/portfolio $endif$"] $ do
                   span_ [class_ "icon"] $
                     i_ [class_ "fab fa-github"] ""
                   span_ [] "View it in GitHub"

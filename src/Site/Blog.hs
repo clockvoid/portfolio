@@ -21,6 +21,7 @@ blog = create [blogIdentifier] $ do
         let archiveCtx =
                 listField "posts" postCtx (return posts) `mappend`
                 constField "title" "Blog" `mappend`
+                constField "github-link" "https://github.com/clockvoid/portfolio/blob/master/src/Html/Blog.hs" `mappend`
                 defaultContext
 
         makeItem ""
