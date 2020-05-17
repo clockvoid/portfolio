@@ -12,6 +12,7 @@ import Lucid
 
 import Html.Index
 import Html.Blog
+import Html.Article
 
 deployDirectory :: FilePath
 deployDirectory = "_html/"
@@ -23,6 +24,7 @@ pages :: [(FilePath, Html ())]
 pages = [
           indexPage
         , blogTemplate
+        , articleTemplate
         ]
 
 compile :: FilePath -> [(FilePath, Html ())] -> IO ExitCode

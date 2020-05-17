@@ -9,7 +9,7 @@ import Data.List (isPrefixOf, isSuffixOf)
 import Site.Images
 import Site.Css
 import Site.Posts
-import Site.Archive
+import Site.Blog
 import Site.Index
 import Site.Lib
 import qualified Html.Lib as HL
@@ -27,14 +27,14 @@ myIgnoreFile path
     fileName = takeFileName path
 
 main :: IO ()
-main = do
-  HL.compile HL.deployDirectory HL.pages
-  putStrLn =<< readProcess "npm" ["run", "css-build"] ""
+main =
+  --HL.compile HL.deployDirectory HL.pages
+  --putStrLn =<< readProcess "npm" ["run", "css-build"] ""
   hakyllWith defaultConfiguration {ignoreFile = myIgnoreFile} $ do
     images
     css
     posts
-    archive
+    blog
     index
 
     --match (fromList ["about.rst", "contact.markdown"]) $ do

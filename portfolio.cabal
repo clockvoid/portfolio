@@ -7,12 +7,13 @@ library
   hs-source-dirs:   src
   exposed-modules:  Html.Lib
                   , Html.Index
+                  , Html.Article
                   , Html.Blog
                   , Site.Lib
                   , Site.Images
                   , Site.Css
                   , Site.Posts
-                  , Site.Archive
+                  , Site.Blog
                   , Site.Index
   build-depends:    base == 4.*
                   , hakyll == 4.13.*

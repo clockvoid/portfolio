@@ -12,6 +12,6 @@ posts = match postPattern $ do
     route $ setExtension "html"
     compile $ pandocCompiler
         >>= loadAndApplyTemplate postTemplate postCtx
-        >>= loadAndApplyTemplate defaultTemplate postCtx
+        >>= loadAndApplyTemplate articleTemplate postCtx
         >>= relativizeUrls
 
