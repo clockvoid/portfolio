@@ -42,8 +42,8 @@ jobs:
       run: stack exec site build
     - name: Deploy site
       env: |
-        GIT_EMAIL = ${{ secrets.GIT_EMAIL }}
-        GIT_NAME = ${{ secrets.GIT_NAME }}
+        GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
+        GIT_NAME: ${{ secrets.GIT_NAME }}
       run: |
         git config --local user.email "$GIT_EMAIL"
         git config --local user.name "$GIT_NAME"
