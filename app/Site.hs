@@ -44,3 +44,4 @@ main = do
     --        >>= relativizeUrls
 
     match "templates/*" $ compile templateBodyCompiler
+    match "_html/templates/*" $ compile templateBodyCompiler

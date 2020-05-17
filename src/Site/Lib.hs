@@ -19,13 +19,13 @@ postPattern :: Pattern
 postPattern = fromRegex "posts/*"
 
 archiveTemplate :: Identifier
-archiveTemplate = fromFilePath "templates/archive.html"
+archiveTemplate = fromFilePath "_html/templates/blog.html"
 
 defaultTemplate :: Identifier
 defaultTemplate = fromFilePath "templates/default.html"
 
 archiveIdentifier :: Identifier
-archiveIdentifier = fromFilePath "archive.html"
+archiveIdentifier = fromFilePath "blog.html"
 
 indexPattern :: Pattern
 indexPattern = fromRegex "_html/index.html"
