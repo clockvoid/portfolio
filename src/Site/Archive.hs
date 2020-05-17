@@ -11,13 +11,12 @@ archive :: Rules ()
 archive = create [archiveIdentifier] $ do
     route idRoute
     compile $ do
-        --posts <- recentFirst =<< loadAll postPattern
+        posts <- recentFirst =<< loadAll postPattern
         let archiveCtx =
-        --        listField "posts" postCtx (return posts) `mappend`
-                  constField "title-link" "Blog" `mappend`
-                  articleContext
+                listField "posts" postCtx (return posts) `mappend`
+                constField "title-link" "Blog" `mappend`
+                articleContext
 
         makeItem ""
             >>= loadAndApplyTemplate archiveTemplate archiveCtx
-         --   >>= loadAndApplyTemplate defaultTemplate archiveCtx
             >>= relativizeUrls
