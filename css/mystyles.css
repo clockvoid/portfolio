@@ -11673,3 +11673,8 @@ span.media-icon {
   color: white; }
   span.media-icon:hover {
     color: #00d1b2; }
+
+.date {
+  font-size: 0.8rem;
+  font-style: italic;
+  color: #555; }
