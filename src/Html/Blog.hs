@@ -22,7 +22,7 @@ blogHtml =
         div_ [class_ "card-content"] $ do
           p_ [class_ "title"] "$title$"
           p_ [class_ "content"] "$if(summary)$ $summary$ $else$ No info $endif$"
-          p_ [class_ "content"] "$date$"
+          p_ [class_ "content date"] "Posted on $date$ $if(updated-date)$ , Updated on $updated-date$ $endif$"
         div_ [class_ "card-footer"] $
           a_ [class_ "card-footer-item", href_ "$url$"] "この記事を読む"
     "$endfor$"

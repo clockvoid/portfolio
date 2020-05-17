@@ -1,5 +1,6 @@
 ---
 title: Stackの辛いポイント
+updated-date: 2020-05-18
 summary: |
   StackはCabalよりも新しく，一時期Cabal Hellが起こらないということで，かなり注目を浴びました．
   しかし，Stackも現れてから数年がたち，最近Stackageにライブラリの新しいバージョンが乗らないなど，問題も起こっています．
