@@ -46,7 +46,7 @@ blogHtml = do
               a_ [class_ "navbar-item", href_ "$works-link$"] "Works"
             div_ [class_ "navbar-end"] $
               div_ [class_ "navbar-item"] $
-                a_ [class_ "button is-primary"] $ do
+                a_ [class_ "button is-primary", href_ "$github-link$"] $ do
                   span_ [class_ "icon"] $
                     i_ [class_ "fab fa-github"] ""
                   span_ [] "View it in GitHub"

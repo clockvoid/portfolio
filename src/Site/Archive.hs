@@ -14,12 +14,8 @@ archive = create [archiveIdentifier] $ do
         --posts <- recentFirst =<< loadAll postPattern
         let archiveCtx =
         --        listField "posts" postCtx (return posts) `mappend`
-                constField "title-link" "Archives" `mappend`
-                constField "index-link" "index.html" `mappend`
-                constField "about-link" "about.html" `mappend`
-                constField "blog-link" "blog.html" `mappend`
-                constField "works-link" "works.html" `mappend`
-                defaultContext
+                  constField "title-link" "Blog" `mappend`
+                  articleContext
 
         makeItem ""
             >>= loadAndApplyTemplate archiveTemplate archiveCtx

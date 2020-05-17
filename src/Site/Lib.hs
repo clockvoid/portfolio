@@ -6,6 +6,7 @@ module Site.Lib
   , archiveTemplate
   , defaultTemplate
   , postTemplate
+  , articleContext
   ) where
 
 import Hakyll
@@ -32,4 +33,13 @@ indexPattern = fromRegex "_html/index.html"
 
 postTemplate :: Identifier 
 postTemplate = fromFilePath "templates/post.html"
+
+articleContext :: Context String
+articleContext = 
+  constField "index-link" "index.html" `mappend`
+  constField "about-link" "about.html" `mappend`
+  constField "blog-link" "blog.html" `mappend`
+  constField "works-link" "works.html" `mappend`
+  constField "github-link" "https://github.com/clockvoid/portfolio" `mappend`
+  defaultContext
 
