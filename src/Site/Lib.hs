@@ -1,10 +1,8 @@
 module Site.Lib
   ( postCtx
   , postPattern
-  , archiveIdentifier
   , indexPattern
-  , archiveTemplate
-  , defaultTemplate
+  , articleTemplate
   , postTemplate
   ) where
 
@@ -18,14 +16,8 @@ postCtx =
 postPattern :: Pattern
 postPattern = fromRegex "posts/*"
 
-archiveTemplate :: Identifier
-archiveTemplate = fromFilePath "templates/archive.html"
-
-defaultTemplate :: Identifier
-defaultTemplate = fromFilePath "templates/default.html"
-
-archiveIdentifier :: Identifier
-archiveIdentifier = fromFilePath "archive.html"
+articleTemplate :: Identifier
+articleTemplate = fromFilePath "_html/templates/article.html"
 
 indexPattern :: Pattern
 indexPattern = fromRegex "_html/index.html"

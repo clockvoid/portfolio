@@ -6,9 +6,9 @@ $fa-font-path: "../webfonts";
 @import "../node_modules/@fortawesome/fontawesome-free/scss/solid.scss";
 
 $primary: hsl(0, 0%, 29%);
+$card-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1);
 
 @import "../node_modules/bulma/bulma.sass";
-
 
 .disable-scrolling {
   overflow: hidden !important;

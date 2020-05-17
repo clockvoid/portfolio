@@ -7,17 +7,22 @@ library
   hs-source-dirs:   src
   exposed-modules:  Html.Lib
                   , Html.Index
+                  , Html.Article
+                  , Html.Blog
+                  , Site.Pandoc
                   , Site.Lib
                   , Site.Images
                   , Site.Css
                   , Site.Posts
-                  , Site.Archive
+                  , Site.Blog
                   , Site.Index
   build-depends:    base == 4.*
                   , hakyll == 4.13.*
                   , lucid == 2.9.12
                   , directory
                   , text
+                  , pandoc-types == 1.20
+                  , pandoc == 2.9.2.1
   default-language: Haskell2010
 
 executable site

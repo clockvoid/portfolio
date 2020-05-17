@@ -11,18 +11,26 @@ import System.Exit (ExitCode (ExitFailure), ExitCode (ExitSuccess))
 import Lucid
 
 import Html.Index
+import Html.Blog
+import Html.Article
 
 deployDirectory :: FilePath
 deployDirectory = "_html/"
 
+templatesDirectory :: FilePath
+templatesDirectory = "templates/"
+
 pages :: [(FilePath, Html ())]
 pages = [
           indexPage
+        , blogTemplate
+        , articleTemplate
         ]
 
 compile :: FilePath -> [(FilePath, Html ())] -> IO ExitCode
 compile directory pages = do
   createDirectoryIfMissing False directory
+  createDirectoryIfMissing False $ directory <> templatesDirectory
   foldMap (writePage directory) pages >> ok
   where
     writePage directory (path, page) = do

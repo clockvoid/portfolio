@@ -1,9 +1,7 @@
-name: Haskell CI
+name: Build and Deploy
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
     branches: [ master ]
 
 jobs:
@@ -39,7 +37,9 @@ jobs:
     - name: Build
       run: stack build
     - name: Compile site
-      run: stack exec site build
+      run: |
+        stack exec html build
+        stack exec site build
     - name: Deploy site
       env:
         GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
