@@ -17,7 +17,7 @@ import Hakyll
 import Data.Text
 
 toBulmaHeading :: Block -> Block
-toBulmaHeading (Header level attrs xs) = Header level newAttrs xs
+toBulmaHeading (Header level attrs xs) = Header (level + 1) newAttrs xs
     where
         (identifier, classes, keyvals) = attrs
         newAttrs = (identifier, classes <> ["title", "is-" <> pack (show $ level + 1)], keyvals)
