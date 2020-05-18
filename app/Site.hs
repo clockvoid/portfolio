@@ -38,5 +38,4 @@ main = hakyllWith defaultConfiguration {ignoreFile = myIgnoreFile} $ do
     about
     works
 
-    match "templates/*" $ compile templateBodyCompiler
     match "_html/templates/*" $ compile templateBodyCompiler
