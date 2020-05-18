@@ -11678,3 +11678,6 @@ span.media-icon {
   font-size: 0.8rem;
   font-style: italic;
   color: #555; }
+
+pre.sourceCode {
+  background: #282a36; }
