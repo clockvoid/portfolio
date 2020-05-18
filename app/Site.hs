@@ -21,6 +21,8 @@ myIgnoreFile path
   | ".swp" `isSuffixOf` fileName = True
   | "node_modules" ==   fileName = True
   | "sass" ==           fileName = True
+  | "src" ==            fileName = True
+  | "app" ==            fileName = True
   | otherwise                    = False
   where
     fileName = takeFileName path

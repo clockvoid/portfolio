@@ -1,5 +1,6 @@
 module Html.Lib
   ( deployDirectory
+  , templatesDirectory
   , pages
   , compile
   , deleteAllFilesInDirectory
@@ -48,7 +49,9 @@ deleteAllFilesInDirectory directory = do
        return ExitSuccess
   else doWhenDirectoryNotFound directory
     where
-      removeFileInDirectory directory file = removeFile $ directory <> file
+      removeFileInDirectory directory file = do
+        putStrLn $ "Deleting... " <> directory <> file
+        removeFile $ directory <> file
 
 doWhenDirectoryNotFound :: FilePath -> IO ExitCode
 doWhenDirectoryNotFound directory = do

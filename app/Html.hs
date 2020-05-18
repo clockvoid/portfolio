@@ -11,7 +11,7 @@ import System.IO.Unsafe (unsafePerformIO)
 import System.Exit (ExitCode (ExitSuccess), exitWith)
 import System.Process
 
-import Html.Lib (deployDirectory, pages, compile, deleteAllFilesInDirectory)
+import Html.Lib (deployDirectory, templatesDirectory, pages, compile, deleteAllFilesInDirectory)
 
 -- | コマンドを表現する直積型
 data Command
@@ -64,7 +64,9 @@ invokCommand :: IO ExitCode
 invokCommand = do
   arg <- defaultParser
   case arg of
-    Clean -> deleteAllFilesInDirectory deployDirectory 
+    Clean -> do
+      deleteAllFilesInDirectory $ deployDirectory <> templatesDirectory
+      deleteAllFilesInDirectory deployDirectory 
     Build -> do
       putStrLn =<< readProcess "npm" ["run", "css-build"] ""
       compile deployDirectory pages
