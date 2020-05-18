@@ -13,6 +13,7 @@ import Lucid
 
 import Html.Index
 import Html.Blog
+import Html.BlogPost
 import Html.Article
 
 deployDirectory :: FilePath
@@ -25,6 +26,7 @@ pages :: [(FilePath, Html ())]
 pages = [
           indexPage
         , blogTemplate
+        , blogPostTemplate
         , articleTemplate
         ]
 

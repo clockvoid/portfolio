@@ -20,7 +20,7 @@ toBulmaHeading :: Block -> Block
 toBulmaHeading (Header level attrs xs) = Header level newAttrs xs
     where
         (identifier, classes, keyvals) = attrs
-        newAttrs = (identifier, classes <> ["title", "is-" <> pack (show level)], keyvals)
+        newAttrs = (identifier, classes <> ["title", "is-" <> pack (show $ level + 1)], keyvals)
 toBulmaHeading x = x
 
 toBulmaImage :: Inline -> Inline

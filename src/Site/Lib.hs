@@ -23,5 +23,5 @@ indexPattern :: Pattern
 indexPattern = fromRegex "_html/index.html"
 
 postTemplate :: Identifier 
-postTemplate = fromFilePath "templates/post.html"
+postTemplate = fromFilePath "_html/templates/blog-post.html"
 

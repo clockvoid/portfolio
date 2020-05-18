@@ -9,6 +9,7 @@ library
                   , Html.Index
                   , Html.Article
                   , Html.Blog
+                  , Html.BlogPost
                   , Site.Pandoc
                   , Site.Lib
                   , Site.Images
