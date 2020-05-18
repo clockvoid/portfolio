@@ -7,7 +7,6 @@ import System.Process
 import Data.List (isPrefixOf, isSuffixOf)
 
 import Site.Images
-import Site.Css
 import Site.Posts
 import Site.Blog
 import Site.Index
@@ -32,16 +31,9 @@ main =
   --putStrLn =<< readProcess "npm" ["run", "css-build"] ""
   hakyllWith defaultConfiguration {ignoreFile = myIgnoreFile} $ do
     images
-    css
     posts
     blog
     index
-
-    --match (fromList ["about.rst", "contact.markdown"]) $ do
-    --    route   $ setExtension "html"
-    --    compile $ pandocCompiler
-    --        >>= loadAndApplyTemplate "templates/default.html" defaultContext
-    --        >>= relativizeUrls
 
     match "templates/*" $ compile templateBodyCompiler
     match "_html/templates/*" $ compile templateBodyCompiler

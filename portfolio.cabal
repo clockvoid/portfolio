@@ -12,7 +12,6 @@ library
                   , Site.Pandoc
                   , Site.Lib
                   , Site.Images
-                  , Site.Css
                   , Site.Posts
                   , Site.Blog
                   , Site.Index
