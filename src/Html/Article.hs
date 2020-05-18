@@ -25,7 +25,9 @@ articleHtml = do
       meta_ [charset_ "utf-8"]
       meta_ [httpEquiv_ "x-ua-compatible", content_ "ie=edge"]
       meta_ [name_ "viewport", content_ "width=device-width, initial-scale=1"]
-      link_ [rel_ "stylesheet", href_ "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css"]
+      link_ [rel_ "stylesheet", href_ "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/dracula.min.css"]
+      script_ [src_ "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"] empty
+      script_ "hljs.initHighlightingOnLoad();"
       link_ [rel_ "stylesheet", href_ "/css/mystyles.css"]
     body_ [class_ "has-navbar-fixed-top"] $ do
       div_ [class_ "navbar is-fixed-top has-shadow"] $
