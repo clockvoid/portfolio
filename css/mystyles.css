@@ -11668,6 +11668,10 @@ label.panel-block {
 .home-breadcrumb li + li::before {
   color: white; }
 
+@media screen and (min-width: 1024px) {
+  .is-1 {
+    margin-top: 1rem; } }
+
 span.media-icon {
   padding: 1.5rem 1.5rem 1.5rem 1.5rem;
   color: white; }
@@ -11681,3 +11685,6 @@ span.media-icon {
 
 pre.sourceCode {
   background: #282a36; }
+
+h2, h3, h4, h5, h6 {
+  margin-top: 1rem; }
