@@ -10,7 +10,7 @@ import Hakyll
 
 postCtx :: Context String
 postCtx =
-    dateField "date" "%B %e, %Y" `mappend`
+    dateField "date" "%Y-%m-%d" `mappend`
     defaultContext
 
 postPattern :: Pattern
