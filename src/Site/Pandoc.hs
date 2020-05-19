@@ -11,6 +11,7 @@ module Site.Pandoc
 
 import Text.Pandoc.Definition (Attr, Block (..), Inline (..), Pandoc)
 import Text.Pandoc.Walk       (walk)
+import Text.Pandoc.Options
 
 import Hakyll
 
@@ -30,11 +31,9 @@ toBulmaImage (Image attrs xs target) = Image newAttrs xs target
         newAttrs = (identifier, classes <> ["image", "is-in-article"], keyvals)
 toBulmaImage x = x
 
-toBulmaCode :: Inline -> Inline
-toBulmaCode (Code attrs xs) = Code newAttrs xs
-  where
-    (identifier, classes, keyvals) = attrs
-    newAttrs = (identifier, classes <> ["is-in-article"], keyvals)
+toBulmaTable :: Block -> Block
+toBulmaTable (Table a b c d e) = Div ("", [pack "table is-striped is-bordered"], []) [Table a b c d e]
+toBulmaTable x = x
 
 -- ! Transform (or filter) to format heading to Bulma's heading classes.
 -- Markdown: ## Title
@@ -48,12 +47,18 @@ bulmaHeadingTransform = walk toBulmaHeading
 bulmaImagesTransform :: Pandoc -> Pandoc
 bulmaImagesTransform = walk toBulmaImage
 
+-- Take Table and add to bulma "table" class to it's parent div tag
+-- Markdown : | --- | --- |
+-- Html     : <div class="table><table>...</table></div>
+bulmaTablesTransform :: Pandoc -> Pandoc
+bulmaTablesTransform = walk toBulmaTable
+
 -- Combination of all transforms
 bulmaTransform :: Pandoc -> Pandoc
-bulmaTransform = bulmaHeadingTransform . bulmaImagesTransform
+bulmaTransform = bulmaHeadingTransform . bulmaImagesTransform . bulmaTablesTransform
 
 -- | Allow math display, code highlighting, table-of-content, and Pandoc filters
 -- Note that the Bulma pandoc filter is always applied last
 myPandocCompiler :: Compiler (Item String)
-myPandocCompiler = pandocCompilerWithTransform defaultHakyllReaderOptions defaultHakyllWriterOptions bulmaTransform
+myPandocCompiler = pandocCompilerWithTransform defaultHakyllReaderOptions (defaultHakyllWriterOptions { writerHTMLMathMethod = MathJax "" }) bulmaTransform
 
