@@ -27,7 +27,70 @@ Circle CIのFreeプランではメモリ4GB，2CPUのコンテナが使用でき
 ビルドが成功することはわかったので，具体的な使い方を見ていきます．
 
 まず，GitHubのプロジェクトページの一番上にあるタブからActionsタブをクリックします．
-![](https://i.imgur.com/eG9gNcC.png)
+
+![](https://i.imgur.com/eG9gNcCh.png)
 
 Actionタブを開くと，GitHubのレポジトリの主要言語から使用するワークフローの雛形を作ってくれます．とても便利です．
 基本的には，この雛形から自分の用途にあうように編集するだけで簡単にデプロイができるようになります．
+
+```yaml
+name: Build and Deploy
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-haskell@v1
+      with:
+        ghc-version: '8.8.2'
+        cabal-version: '3.0'
+        stack-version: 'latest'
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '13'
+    - name: Cache
+      uses: actions/cache@v1
+      env:
+        cache-name: cache-stack
+      with:
+        path: ~/.stack
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.cabal') }}-${{ hashFiles('**/stack.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+    - name: Install dependencies
+      run: | 
+        stack setup
+        npm install
+    - name: Build
+      run: stack build
+    - name: Compile site
+      run: |
+        stack exec html build
+        stack exec site build
+    - name: Deploy site
+      env:
+        GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
+        GIT_NAME: ${{ secrets.GIT_NAME }}
+      run: |
+        git config --local user.email "$GIT_EMAIL"
+        git config --local user.name "$GIT_NAME"
+        git fetch
+        git checkout gh-pages
+        cp -a _site/* ./
+        git add .
+        git commit -m "$GITHUB_REPOSITORY deploy no. $GITHUB_RUN_NUMBER"
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: "gh-pages"
+```
