@@ -28,6 +28,7 @@ articleHtml = do
       link_ [rel_ "stylesheet", href_ "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/dracula.min.css"]
       script_ [src_ "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"] empty
       script_ "hljs.initHighlightingOnLoad();"
+      script_ [src_ "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML" ] empty
       link_ [rel_ "stylesheet", href_ "/css/mystyles.css"]
     body_ [class_ "has-navbar-fixed-top"] $ do
       div_ [class_ "navbar is-fixed-top has-shadow"] $
