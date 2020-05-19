@@ -62,12 +62,12 @@ pre.sourceCode {
   border-radius: 6px;
 }
 
-.bd-anchor-title {
-  padding-top: 1rem;
-  padding-bottom: 0.8rem;
-  margin-bottom: 0 !important;
-}
-
 img.is-in-article {
   margin: 0.75rem auto 0.75rem auto;
+}
+
+.content {
+  p {
+    margin-bottom: 0 !important;
+  }
 }
