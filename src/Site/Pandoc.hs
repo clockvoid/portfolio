@@ -17,18 +17,24 @@ import Hakyll
 import Data.Text
 
 toBulmaHeading :: Block -> Block
-toBulmaHeading (Header level attrs xs) = Header (level + 1) newAttrs xs
+toBulmaHeading (Header level attrs xs) = Header (level + 2) newAttrs xs
     where
         (identifier, classes, keyvals) = attrs
-        newAttrs = (identifier, classes <> ["title", "is-" <> pack (show $ level + 1)], keyvals)
+        newAttrs = (identifier, classes <> ["title", "is-" <> pack (show $ level + 3), "bd-anchor-title"], keyvals)
 toBulmaHeading x = x
 
 toBulmaImage :: Inline -> Inline
 toBulmaImage (Image attrs xs target) = Image newAttrs xs target
     where
         (identifier, classes, keyvals) = attrs
-        newAttrs = (identifier, classes <> ["image"], keyvals)
+        newAttrs = (identifier, classes <> ["image", "is-in-article"], keyvals)
 toBulmaImage x = x
+
+toBulmaCode :: Inline -> Inline
+toBulmaCode (Code attrs xs) = Code newAttrs xs
+  where
+    (identifier, classes, keyvals) = attrs
+    newAttrs = (identifier, classes <> ["is-in-article"], keyvals)
 
 -- ! Transform (or filter) to format heading to Bulma's heading classes.
 -- Markdown: ## Title
