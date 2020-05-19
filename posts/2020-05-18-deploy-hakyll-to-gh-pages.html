@@ -1,13 +1,73 @@
-<!DOCTYPE HTML><html><head><title>clockvoid - Hakyllで作ったサイトをGitHub Pagesにデプロイする</title><meta charset="utf-8"><meta content="ie=edge" http-equiv="x-ua-compatible"><meta content="width=device-width, initial-scale=1" name="viewport"><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/dracula.min.css" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();</script><link href="../css/mystyles.css" rel="stylesheet"></head><body class="has-navbar-fixed-top"><div class="navbar is-fixed-top has-shadow"><div class="container"><div class="navbar-brand"><div class="navbar-item"><a href="../"><figure class="image"><img style="height: 1.75rem; width: 1.75rem;" src="https://i.imgur.com/rLs5sRT.png" class="is-rounded"></figure></a></div><div onclick="document.querySelector('.navbar-menu').classList.toggle('is-active');" class="navbar-burger burger"><span></span><span></span><span></span></div></div><div class="navbar-menu"><div class="navbar-start"><a href="../" class="navbar-item">Home</a><a href="../about.html" class="navbar-item">About</a><a href="../blog.html" class="navbar-item">Blog</a><a href="../works.html" class="navbar-item">Works</a></div><div class="navbar-end"><div class="navbar-item"><a href=" https://github.com/clockvoid/portfolio " class="button is-primary"><span class="icon"><i class="fab fa-github"></i></span><span>View it in GitHub</span></a></div></div></div></div></div><div class="container"><div class="column is-three-fifths is-offset-one-fifth"><h1 class="title is-1">Hakyllで作ったサイトをGitHub Pagesにデプロイする</h1><p style="margin-bottom: 1rem" class="date">Posted on 2020-05-18 </p><p style="margin-bottom: 1rem"> HakyllはHaskell製の静的サイトジェネレータです．
-よくWeb上に転がっているCircle CIでのビルドではうまく行かなかったので，GitHub Actionsを使ってデプロイを行う方法を示します． </p><article><h2 class="title is-2" id="circle-ciで何が起こったか">Circle CIで何が起こったか</h2>
+<!DOCTYPE HTML><html><head><title>clockvoid - Hakyllで作ったサイトをGitHub Pagesにデプロイする</title><meta charset="utf-8"><meta content="ie=edge" http-equiv="x-ua-compatible"><meta content="width=device-width, initial-scale=1" name="viewport"><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/dracula.min.css" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();</script><link href="../css/mystyles.css" rel="stylesheet"></head><body class="has-navbar-fixed-top"><div class="navbar is-fixed-top has-shadow"><div class="container"><div class="navbar-brand"><div class="navbar-item"><a href="../"><figure class="image"><img style="height: 1.75rem; width: 1.75rem;" src="https://i.imgur.com/rLs5sRT.png" class="is-rounded"></figure></a></div><div onclick="document.querySelector('.navbar-menu').classList.toggle('is-active');" class="navbar-burger burger"><span></span><span></span><span></span></div></div><div class="navbar-menu"><div class="navbar-start"><a href="../" class="navbar-item">Home</a><a href="../about.html" class="navbar-item">About</a><a href="../blog.html" class="navbar-item">Blog</a><a href="../works.html" class="navbar-item">Works</a></div><div class="navbar-end"><div class="navbar-item"><a href=" https://github.com/clockvoid/portfolio " class="button is-primary"><span class="icon"><i class="fab fa-github"></i></span><span>View it in GitHub</span></a></div></div></div></div></div><div class="container"><div class="column is-three-fifths is-offset-one-fifth"><h1 class="title">Hakyllで作ったサイトをGitHub Pagesにデプロイする</h1><p class="date">Posted on 2020-05-18 </p><p> HakyllはHaskell製の静的サイトジェネレータです．
+よくWeb上に転がっているCircle CIでのビルドではうまく行かなかったので，GitHub Actionsを使ってデプロイを行う方法を示します． </p><article><h3 class="title is-4 bd-anchor-title" id="circle-ciで何が起こったか">Circle CIで何が起こったか</h3>
 <p>私はこのブログをHakyllを使って作っています．HakyllはHaskell製の静的サイトジェネレータですが，初期ビルドに非常に時間を要します． 例えば，私が今使っているMacBook Pro 13inch 2018（Core i7，16GB Memory）では15分ほどを要します． これは，Hakyllが依存するライブラリが非常に多い上に，GHCがそもそも遅く，メモリも食うためであると想像しています．</p>
 <p>このようなものをCircle CIのFreeプランでビルドしようとすると，OOMします． 実際に，私のサイトをCircle CIでデプロイ仕様とした際，OOMに悩まされました．初期ビルドが通らなければ，キャッシュもされず，永遠にビルドが通らない状況に陥ります．</p>
 <p>Circle CIのFreeプランではメモリ4GB，2CPUのコンテナが使用できますが，これでは足りないということなのでしょう．</p>
 <p>そこで，私はGitHub Actionsに目をつけました．これならば比較的新しい上に無料プランでも一ヶ月あたり2,000時間分の枠が用意されているため，比較的ラフに使用することができるはずです．</p>
-<h2 class="title is-2" id="github-actions">GitHub Actions</h2>
+<h3 class="title is-4 bd-anchor-title" id="github-actions">GitHub Actions</h3>
 <p><a href="https://help.github.com/en/github/setting-up-and-managing-billing-and-payments-on-github/about-billing-for-github-actions">GitHub ActionsのBillingページ</a>に行くとフリープランでは一ヶ月あたり1GB，500MBのキャッシュ用のストレージが用意されているということになっています． しかし，搭載しているメモリがどれくらいの量なのか定かではありません．</p>
 <p>通るのかわかりませんが，恐る恐る実行してみると，<a href="https://github.com/clockvoid/portfolio/actions/runs/107149520">41分かかって通りました</a>．この時間の殆どはHakyllの依存関係解決に費やされています．</p>
-<h2 class="title is-2" id="具体的な使い方">具体的な使い方</h2>
+<h3 class="title is-4 bd-anchor-title" id="具体的な使い方">具体的な使い方</h3>
 <p>ビルドが成功することはわかったので，具体的な使い方を見ていきます．</p>
-<p>まず，GitHubのプロジェクトページの一番上にあるタブからActionsタブをクリックします． <img src="https://i.imgur.com/eG9gNcC.png" class="image" /></p>
-<p>Actionタブを開くと，GitHubのレポジトリの主要言語から使用するワークフローの雛形を作ってくれます．とても便利です． 基本的には，この雛形から自分の用途にあうように編集するだけで簡単にデプロイができるようになります．</p></article></div></div></body></html>
+<p>まず，GitHubのプロジェクトページの一番上にあるタブからActionsタブをクリックします．</p>
+<p><img src="https://i.imgur.com/eG9gNcCh.png" class="image is-in-article" /></p>
+<p>Actionタブを開くと，GitHubのレポジトリの主要言語から使用するワークフローの雛形を作ってくれます．とても便利です． 基本的には，この雛形から自分の用途にあうように編集するだけで簡単にデプロイができるようになります．</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> Build and Deploy</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a><span class="fu">on</span><span class="kw">:</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a><span class="at">  </span><span class="fu">push</span><span class="kw">:</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a><span class="at">    </span><span class="fu">branches</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at"> master </span><span class="kw">]</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true"></a><span class="fu">jobs</span><span class="kw">:</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true"></a><span class="at">  </span><span class="fu">build</span><span class="kw">:</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true"></a><span class="at">    </span><span class="fu">runs-on</span><span class="kw">:</span><span class="at"> ubuntu-latest</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true"></a><span class="at">    </span><span class="fu">steps</span><span class="kw">:</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/checkout@v2</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/setup-haskell@v1</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true"></a><span class="at">      </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true"></a><span class="at">        </span><span class="fu">ghc-version</span><span class="kw">:</span><span class="at"> </span><span class="st">'8.8.2'</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true"></a><span class="at">        </span><span class="fu">cabal-version</span><span class="kw">:</span><span class="at"> </span><span class="st">'3.0'</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true"></a><span class="at">        </span><span class="fu">stack-version</span><span class="kw">:</span><span class="at"> </span><span class="st">'latest'</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/setup-node@v1</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true"></a><span class="at">      </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true"></a><span class="at">        </span><span class="fu">node-version</span><span class="kw">:</span><span class="at"> </span><span class="st">'13'</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Cache</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true"></a><span class="at">      </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/cache@v1</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true"></a><span class="at">      </span><span class="fu">env</span><span class="kw">:</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true"></a><span class="at">        </span><span class="fu">cache-name</span><span class="kw">:</span><span class="at"> cache-stack</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true"></a><span class="at">      </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true"></a><span class="at">        </span><span class="fu">path</span><span class="kw">:</span><span class="at"> ~/.stack</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true"></a><span class="at">        </span><span class="fu">key</span><span class="kw">:</span><span class="at"> ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.cabal') }}-${{ hashFiles('**/stack.yaml') }}</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true"></a><span class="fu">        restore-keys</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true"></a>          ${{ runner.os }}-build-${{ env.cache-name }}-</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true"></a>          ${{ runner.os }}-build-</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true"></a>          ${{ runner.os }}-</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Install dependencies</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true"></a><span class="fu">      run</span><span class="kw">: </span><span class="ch">|</span><span class="at"> </span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true"></a>        stack setup</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true"></a>        npm install</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Build</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true"></a><span class="at">      </span><span class="fu">run</span><span class="kw">:</span><span class="at"> stack build</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Compile site</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true"></a><span class="fu">      run</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true"></a>        stack exec html build</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true"></a>        stack exec site build</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Deploy site</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true"></a><span class="at">      </span><span class="fu">env</span><span class="kw">:</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true"></a><span class="at">        </span><span class="fu">GIT_EMAIL</span><span class="kw">:</span><span class="at"> ${{ secrets.GIT_EMAIL }}</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true"></a><span class="at">        </span><span class="fu">GIT_NAME</span><span class="kw">:</span><span class="at"> ${{ secrets.GIT_NAME }}</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true"></a><span class="fu">      run</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true"></a>        git config --local user.email &quot;$GIT_EMAIL&quot;</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true"></a>        git config --local user.name &quot;$GIT_NAME&quot;</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true"></a>        git fetch</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true"></a>        git checkout gh-pages</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true"></a>        cp -a _site/* ./</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true"></a>        git add .</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true"></a>        git commit -m &quot;$GITHUB_REPOSITORY deploy no. $GITHUB_RUN_NUMBER&quot;</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Push changes</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true"></a><span class="at">      </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> ad-m/github-push-action@master</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true"></a><span class="at">      </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true"></a><span class="at">        </span><span class="fu">github_token</span><span class="kw">:</span><span class="at"> ${{ secrets.GITHUB_TOKEN }}</span></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true"></a><span class="at">        </span><span class="fu">branch</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;gh-pages&quot;</span></span></code></pre></div></article></div></div></body></html>

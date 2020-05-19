@@ -11669,7 +11669,7 @@ label.panel-block {
   color: white; }
 
 @media screen and (min-width: 1024px) {
-  .is-1 {
+  h1.title {
     margin-top: 1rem; } }
 
 span.media-icon {
@@ -11678,13 +11678,21 @@ span.media-icon {
   span.media-icon:hover {
     color: #00d1b2; }
 
-.date {
+p.date {
   font-size: 0.8rem;
   font-style: italic;
-  color: #555; }
+  color: #555;
+  margin-bottom: 1rem; }
 
 pre.sourceCode {
-  background: #282a36; }
+  background: #282a36;
+  margin: 0.75rem -0.75rem 0.75rem -0.75rem;
+  border-radius: 6px; }
 
-h2, h3, h4, h5, h6 {
-  margin-top: 1rem; }
+.bd-anchor-title {
+  padding-top: 1rem;
+  padding-bottom: 0.8rem;
+  margin-bottom: 0 !important; }
+
+img.is-in-article {
+  margin: 0.75rem auto 0.75rem auto; }
