@@ -56,3 +56,14 @@ articleHtml = do
                   span_ [] "View it in GitHub"
       div_ [class_ "container"] $
         div_ [class_ "column is-three-fifths is-offset-one-fifth"] "$body$"
+      footer_ [] $
+        div_ [class_ "column is-three-fifths is-offset-one-fifth footer"] $
+          div_ [class_ "level"] $ do
+            p_ [class_ "level-item has-text-centered"] "© 2020 clockvoid"
+            a_ [href_ "https://twitter.com/clock_void", class_ "level-item has-text-centered"] "Twitter"
+            a_ [href_ "https://github.com/clockvoid", class_ "level-item has-text-centered"] "GitHub"
+            figure_ [class_ "image level-item has-text-centered"] $
+              img_ [class_ "is-rounded", src_ imgClockvoid, style_ "height: 1.75rem; width: 1.75rem;"]
+            a_ [href_ "/about.html", class_ "level-item has-text-centered"] "About"
+            a_ [href_ "/blog.html", class_ "level-item has-text-centered"] "Blog"
+            a_ [href_ "/works.html", class_ "level-item has-text-centered"] "Works"
