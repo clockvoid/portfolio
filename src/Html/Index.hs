@@ -45,3 +45,5 @@ indexHtml = do
                 li_ $ a_ [href_ "./about.html", style_ "padding-left: 12px;"] "About"
                 li_ $ a_ [href_ "./blog.html"] "Blog"
                 li_ $ a_ [href_ "./works.html"] "Works"
+        div_ [class_ "hero-foot"] $
+          div_ [class_ "navbar is-transparent"] mempty
