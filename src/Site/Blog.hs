@@ -19,10 +19,14 @@ blog = create [blogIdentifier] $ do
     compile $ do
         posts <- recentFirst =<< loadAll postPattern
         let archiveCtx =
-                listField "posts" postCtx (return posts) `mappend`
-                constField "title" "Blog" `mappend`
-                constField "github-link" "https://github.com/clockvoid/portfolio/blob/master/src/Html/Blog.hs" `mappend`
-                defaultContext
+              listField "posts" postCtx (return posts) `mappend`
+              constField "title" "Blog" `mappend`
+              constField "github-link" "https://github.com/clockvoid/portfolio/blob/master/src/Html/Blog.hs" `mappend`
+              isEmpty (length posts) `mappend`
+              defaultContext
+                where
+                  isEmpty 0 = constField "empty" "true"
+                  isEmpty _ = mempty
 
         makeItem ""
             >>= loadAndApplyTemplate blogTemplate archiveCtx

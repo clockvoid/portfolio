@@ -14,7 +14,10 @@ blogPath :: FilePath
 blogPath = "templates/blog.html"
 
 blogHtml :: Html ()
-blogHtml =
+blogHtml = do
+  "$if(empty)$"
+  h1_ [style_ "margin: 3rem auto auto 0; text-align: center;", class_ "title"] "投稿はまだありません"
+  "$else$"
   ul_ $ do
     "$for(posts)$" 
     li_ [style_ "margin-bottom: 0.5rem"] $
@@ -26,3 +29,4 @@ blogHtml =
         div_ [class_ "card-footer"] $
           a_ [class_ "card-footer-item", href_ "$url$"] "この記事を読む"
     "$endfor$"
+    "$endif$"
