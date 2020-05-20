@@ -11704,3 +11704,6 @@ div.footer {
   border-top-style: solid;
   border-top-color: #e1e4e8;
   background-color: white; }
+
+.content h4, .content h5, .content h6 {
+  margin-top: 1.3em; }
