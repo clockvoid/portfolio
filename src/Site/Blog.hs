@@ -21,7 +21,7 @@ blog = create [blogIdentifier] $ do
         let archiveCtx =
               listField "posts" postCtx (return posts) `mappend`
               constField "title" "Blog" `mappend`
-              constField "github-link" "Html/Blog.hs" `mappend`
+              constField "github-link" "src/Html/Blog.hs" `mappend`
               isEmpty (length posts) `mappend`
               defaultContext
                 where
