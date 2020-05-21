@@ -31,7 +31,7 @@ indexHtml = do
       meta_ [name_ "og:image", content_ imgClockvoid]
       meta_ [name_ "og:type", content_ "website"]
       meta_ [name_ "og:url", content_ "https://clockvoid.tk"]
-      link_ [rel_ "icon", href_ "/favicon.ico", type_ "image/x-icon"]
+      link_ [rel_ "shortcut icon", href_ "/favicon.ico", type_ "image/x-icon"]
       link_ [rel_ "stylesheet", href_ "/css/mystyles.css"]
     body_ $
       section_ [class_ "hero is-primary is-fullheight is-bold"] $ do
