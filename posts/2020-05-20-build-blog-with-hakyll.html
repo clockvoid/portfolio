@@ -1,0 +1,70 @@
+<!DOCTYPE HTML><html><head><title>clockvoid - Hakyllでブログを作ってみた</title><meta charset="utf-8"><meta content="ie=edge" http-equiv="x-ua-compatible"><meta content="width=device-width, initial-scale=1" name="viewport"><meta content="summary" name="twitter:card"><meta content="@clock_void" name="twitter:site"><meta content="Hakyllでブログを作ってみた" name="twitter:title"><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/dracula.min.css" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();</script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script><link href="../css/mystyles.css" rel="stylesheet"></head><body class="has-navbar-fixed-top"><div class="navbar is-fixed-top has-shadow"><div class="container"><div class="navbar-brand"><div class="navbar-item"><a href="../"><figure class="image"><img style="height: 1.75rem; width: 1.75rem;" src="https://i.imgur.com/rLs5sRT.png" class="is-rounded"></figure></a></div><div onclick="document.querySelector('.navbar-menu').classList.toggle('is-active');" class="navbar-burger burger"><span></span><span></span><span></span></div></div><div class="navbar-menu"><div class="navbar-start"><a href="../" class="navbar-item">Home</a><a href="../about.html" class="navbar-item">About</a><a href="../blog.html" class="navbar-item">Blog</a><a href="../works.html" class="navbar-item">Works</a></div><div class="navbar-end"><div class="navbar-item"><a href="https://github.com/clockvoid/portfolio/blob/master/posts/2029-05-20-build-blog-with-hakyll.md " class="button is-primary"><span class="icon"><i class="fab fa-github"></i></span><span>View it in GitHub</span></a></div></div></div></div></div><div class="container"><div class="column is-three-fifths is-offset-one-fifth"><h1 class="title">Hakyllでブログを作ってみた</h1><p class="date">Posted on 2020-05-20 </p><p style="margin-bottom: 1.5rem"> Hakyllでブログを作ってみたので，経緯，技術選定，辛い部分についてまとめます </p><article class="content"><h3 class="title is-4 bd-anchor-title" id="経緯">経緯</h3>
+<p>最近技術ネタを上げておく場所として，Qiitaのような高尚な場所に上げる前に温めて置く場所が欲しかったのもあり，ブログを開設しようと思っていました． しかし，普通のはてなブログなどはVimで記事を直接書くこともできない上に，基本的にはオンラインでの作業になり，ブログを書く作業そのものに対してやる気を出せず，続かないとずっと思っていました．</p>
+<p>個人的な要求として，</p>
+<ul>
+<li>Vimで直接記事がかける</li>
+<li>markdownで記述できる
+<ul>
+<li>markdownの文法は個人的に好きなやつが良い</li>
+</ul></li>
+<li>デプロイはGitのpushコマンドで自動的に行われてほしい</li>
+<li>Source Codeと数式がまともに表示できる</li>
+<li><strong>無料で使える</strong></li>
+</ul>
+<p>という要求があり，自分でつくろう，ということになりました．</p>
+<h3 class="title is-4 bd-anchor-title" id="技術選定">技術選定</h3>
+<p>技術の選定にはある意味で気を使いました．</p>
+<p>基本的には上述した要求をクリアできさえすれば良いので，そのへんに転がっている静的サイトジェネレータを使用してGitHubにpushすると適当なCIでビルドしてデプロイすれば良いと思っていました． しかしながら，私が普段関わっているのはAndroidの開発で，使っている言語はKotlinです（昔はJavaも使ってましたが）． そのため，型に飼いならされており，型のない言語でのプログラミングがもはやかなりつらすぎる体になってしまいました．</p>
+<p>有名な静的サイトジェネレータといえば，最近はGatsbyとかMiddlemanとかJekillとかですが，いずれもJavaScriptとかRubyで開発するものになっています． はじめはGatsbyで作ろうと思っており，Webの人に色々聞いたらElmのプラグインがあるからそれを使えば良いよ！と言われたので試してみたところ，GatsbyのElmのプラグインが<code>elm-0.19.0</code>に依存しており，そのバージョンがMacでもLinuxでもなぜかnpmでインストールできませんでした．</p>
+<p>完全に絶望した僕は何故か「Haskell 静的サイトジェネレータ」でググり，適当に出てきたHakyllを選びました（気を使った話はどこいった）．</p>
+<h4 class="title is-5 bd-anchor-title" id="構成">構成</h4>
+<p>最終的に使っている構成としては，</p>
+<ul>
+<li>Hakyll（静的サイトジェネレータ）</li>
+<li>Lucid（HaskellのHTML EDSL）</li>
+<li>Bulma（CSSフレームワーク）</li>
+<li>GitHub Pages（ホスティング環境）</li>
+<li>GitHub Actions（CI）</li>
+</ul>
+<p>のような形になっています． Lucidで生成したHTMLを自分の好きなところに入れられるような仕組みは自分で構築しています．</p>
+<p>詳しくは<a href="https://github.com/clockvoid/portfolio">GitHub</a>を御覧ください．</p>
+<h3 class="title is-4 bd-anchor-title" id="hakyllの基本的な書き方">Hakyllの基本的な書き方</h3>
+<p>ここで，一応Hakyllの基本的な書き方を書いておきます．</p>
+<p>Hakyllは基本的に，<code>hakyll</code>という関数に<code>Rules ()</code>を渡すことによってサイトを作成していきます． <code>Rules ()</code>にはルート情報やテンプレートにインジェクションする文字列などを記述します．例えば，一つの<code>Rule</code>は以下のような感じに記述します．</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="fu">index</span><span class="ot"> ::</span> <span class="dt">Rules</span> ()</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a><span class="fu">index</span> <span class="ot">=</span> match indexPattern <span class="op">$</span> <span class="kw">do</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a>    route <span class="op">$</span> constRoute <span class="st">&quot;index.html&quot;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a>    compile <span class="op">$</span> <span class="kw">do</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a>        <span class="kw">let</span> indexCtx <span class="ot">=</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a>                constField <span class="st">&quot;title&quot;</span> <span class="st">&quot;Home&quot;</span> <span class="ot">`mappend`</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true"></a>                defaultContext</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true"></a>        getResourceBody</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true"></a>            <span class="op">&gt;&gt;=</span> applyAsTemplate indexCtx</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true"></a>            <span class="op">&gt;&gt;=</span> relativizeUrls</span></code></pre></div>
+<p><code>indexPattern</code>にはテンプレートとして使用するhtmlファイルのパスを<code>Text</code>型で指定します．<code>String</code>ではないため，<code>fromRegex</code>などの<code>String -&gt; Text</code>な関数を使用するか．<code>{-# LANGUAGE OverloadedStrings #-}</code> をファイルの先頭に記述します．また，正規表現を使用して複数のテンプレートに対して同時にルールを適用することも可能です．</p>
+<p><code>rute</code>では実際に展開されるルートを設定できます．テンプレートそのままで使用したり，拡張子を変えたり，この例のように名前を直接指定することも可能です．</p>
+<p><code>indexCtx</code>ではテンプレート中に存在する<code>$</code>で囲まれた当該部分を上書きすためなどに使用される<code>Context</code>を設定しています． テンプレートでは，<code>$test$</code>などと記述することで，コンテキストに<code>test</code>というフィールドが存在した場合に，その部分を上書きしてページを生成することができるようになっています．このテンプレートエンジンは非常に強力で．<code>if</code>や<code>for</code>を使用して分岐や繰り返しの処理も記述することが可能です．</p>
+<p>最後に，テンプレートにコンテキストを適用したり，含まれているURLのパスを調節したりしています．</p>
+<p>このようにして作成したいくつかの<code>Route ()</code>を<code>bind</code>でつなげていき，最終的にできた<code>Route ()</code>を<code>hakyll</code>関数に渡すことで，静的サイトジェネレータ本体を作成します．</p>
+<p>Hakyllはこの説明を見るだけでも非常にクールですが，Pandocに内部的に依存しており，Markdownをコンパイルする機能も有しています．Markdownのコンパイルはたいてい使用するCSSフレームワークに合わなかったりして苦労しますが，PandocのHaskell実装では非常に柔軟なカスタマイズが可能なため，とても便利でした．</p>
+<p>例えば，私はCSSフレームワークにBulmaを使用していますが，Bulmaは<code>h1</code>タグに対して<code>is-1</code>クラスが入ってないとHeader 1として認識してくれません．そこで，</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="ot">toBulmaHeading ::</span> <span class="dt">Block</span> <span class="ot">-&gt;</span> <span class="dt">Block</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>toBulmaHeading (<span class="dt">Header</span> level attrs xs) <span class="ot">=</span> <span class="dt">Header</span> (level <span class="op">+</span> <span class="dv">2</span>) newAttrs xs</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>    <span class="kw">where</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a>        (identifier, classes, keyvals) <span class="ot">=</span> attrs</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a>        newAttrs <span class="ot">=</span> (identifier, classes <span class="op">&lt;&gt;</span> [<span class="st">&quot;title&quot;</span>, <span class="st">&quot;is-&quot;</span> <span class="op">&lt;&gt;</span> <span class="fu">pack</span> (<span class="fu">show</span> <span class="op">$</span> level <span class="op">+</span> <span class="dv">3</span>), <span class="st">&quot;bd-anchor-title&quot;</span>], keyvals)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a>toBulmaHeading x <span class="ot">=</span> x</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true"></a><span class="ot">bulmaHeadingTransform ::</span> <span class="dt">Pandoc</span> <span class="ot">-&gt;</span> <span class="dt">Pandoc</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true"></a>bulmaHeadingTransform <span class="ot">=</span> walk toBulmaHeading</span></code></pre></div>
+<p>このような関数を書き，これをPandocのCompilerに設定することで，吐き出すHTMLを変更できるなど，割と簡単にカスタマイズ可能です．</p>
+<h3 class="title is-4 bd-anchor-title" id="辛いところ">辛いところ</h3>
+<p>基本的な使い方と称してHakyllの素晴らしさを語りましたが，一応辛さも語っておきます．</p>
+<p>まず一番つらいのは，コンパイルに使用するリソース量の多さです． GHCはそもそも遅い気がしますが，Hakyllには大量の依存関係があり（Pandocだけでもかなり大きい），ビルドに非常に時間がかかります． ビルドに時間とコストが掛かるということは，自動デプロイ用のCI環境にお金をかける必要があるかもしれません． この話については，別途ブログに記述しようと思っています．</p>
+<p>次に辛いのは，情報が割と少ないことです． こんな構成を好む人は少ないのかもしれません．</p>
+<p>辛いところといってもぱっと思い浮かぶのはこのくらいだと思います．</p>
+<h3 class="title is-4 bd-anchor-title" id="最後に">最後に</h3>
+<p>Hakyllとは違ってきますが，実は一番つらかったのはCSSを当てる作業です．</p>
+<p>基本的には私はAndroidをいつも書いているので，ConstraintLayoutが恋しくなりました．Flexboxわからん．</p>
+<p>また，なにか誤植等ございましたら，右上からこのマークダウンのGitHubのページ飛べますので，PRなどで報告いただけると非常に嬉しいです．</p></article></div></div><footer><div class="column is-three-fifths is-offset-one-fifth footer"><div class="level"><p class="level-item has-text-centered">© 2020 clockvoid</p><a href="https://twitter.com/clock_void" class="level-item has-text-centered">Twitter</a><a href="https://github.com/clockvoid" class="level-item has-text-centered">GitHub</a><figure class="image level-item has-text-centered"><img style="height: 1.75rem; width: 1.75rem;" src="https://i.imgur.com/rLs5sRT.png" class="is-rounded"></figure><a href="../about.html" class="level-item has-text-centered">About</a><a href="../blog.html" class="level-item has-text-centered">Blog</a><a href="../works.html" class="level-item has-text-centered">Works</a></div></div></footer></body></html>
