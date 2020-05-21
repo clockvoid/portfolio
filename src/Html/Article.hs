@@ -30,6 +30,7 @@ articleHtml = do
       meta_ [name_ "og:title", content_ "$title$"]
       meta_ [name_ "og:image", content_ imgClockvoid]
       meta_ [name_ "og:type", content_ "article"]
+      link_ [rel_ "icon", href_ "/favicon.ico", type_ "image/x-icon"]
       link_ [rel_ "stylesheet", href_ "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/dracula.min.css"]
       script_ [src_ "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"] empty
       script_ "hljs.initHighlightingOnLoad();"

@@ -6,7 +6,7 @@ import Data.Monoid (mappend)
 import Hakyll
 
 pattern :: Pattern
-pattern = fromRegex "images/*"
+pattern = fromRegex "favicon.ico"
 
 images :: Rules ()
 images = match pattern $ do
