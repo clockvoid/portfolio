@@ -1,7 +1,7 @@
 ---
 title: Hakyllでブログを作ってみた
 summary: Hakyllでブログを作ってみたので，経緯，技術選定，辛い部分についてまとめます
-github-link: posts/2029-05-20-build-blog-with-hakyll.md
+github-link: posts/2020-05-20-build-blog-with-hakyll.md
 ---
 
 # 経緯
