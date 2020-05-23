@@ -7,7 +7,7 @@ summary: |
   この記事では，これらの問題について考察します．
 ---
 
-## Stackとは
+# Stackとは
 ```haskell
 main = do
   print "hello"
