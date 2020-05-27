@@ -11707,3 +11707,6 @@ div.footer {
 
 .content h4, .content h5, .content h6 {
   margin-top: 1.3em; }
+
+blockquote {
+  margin-top: 1em; }
