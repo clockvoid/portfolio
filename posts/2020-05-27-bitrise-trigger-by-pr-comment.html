@@ -8,7 +8,7 @@
 </blockquote>
 <p>という投稿がありますが，誰も反応していません．可愛そうです．</p>
 <p>僕は今回，Bitriseですべてを行うのではなく，GitHub Actionsを使って無理やりこの問題を解決しようと試みました． なお，今回はGitHub Actionsを使うことにしましたが，実際にはGitHub ActionsでもPRのコメントをトリガーとしてワークフローを動かすのは面倒くさいです．</p>
-<p>実はこの試みには<a href="https://inside.pixiv.blog/kwzr/6190">元ネタ</a>があります．この元ネタではGitHubのWebHookを通じてGASからBitriseのAPIを叩いていますが，これを行うためにはGASが動くサーバが必要となってきます．基本的にはGCPでよいのですが，GCPは当方が持っているリソース的に使うことが難しかったので，GitHub Actionsを使うことにしましたが，GitHub ActionsはGitHubが提供している機能だし簡単だろう，とたかをくくっていたところとても面倒くさかったのでまとめることにしました．</p>
+<p>実はこの試みには<a href="https://inside.pixiv.blog/kwzr/6190">元ネタ</a>があります．この元ネタではGitHubのWebHookを通じてGASからBitriseのAPIを叩いていますが，これを行うためにはGASが動くサーバが必要となってきます．基本的にはGCPでよいのですが，GCPは当方が持っているリソース的に使うことが難しかったので，GitHub Actionsを使うことにしました．GitHub ActionsはGitHubが提供している機能だし簡単だろう，とたかをくくっていたところとても面倒くさかったのでまとめることにしました．</p>
 <h3 class="title is-4 bd-anchor-title" id="github-actionsでprコメントをトリガーとしてワークフローを動かす">GitHub ActionsでPRコメントをトリガーとしてワークフローを動かす</h3>
 <p>まずはGitHub Actionsを使ってPRのコメントをトリガーとして何らかのワークフローを動かすことを考えます．</p>
 <p>詳細は省きますが，GitHub Actionsは<code>on:</code>キーワードを使用してトリガーを設定することが可能です．基本的にはこのトリガーはORで結合されるため，<code>on:</code>に書いた条件のいずれかが適合した場合にワークフローが動きます．</p>
