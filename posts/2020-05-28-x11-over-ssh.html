@@ -23,14 +23,14 @@
 <pre class="shell"><code>$ echo $SSH_CONNECTION</code></pre>
 <p>こうすると，</p>
 <pre><code>&lt;client adress&gt; &lt;client port&gt; &lt;host adress&gt; &lt;host port&gt;</code></pre>
-<p>の形式でアドレスが表示されるため，<client adress>を控えておきましょう．</p>
+<p>の形式でアドレスが表示されるため，<code>&lt;client adress&gt;</code>を控えておきましょう．</p>
 <p>続いて，サーバ側のシェルに</p>
 <pre class="shell"><code>$ export DISPLAY=&lt;client adress&gt;:0.0</code></pre>
 <p>と入力し，適当なXアプリケーションを起動してみましょう</p>
 <pre class="shell"><code>$ gedit &amp;</code></pre>
 <p>これでWindowがクライアントの画面に表示されれば成功です．</p>
 <p>なお，<code>SSH_CONNECTION</code>の値は適当なコマンドで抽出して<code>.bashrc</code>などでDISPLAY環境変数に登録しておくと便利です．</p>
-<p>この方法はSSH接続によるセッションだけでなく，WSLでXアプリケーションを使うときなどにも重宝でき，大変有用です．</p>
+<p>この方法はネットワーク上にあるSSHサーバのセッション上だけでなく，WSLでXアプリケーションを使うときなどにも重宝でき，大変有用です．</p>
 <h3 class="title is-4 bd-anchor-title" id="glxについて">GLXについて</h3>
 <p>GLXは，SSHのX11 FowardingにてOpenGLを動かす際に使用される技術です．</p>
 <p>要するに，サーバ上でOpenGLを使うアプリケーションを立ち上げた際にX Serverが描画時にサーバのGPUにアクセスできないため，クライアントのリソースを使用して描画する技術となります．</p>
@@ -38,10 +38,10 @@
 <p>ただし，本来OpenGLを使用して描画されるソフトによってはGLXがないと起動できないものもあるので，注意が必要です．例えば，Supertuxcartは動きますが，OptiXとかで作成したOpenGLを使用するアプリケーションでは私が試した限りは動きませんでした．</p>
 <h3 class="title is-4 bd-anchor-title" id="参考文献">参考文献</h3>
 <ul>
-<li>https://www.atmarkit.co.jp/ait/articles/1812/06/news040.html</li>
-<li>http://supernova.astron.s.u-tokyo.ac.jp/~tanaka/Memo/ssh.html</li>
-<li>https://stackoverflow.com/questions/996231/find-the-ip-address-of-the-client-in-an-ssh-session</li>
-<li>https://kaworu.jpn.org/kaworu/2008-05-26-2.php</li>
-<li>https://gist.github.com/stowler/9921780</li>
-<li>https://itakeshi.hatenablog.com/entry/2018/02/03/134644</li>
+<li><a href="https://www.atmarkit.co.jp/ait/articles/1812/06/news040.html">https://www.atmarkit.co.jp/ait/articles/1812/06/news040.html</a></li>
+<li><a href="http://supernova.astron.s.u-tokyo.ac.jp/~tanaka/Memo/ssh.html">http://supernova.astron.s.u-tokyo.ac.jp/~tanaka/Memo/ssh.html</a></li>
+<li><a href="https://stackoverflow.com/questions/996231/find-the-ip-address-of-the-client-in-an-ssh-session">https://stackoverflow.com/questions/996231/find-the-ip-address-of-the-client-in-an-ssh-session</a></li>
+<li><a href="https://kaworu.jpn.org/kaworu/2008-05-26-2.php">https://kaworu.jpn.org/kaworu/2008-05-26-2.php</a></li>
+<li><a href="https://gist.github.com/stowler/9921780">https://gist.github.com/stowler/9921780</a></li>
+<li><a href="https://itakeshi.hatenablog.com/entry/2018/02/03/134644">https://itakeshi.hatenablog.com/entry/2018/02/03/134644</a></li>
 </ul></article></div></div><footer><div class="column is-three-fifths is-offset-one-fifth footer"><div class="level"><p class="level-item has-text-centered">© 2020 clockvoid</p><a href="https://twitter.com/clock_void" class="level-item has-text-centered">Twitter</a><a href="https://github.com/clockvoid" class="level-item has-text-centered">GitHub</a><figure class="image level-item has-text-centered"><img style="height: 1.75rem; width: 1.75rem;" src="https://i.imgur.com/rLs5sRT.png" class="is-rounded"></figure><a href="../about.html" class="level-item has-text-centered">About</a><a href="../blog.html" class="level-item has-text-centered">Blog</a><a href="../works.html" class="level-item has-text-centered">Works</a></div></div></footer></body></html>
