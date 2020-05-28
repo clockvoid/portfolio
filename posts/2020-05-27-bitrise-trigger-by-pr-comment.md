@@ -91,7 +91,7 @@ Bitriseのワークフローをトリガーするためには，
     echo "::set-output name=hash::$(curl -v -H "Accept: application/vnd.github.sailor-v-preview+json" -u ${{ secrets.PAT }} ${{ github.event.issue.pull_request.url }} | jq '.head.sha' | sed 's/\"//g')"
 ```
 
-GitHubのAPIを使用してPull Requestの情報が入っているJsonを受け取り，`jq`コマンドで必要な情報を取得します．ここで，`PAT`というSecretを使っていますが，これはPersonal Authorize Tokenです．予め発行してSecretに追加しておいてください．
+GitHubのAPIを使用してPull Requestの情報が入っているJsonを受け取り，`jq`コマンドで必要な情報を取得します．使用しているGitHubのAPIについては[こちら](https://developer.github.com/v3/pulls/)を御覧ください．また，`PAT`というSecretを使っていますが，これはPersonal Authorize Tokenです．予め発行してSecretに追加しておいてください．
 
 この環境変数を使用する際には，以下のようにします．
 
