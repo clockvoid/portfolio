@@ -1,5 +1,6 @@
 ---
 title: GitHubのPRのコメントをトリガーにしてBitriseのビルドを動かす
+updated-date: 2020-05-28
 github-link: posts/2020-05-27-bitrise-trigger-by-pr-comment.md
 summary: |
   BitriseはGUIでワークフローの設定ができるなど，モバイル開発のCIツールとしては非常に優秀です（個人調べ）．
@@ -21,7 +22,7 @@ summary: |
 僕は今回，Bitriseですべてを行うのではなく，GitHub Actionsを使って無理やりこの問題を解決しようと試みました．
 なお，今回はGitHub Actionsを使うことにしましたが，実際にはGitHub ActionsでもPRのコメントをトリガーとしてワークフローを動かすのは面倒くさいです．
 
-実はこの試みには[元ネタ](https://inside.pixiv.blog/kwzr/6190)があります．この元ネタではGitHubのWebHookを通じてGASからBitriseのAPIを叩いていますが，これを行うためにはGASが動くサーバが必要となってきます．基本的にはGCPでよいのですが，GCPは当方が持っているリソース的に使うことが難しかったので，GitHub Actionsを使うことにしました．GitHub ActionsはGitHubが提供している機能だし簡単だろう，とたかをくくっていたところとても面倒くさかったのでまとめることにしました．
+実はこの試みには[元ネタ](https://inside.pixiv.blog/kwzr/6190)があります．この元ネタではGitHubのWebHookを通じてGASからBitriseのAPIを叩いていますが，~~これを行うためにはGASが動くサーバが必要となってきます．~~（GASはサーバなしでもWebHookを処理できるようです．詳細は[こちら](https://twitter.com/shiita_0903/status/1265990870437736449)．めちゃくちゃ悲しいですが，@shiita_0903さん，ありがとうございました．）基本的にはGCPでよいのですが，GCPは当方が持っているリソース的に使うことが難しかったので，GitHub Actionsを使うことにしました．GitHub ActionsはGitHubが提供している機能だし簡単だろう，とたかをくくっていたところとても面倒くさかったのでまとめることにしました．
 
 # GitHub ActionsでPRコメントをトリガーとしてワークフローを動かす
 まずはGitHub Actionsを使ってPRのコメントをトリガーとして何らかのワークフローを動かすことを考えます．
