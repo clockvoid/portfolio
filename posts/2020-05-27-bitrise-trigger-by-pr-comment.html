@@ -39,7 +39,7 @@
 <li>コミットハッシュ</li>
 </ul>
 <p>が必要なので，これらのうち，上述したGitHub ActionsのContextから取得できないものは頑張ってワークフロー内で取得する必要があります．</p>
-<p>この中だと2つのブランチ名はContextから取得することができません．一応<code>github.head_ref</code>と<code>github.base_ref</code>というContextが存在しますが，これらは<code>pull_request</code>イベントで発火した場合のみ使用可能になるため，今回は使用できません．</p>
+<p>この中だと2つのブランチ名とコミットハッシュはContextから取得することができません．一応<code>github.head_ref</code>と<code>github.base_ref</code>というContextが存在しますが，これらは<code>pull_request</code>イベントで発火した場合のみ使用可能になるため，今回は使用できません．また，コミットハッシュについても<code>github.sha</code>というContextが存在しますが，これはワークフローが入っているブランチ（=masterブランチ）の最新のコミットハッシュが入ってきてしまうため，Bitriseが必要とする，PRのブランチの最新のコミットハッシュを取るためには工夫が必要です．</p>
 <p>そこで，以下のような環境変数を設定します．</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> get upstream branch</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a><span class="at">  </span><span class="fu">id</span><span class="kw">:</span><span class="at"> upstreambranch</span></span>
@@ -49,10 +49,16 @@
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> get base branch</span></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a><span class="at">  </span><span class="fu">id</span><span class="kw">:</span><span class="at"> basebranch</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true"></a><span class="fu">  run</span><span class="kw">: </span><span class="ch">|</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true"></a>    echo &quot;::set-output name=branchname::$(curl -v -H &quot;Accept: application/vnd.github.sailor-v-preview+json&quot; -u ${{ secrets.PAT }} ${{ github.event.issue.pull_request.url }} | jq '.base.ref' | sed 's/\&quot;//g')&quot;</span></code></pre></div>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true"></a>    echo &quot;::set-output name=branchname::$(curl -v -H &quot;Accept: application/vnd.github.sailor-v-preview+json&quot; -u ${{ secrets.PAT }} ${{ github.event.issue.pull_request.url }} | jq '.base.ref' | sed 's/\&quot;//g')&quot;</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> get commit hash</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true"></a><span class="at">  </span><span class="fu">id</span><span class="kw">:</span><span class="at"> commithash</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true"></a><span class="fu">  run</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true"></a>    echo &quot;::set-output name=hash::$(curl -v -H &quot;Accept: application/vnd.github.sailor-v-preview+json&quot; -u ${{ secrets.PAT }} ${{ github.event.issue.pull_request.url }} | jq '.head.sha' | sed 's/\&quot;//g')&quot;</span></code></pre></div>
 <p>GitHubのAPIを使用してPull Requestの情報が入っているJsonを受け取り，<code>jq</code>コマンドで必要な情報を取得します．ここで，<code>PAT</code>というSecretを使っていますが，これはPersonal Authorize Tokenです．予め発行してSecretに追加しておいてください．</p>
 <p>この環境変数を使用する際には，以下のようにします．</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="ex">steps.upstreambranch.outputs.branchname</span></span></code></pre></div>
+<p>ここではGitHub ActionsのActionのoutput parameterを設定することにより，コマンドで取得した値をとってきています．詳細については<a href="https://help.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-output-parameter">ドキュメント</a>を御覧ください．</p>
 <p>続いて，取得したデータを使用し，Bitrise APIを叩きます．</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="ex">curl</span> -X POST -H <span class="st">&quot;Content-Type: application/json&quot;</span> <span class="dt">\\</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="ex">-d</span> <span class="st">'{ \\</span></span>
@@ -68,7 +74,7 @@
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true"></a><span class="st">    &quot;pull_request_repository_url&quot;: &quot;https://github.com/${{ github.repository }}.git&quot;, \\</span></span>
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true"></a><span class="st">    &quot;pull_request_merge_branch&quot;: &quot;pull/${{ github.event.issue.number }}/merge&quot;, \\</span></span>
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true"></a><span class="st">    &quot;pull_request_head_branch&quot;: &quot;pull/${{ github.event.issue.number }}/head&quot;, \\</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true"></a><span class="st">    &quot;commit_hash&quot;: &quot;${{ github.sha }}&quot; \\</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true"></a><span class="st">    &quot;commit_hash&quot;: &quot;${{ steps.commithash.outputs.hash }}&quot; \\</span></span>
 <span id="cb4-16"><a href="#cb4-16" aria-hidden="true"></a><span class="st">  }, \\</span></span>
 <span id="cb4-17"><a href="#cb4-17" aria-hidden="true"></a><span class="st">  &quot;triggered_by&quot;: &quot;curl&quot; \\</span></span>
 <span id="cb4-18"><a href="#cb4-18" aria-hidden="true"></a><span class="st">}'</span> <span class="dt">\\</span></span>
@@ -111,7 +117,7 @@
 <span id="cb5-31"><a href="#cb5-31" aria-hidden="true"></a></span>
 <span id="cb5-32"><a href="#cb5-32" aria-hidden="true"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> make bitrise build</span></span>
 <span id="cb5-33"><a href="#cb5-33" aria-hidden="true"></a><span class="fu">        run</span><span class="kw">: </span><span class="ch">|</span></span>
-<span id="cb5-34"><a href="#cb5-34" aria-hidden="true"></a>          curl -X POST -H &quot;Content-Type: application/json&quot; -d '{&quot;hook_info&quot;: {&quot;type&quot;: &quot;bitrise&quot;,&quot;build_trigger_token&quot;: &quot;${{ secrets.BUILD_TRIGGER_TOKEN }}&quot; }, &quot;build_params&quot;: { &quot;branch&quot;: &quot;${{ steps.upstreambranch.outputs.branchname }}&quot;, &quot;workflow_id&quot;: &quot;primary&quot;, &quot;branch_dest&quot;: &quot;${{ steps.basebranch.outputs.branchname }}&quot;, &quot;pull_request_id&quot;: &quot;${{ github.event.issue.number }}&quot;, &quot;pull_request_repository_url&quot;: &quot;https://github.com/${{ github.repository }}.git&quot;, &quot;pull_request_merge_branch&quot;: &quot;pull/${{ github.event.issue.number }}/merge&quot;, &quot;pull_request_head_branch&quot;: &quot;pull/${{ github.event.issue.number }}/head&quot;, &quot;commit_hash&quot;: &quot;${{ github.sha }}&quot; }, &quot;triggered_by&quot;: &quot;curl&quot;}' https://app.bitrise.io/app/${{ secrets.APP_SLUG }}/build/start.json</span></code></pre></div>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true"></a>          curl -X POST -H &quot;Content-Type: application/json&quot; -d '{&quot;hook_info&quot;: {&quot;type&quot;: &quot;bitrise&quot;,&quot;build_trigger_token&quot;: &quot;${{ secrets.BUILD_TRIGGER_TOKEN }}&quot; }, &quot;build_params&quot;: { &quot;branch&quot;: &quot;${{ steps.upstreambranch.outputs.branchname }}&quot;, &quot;workflow_id&quot;: &quot;primary&quot;, &quot;branch_dest&quot;: &quot;${{ steps.basebranch.outputs.branchname }}&quot;, &quot;pull_request_id&quot;: &quot;${{ github.event.issue.number }}&quot;, &quot;pull_request_repository_url&quot;: &quot;https://github.com/${{ github.repository }}.git&quot;, &quot;pull_request_merge_branch&quot;: &quot;pull/${{ github.event.issue.number }}/merge&quot;, &quot;pull_request_head_branch&quot;: &quot;pull/${{ github.event.issue.number }}/head&quot;, &quot;commit_hash&quot;: &quot;${{ steps.commithash.outputs.hash }}&quot; }, &quot;triggered_by&quot;: &quot;curl&quot;}' https://app.bitrise.io/app/${{ secrets.APP_SLUG }}/build/start.json</span></code></pre></div>
 <p>このYamlファイルを<code>.github/workflows/</code>フォルダに入れ，masterブランチにマージします．masterマージされている状態でなければ，なぜかトリガーが動きませんでした．</p>
 <p>masterマージされている状態でPRに設定したコメントを投稿すると，Bitriseのビルドが走ります．</p>
 <p><img src="https://i.imgur.com/OrB6NrO.png" class="image is-in-article" /></p>
