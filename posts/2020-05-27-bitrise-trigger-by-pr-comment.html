@@ -55,7 +55,7 @@
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true"></a><span class="at">  </span><span class="fu">id</span><span class="kw">:</span><span class="at"> commithash</span></span>
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true"></a><span class="fu">  run</span><span class="kw">: </span><span class="ch">|</span></span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true"></a>    echo &quot;::set-output name=hash::$(curl -v -H &quot;Accept: application/vnd.github.sailor-v-preview+json&quot; -u ${{ secrets.PAT }} ${{ github.event.issue.pull_request.url }} | jq '.head.sha' | sed 's/\&quot;//g')&quot;</span></code></pre></div>
-<p>GitHubのAPIを使用してPull Requestの情報が入っているJsonを受け取り，<code>jq</code>コマンドで必要な情報を取得します．ここで，<code>PAT</code>というSecretを使っていますが，これはPersonal Authorize Tokenです．予め発行してSecretに追加しておいてください．</p>
+<p>GitHubのAPIを使用してPull Requestの情報が入っているJsonを受け取り，<code>jq</code>コマンドで必要な情報を取得します．使用しているGitHubのAPIについては<a href="https://developer.github.com/v3/pulls/">こちら</a>を御覧ください．また，<code>PAT</code>というSecretを使っていますが，これはPersonal Authorize Tokenです．予め発行してSecretに追加しておいてください．</p>
 <p>この環境変数を使用する際には，以下のようにします．</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="ex">steps.upstreambranch.outputs.branchname</span></span></code></pre></div>
 <p>ここではGitHub ActionsのActionのoutput parameterを設定することにより，コマンドで取得した値をとってきています．詳細については<a href="https://help.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-output-parameter">ドキュメント</a>を御覧ください．</p>
