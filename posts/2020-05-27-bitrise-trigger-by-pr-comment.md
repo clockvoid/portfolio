@@ -70,7 +70,7 @@ Bitriseのワークフローをトリガーするためには，
 
 が必要なので，これらのうち，上述したGitHub ActionsのContextから取得できないものは頑張ってワークフロー内で取得する必要があります．
 
-この中だと2つのブランチ名はContextから取得することができません．一応`github.head_ref`と`github.base_ref`というContextが存在しますが，これらは`pull_request`イベントで発火した場合のみ使用可能になるため，今回は使用できません．
+この中だと2つのブランチ名とコミットハッシュはContextから取得することができません．一応`github.head_ref`と`github.base_ref`というContextが存在しますが，これらは`pull_request`イベントで発火した場合のみ使用可能になるため，今回は使用できません．また，コミットハッシュについても`github.sha`というContextが存在しますが，これはワークフローが入っているブランチ（=masterブランチ）の最新のコミットハッシュが入ってきてしまうため，Bitriseが必要とする，PRのブランチの最新のコミットハッシュを取るためには工夫が必要です．
 
 そこで，以下のような環境変数を設定します．
 
@@ -84,6 +84,11 @@ Bitriseのワークフローをトリガーするためには，
   id: basebranch
   run: |
     echo "::set-output name=branchname::$(curl -v -H "Accept: application/vnd.github.sailor-v-preview+json" -u ${{ secrets.PAT }} ${{ github.event.issue.pull_request.url }} | jq '.base.ref' | sed 's/\"//g')"
+
+- name: get commit hash
+  id: commithash
+  run: |
+    echo "::set-output name=hash::$(curl -v -H "Accept: application/vnd.github.sailor-v-preview+json" -u ${{ secrets.PAT }} ${{ github.event.issue.pull_request.url }} | jq '.head.sha' | sed 's/\"//g')"
 ```
 
 GitHubのAPIを使用してPull Requestの情報が入っているJsonを受け取り，`jq`コマンドで必要な情報を取得します．ここで，`PAT`というSecretを使っていますが，これはPersonal Authorize Tokenです．予め発行してSecretに追加しておいてください．
@@ -93,6 +98,8 @@ GitHubのAPIを使用してPull Requestの情報が入っているJsonを受け�
 ```bash
 steps.upstreambranch.outputs.branchname
 ```
+
+ここではGitHub ActionsのActionのoutput parameterを設定することにより，コマンドで取得した値をとってきています．詳細については[ドキュメント](https://help.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-output-parameter)を御覧ください．
 
 続いて，取得したデータを使用し，Bitrise APIを叩きます．
 
@@ -111,7 +118,7 @@ curl -X POST -H "Content-Type: application/json" \\
     "pull_request_repository_url": "https://github.com/${{ github.repository }}.git", \\
     "pull_request_merge_branch": "pull/${{ github.event.issue.number }}/merge", \\
     "pull_request_head_branch": "pull/${{ github.event.issue.number }}/head", \\
-    "commit_hash": "${{ github.sha }}" \\
+    "commit_hash": "${{ steps.commithash.outputs.hash }}" \\
   }, \\
   "triggered_by": "curl" \\
 }' \\
@@ -161,7 +168,7 @@ jobs:
 
       - name: make bitrise build
         run: |
-          curl -X POST -H "Content-Type: application/json" -d '{"hook_info": {"type": "bitrise","build_trigger_token": "${{ secrets.BUILD_TRIGGER_TOKEN }}" }, "build_params": { "branch": "${{ steps.upstreambranch.outputs.branchname }}", "workflow_id": "primary", "branch_dest": "${{ steps.basebranch.outputs.branchname }}", "pull_request_id": "${{ github.event.issue.number }}", "pull_request_repository_url": "https://github.com/${{ github.repository }}.git", "pull_request_merge_branch": "pull/${{ github.event.issue.number }}/merge", "pull_request_head_branch": "pull/${{ github.event.issue.number }}/head", "commit_hash": "${{ github.sha }}" }, "triggered_by": "curl"}' https://app.bitrise.io/app/${{ secrets.APP_SLUG }}/build/start.json
+          curl -X POST -H "Content-Type: application/json" -d '{"hook_info": {"type": "bitrise","build_trigger_token": "${{ secrets.BUILD_TRIGGER_TOKEN }}" }, "build_params": { "branch": "${{ steps.upstreambranch.outputs.branchname }}", "workflow_id": "primary", "branch_dest": "${{ steps.basebranch.outputs.branchname }}", "pull_request_id": "${{ github.event.issue.number }}", "pull_request_repository_url": "https://github.com/${{ github.repository }}.git", "pull_request_merge_branch": "pull/${{ github.event.issue.number }}/merge", "pull_request_head_branch": "pull/${{ github.event.issue.number }}/head", "commit_hash": "${{ steps.commithash.outputs.hash }}" }, "triggered_by": "curl"}' https://app.bitrise.io/app/${{ secrets.APP_SLUG }}/build/start.json
 ```
 
 このYamlファイルを`.github/workflows/`フォルダに入れ，masterブランチにマージします．masterマージされている状態でなければ，なぜかトリガーが動きませんでした．
