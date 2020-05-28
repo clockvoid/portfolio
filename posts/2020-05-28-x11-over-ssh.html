@@ -1,0 +1,47 @@
+<!DOCTYPE HTML><html><head><title>clockvoid - X11 over SSH</title><meta charset="utf-8"><meta content="ie=edge" http-equiv="x-ua-compatible"><meta content="width=device-width, initial-scale=1" name="viewport"><meta content="summary" name="twitter:card"><meta content="@clock_void" name="og:site"><meta content="X11 over SSH" name="og:title"><meta content="https://i.imgur.com/rLs5sRT.png" name="og:image"><meta content="article" name="og:type"><link href="../favicon.ico" type="image/x-icon" rel="shortcut icon"><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/dracula.min.css" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();</script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>window.twttr=(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))returnt;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);t._e=[];t.ready=function(f){t._e.push(f);};return t;}(document,'script','twitter-wjs'));</script><link href="../css/mystyles.css" rel="stylesheet"></head><body class="has-navbar-fixed-top"><div class="navbar is-fixed-top has-shadow"><div class="container"><div class="navbar-brand"><div class="navbar-item"><a href="../"><figure class="image"><img style="height: 1.75rem; width: 1.75rem;" src="https://i.imgur.com/rLs5sRT.png" class="is-rounded"></figure></a></div><div onclick="document.querySelector('.navbar-menu').classList.toggle('is-active');" class="navbar-burger burger"><span></span><span></span><span></span></div></div><div class="navbar-menu"><div class="navbar-start"><a href="../" class="navbar-item">Home</a><a href="../about.html" class="navbar-item">About</a><a href="../blog.html" class="navbar-item">Blog</a><a href="../works.html" class="navbar-item">Works</a></div><div class="navbar-end"><div class="navbar-item"><a href="https://github.com/clockvoid/portfolio/blob/master/posts/2020-05-28-x11-over-ssh.md " class="button is-primary"><span class="icon"><i class="fab fa-github"></i></span><span>View it in GitHub</span></a></div></div></div></div></div><div class="container"><div class="column is-three-fifths is-offset-one-fifth"><h1 class="title">X11 over SSH</h1><a href="https://twitter.com/intent/tweet?text=X11 over SSH&amp;via=clock_void" class="twitter-share-button">Tweet</a><p class="date">Posted on 2020-05-28 </p><p style="margin-bottom: 1.5rem"> SSH経由でX11を使用する方法について </p><article class="content"><h3 class="title is-4 bd-anchor-title" id="sshの設定">SSHの設定</h3>
+<p>まずは，Open SSHの設定を行います．</p>
+<p>なお，本記事で使用するSSHサーバ・クライアントはともにOpen SSHとします．</p>
+<p>サーバ側とクライアント側の両方でX11Forwardingを有効にする必要があります．</p>
+<p>サーバ側では，<code>/etc/ssh/sshd_config</code>の中にある<code>X11Forwarding</code>の項目を<code>yes</code>にします．</p>
+<pre class="sshd_config"><code>X11Forwarding yes</code></pre>
+<p>サーバ側では，この設定を行ったあとにデーモンの再起動を行う必要があります． Systemdを使っている場合は以下のようにします．</p>
+<pre class="shell"><code>$ sudo systemctl restart sshd</code></pre>
+<p>クライアント側では<code>/etc/ssh/ssh_config</code>の中にある<code>ForwardX11</code>という項目を<code>yes</code>にします． ただし，クライアント側では，ホスト毎の設定ができるため，用途に合わせて各場所を変えるべきです．</p>
+<pre class="ssh_config"><code>ForwardX11 yes</code></pre>
+<p>これで設定は完了です．</p>
+<h3 class="title is-4 bd-anchor-title" id="sshのクライアントを動かすコンピュータにxサーバを整備する">SSHのクライアントを動かすコンピュータにXサーバを整備する</h3>
+<p>Linuxであれば，普通にxorgを使用すれば良いです．</p>
+<p>Windowsの場合は，VcXsrvというソフトがあるので，これを使用します． なお，このソフトはchocolateyからインストール可能です．</p>
+<pre class="shell"><code>$ sudo choco install vcxsrv</code></pre>
+<p>※Git Bashからchocolateyでインストールしたsudoを使うと上のコマンドでchocolateyによるパッケージのインストールが可能になります．</p>
+<p>Windowsボタンを押し，vcxsrvで検索するとショートカットが出て来ますが，そのショートカットのプロパティにてターゲットに登録されているコマンドのオプションの最後のオプション，<code>-wgl</code>を<code>-nowgl</code>に置換しておきましょう．これは後に説明するGLXの設定項目です．</p>
+<p>書き換えたリンクからVcXsrvを起動します．なんか色々聞かれるので適当に進め，Windowが消えてタスクアイコンが出来上がればOKです．</p>
+<h3 class="title is-4 bd-anchor-title" id="実際の使い方">実際の使い方</h3>
+<p>使うためには，まず<code>-X</code>オプションを有効にしてSSHクライアントを立ち上げます．</p>
+<pre class="shell"><code>$ ssh -X &lt;user&gt;@&lt;server address&gt;</code></pre>
+<p>これでセッションが開始されたら，<code>$SSH_CONNECTION</code>環境変数でクライアントのIPアドレスを調べます．</p>
+<pre class="shell"><code>$ echo $SSH_CONNECTION</code></pre>
+<p>こうすると，</p>
+<pre><code>&lt;client adress&gt; &lt;client port&gt; &lt;host adress&gt; &lt;host port&gt;</code></pre>
+<p>の形式でアドレスが表示されるため，<client adress>を控えておきましょう．</p>
+<p>続いて，サーバ側のシェルに</p>
+<pre class="shell"><code>$ export DISPLAY=&lt;client adress&gt;:0.0</code></pre>
+<p>と入力し，適当なXアプリケーションを起動してみましょう</p>
+<pre class="shell"><code>$ gedit &amp;</code></pre>
+<p>これでWindowがクライアントの画面に表示されれば成功です．</p>
+<p>なお，<code>SSH_CONNECTION</code>の値は適当なコマンドで抽出して<code>.bashrc</code>などでDISPLAY環境変数に登録しておくと便利です．</p>
+<p>この方法はSSH接続によるセッションだけでなく，WSLでXアプリケーションを使うときなどにも重宝でき，大変有用です．</p>
+<h3 class="title is-4 bd-anchor-title" id="glxについて">GLXについて</h3>
+<p>GLXは，SSHのX11 FowardingにてOpenGLを動かす際に使用される技術です．</p>
+<p>要するに，サーバ上でOpenGLを使うアプリケーションを立ち上げた際にX Serverが描画時にサーバのGPUにアクセスできないため，クライアントのリソースを使用して描画する技術となります．</p>
+<p>この技術が有効になっているとき，サーバとクライアントのlibGL.soが揃っている必要があり，なおかつ，サーバとクライアントで使用するGPUが揃っている必要があります．（GPUが，と書きましたが，mesa（Intel)，Nvidia，AMDのいずれかでそろっている必要があるのみです） 基本的には当方環境であるWindowsノートとNvidiaのGPUが乗っているサーバではこの制約を満たすことは難しいため，VcXsrvのGLX拡張の機能を無効化するオプションである，<code>-nowgl</code>を指定したほうがアプリケーションが終了する確率を下げることができます．</p>
+<p>ただし，本来OpenGLを使用して描画されるソフトによってはGLXがないと起動できないものもあるので，注意が必要です．例えば，Supertuxcartは動きますが，OptiXとかで作成したOpenGLを使用するアプリケーションでは私が試した限りは動きませんでした．</p>
+<h3 class="title is-4 bd-anchor-title" id="参考文献">参考文献</h3>
+<ul>
+<li>https://www.atmarkit.co.jp/ait/articles/1812/06/news040.html</li>
+<li>http://supernova.astron.s.u-tokyo.ac.jp/~tanaka/Memo/ssh.html</li>
+<li>https://stackoverflow.com/questions/996231/find-the-ip-address-of-the-client-in-an-ssh-session</li>
+<li>https://kaworu.jpn.org/kaworu/2008-05-26-2.php</li>
+<li>https://gist.github.com/stowler/9921780</li>
+<li>https://itakeshi.hatenablog.com/entry/2018/02/03/134644</li>
+</ul></article></div></div><footer><div class="column is-three-fifths is-offset-one-fifth footer"><div class="level"><p class="level-item has-text-centered">© 2020 clockvoid</p><a href="https://twitter.com/clock_void" class="level-item has-text-centered">Twitter</a><a href="https://github.com/clockvoid" class="level-item has-text-centered">GitHub</a><figure class="image level-item has-text-centered"><img style="height: 1.75rem; width: 1.75rem;" src="https://i.imgur.com/rLs5sRT.png" class="is-rounded"></figure><a href="../about.html" class="level-item has-text-centered">About</a><a href="../blog.html" class="level-item has-text-centered">Blog</a><a href="../works.html" class="level-item has-text-centered">Works</a></div></div></footer></body></html>
