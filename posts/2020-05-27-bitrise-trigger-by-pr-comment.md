@@ -166,6 +166,11 @@ jobs:
         run: |
           echo "::set-output name=branchname::$(curl -v -H "Accept: application/vnd.github.sailor-v-preview+json" -u ${{ secrets.PAT }} ${{ github.event.issue.pull_request.url }} | jq '.base.ref' | sed 's/\"//g')"
 
+      - name: get commit hash
+        id: commithash
+        run: |
+          echo "::set-output name=hash::$(curl -v -H "Accept: application/vnd.github.sailor-v-preview+json" -u ${{ secrets.PAT }} ${{ github.event.issue.pull_request.url }} | jq '.head.sha' | sed 's/\"//g')"
+
       - name: make bitrise build
         run: |
           curl -X POST -H "Content-Type: application/json" -d '{"hook_info": {"type": "bitrise","build_trigger_token": "${{ secrets.BUILD_TRIGGER_TOKEN }}" }, "build_params": { "branch": "${{ steps.upstreambranch.outputs.branchname }}", "workflow_id": "primary", "branch_dest": "${{ steps.basebranch.outputs.branchname }}", "pull_request_id": "${{ github.event.issue.number }}", "pull_request_repository_url": "https://github.com/${{ github.repository }}.git", "pull_request_merge_branch": "pull/${{ github.event.issue.number }}/merge", "pull_request_head_branch": "pull/${{ github.event.issue.number }}/head", "commit_hash": "${{ steps.commithash.outputs.hash }}" }, "triggered_by": "curl"}' https://app.bitrise.io/app/${{ secrets.APP_SLUG }}/build/start.json
