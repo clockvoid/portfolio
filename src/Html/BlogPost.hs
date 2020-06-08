@@ -22,7 +22,7 @@ blogPostHtml = do
   article_ [class_ "content"] "$body$"
   div_ [id_ "disqus_thread"] ""
   script_ "(function() { var d = document, s = d.createElement('script');s.src = 'https://clockvoid-tk.disqus.com/embed.js';s.setAttribute('data-timestamp', +new Date());(d.head || d.body).appendChild(s);})();"
-  noscript_ $
+  noscript_ $ do
     "Please enable JavaScript to view the"
-    --a_ [href_ "http://disqus.com/?ref_noscript"] "comments powered by Disqus."
+    a_ [href_ "http://disqus.com/?ref_noscript"] "comments powered by Disqus."
   
