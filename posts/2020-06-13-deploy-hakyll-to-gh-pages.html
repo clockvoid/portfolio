@@ -1,0 +1,116 @@
+<!DOCTYPE HTML><html><head><title>clockvoid - Hakyllで作ったサイトをGitHub Pagesにデプロイする</title><meta charset="utf-8"><meta content="ie=edge" http-equiv="x-ua-compatible"><meta content="width=device-width, initial-scale=1" name="viewport"><meta content="summary" name="twitter:card"><meta content="@clock_void" name="og:site"><meta content="Hakyllで作ったサイトをGitHub Pagesにデプロイする" name="og:title"><meta content="https://i.imgur.com/rLs5sRT.png" name="og:image"><meta content="article" name="og:type"><link href="../favicon.ico" type="image/x-icon" rel="shortcut icon"><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/dracula.min.css" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();</script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>window.twttr=(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))returnt;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);t._e=[];t.ready=function(f){t._e.push(f);};return t;}(document,'script','twitter-wjs'));</script><link href="../css/mystyles.css" rel="stylesheet"></head><body class="has-navbar-fixed-top"><div class="navbar is-fixed-top has-shadow"><div class="container"><div class="navbar-brand"><div class="navbar-item"><a href="../"><figure class="image"><img style="height: 1.75rem; width: 1.75rem;" src="https://i.imgur.com/rLs5sRT.png" class="is-rounded"></figure></a></div><div onclick="document.querySelector('.navbar-menu').classList.toggle('is-active');" class="navbar-burger burger"><span></span><span></span><span></span></div></div><div class="navbar-menu"><div class="navbar-start"><a href="../" class="navbar-item">Home</a><a href="../about.html" class="navbar-item">About</a><a href="../blog.html" class="navbar-item">Blog</a><a href="../works.html" class="navbar-item">Works</a></div><div class="navbar-end"><div class="navbar-item"><a href="https://github.com/clockvoid/portfolio" class="button is-primary"><span class="icon"><i class="fab fa-github"></i></span><span>View it in GitHub</span></a></div></div></div></div></div><div class="container"><div class="column is-three-fifths is-offset-one-fifth"><h1 class="title">Hakyllで作ったサイトをGitHub Pagesにデプロイする</h1><a href="https://twitter.com/intent/tweet?text=Hakyllで作ったサイトをGitHub Pagesにデプロイする&amp;via=clock_void" class="twitter-share-button">Tweet</a><p class="date">Posted on 2020-06-13 </p><p style="margin-bottom: 1.5rem"> HakyllはHaskell製の静的サイトジェネレータです．
+よくWeb上に転がっているCircle CIでのビルドではうまく行かなかったので，GitHub Actionsを使ってデプロイを行う方法を示します． </p><article class="content"><h3 class="title is-4 bd-anchor-title" id="circle-ciで何が起こったか">Circle CIで何が起こったか</h3>
+<p>私はこのブログをHakyllを使って作っています．HakyllはHaskell製の静的サイトジェネレータですが，初期ビルドに非常に時間を要します． 例えば，私が今使っているMacBook Pro 13inch 2018（Core i7，16GB Memory）では15分ほどを要します． これは，Hakyllが依存するライブラリが非常に多いということに加え，今回使用したビルドツールのStackでは依存関係がバイナリで降ってこないため，すべてをビルドする必要があるからです．</p>
+<p>このようなものをCircle CIのFreeプランでビルドしようとすると，OOMします． 実際に，私のサイトをCircle CIでデプロイしようとした際，OOMに悩まされました．初期ビルドが通らなければ，キャッシュもされず，永遠にビルドが通らない状況に陥ります．</p>
+<p>Circle CIのFreeプランではメモリ4GB，2CPUのコンテナが使用できますが，これでは足りないということなのでしょう．</p>
+<p>そこで，私はGitHub Actionsに目をつけました．これならば比較的新しい上に無料プランでも一ヶ月あたり2,000時間分の枠が用意されているため，比較的ラフに使用することができるはずです．</p>
+<h3 class="title is-4 bd-anchor-title" id="github-actions">GitHub Actions</h3>
+<p><a href="https://help.github.com/en/github/setting-up-and-managing-billing-and-payments-on-github/about-billing-for-github-actions">GitHub ActionsのBillingページ</a>に行くとフリープランでは一ヶ月あたり500MBのキャッシュ用のストレージが用意されているということになっています． しかし，搭載しているメモリがどれくらいの量なのか定かではありません．Circle CIでは2GBでも足りなかったみたいなので，殆どのCIの無料版ではビルドは通らないと思っていましたが，試しにGitHub Actionsでビルドしてみたところ，<a href="https://github.com/clockvoid/portfolio/actions/runs/107149520">41分かかって通りました</a>．41分というと非常に長いように感じますが，この時間の殆どは依存関係の解決に費やされているため，依存関係がキャッシュされてしまえば次からは4〜5分ほどで通るようになります．</p>
+<p>ただし，GitHub PagesとGitHub Actionsは両方ともGitHubの製品なのでかなり簡単にデプロイできるような機能が備わっているものかと思いきや，そんなことはありませんでした．</p>
+<h4 class="title is-5 bd-anchor-title" id="今回ビルドするプロジェクトの構成">今回ビルドするプロジェクトの構成</h4>
+<p>今回は今閲覧されているブログのビルドを行おうとしています．</p>
+<p>このブログのソースコードは<a href="https://github.com/clockvoid/portfolio">こちら</a>に上がっていますので，そちらも合わせて御覧ください．</p>
+<p>さて，このプロジェクトではブログを作っていますが，GitHubのLanguageのところを見ても明る通り，Haskellが98%，CSSが2%という意味のわからない構成になっています． これには</p>
+<ol type="1">
+<li>LucidというHaskellの言語内DSLでHTMLを生成するものを使用することでHTMLの記述が0</li>
+<li>CSSフレームワークとしてBulmaを使用し，テーマの機能などを使用するためににSassを使用した</li>
+</ol>
+<p>という理由があります．なお，余談として，実はHakyllにはSassをビルドしてCSSにまとめてデプロイするためのライブラリもあるのですが，こちらは使用せず，素直にnpmを使用しました． 理由としては，Sassのビルドを行うライブラリの依存関係がMac上のNeovimのLanguageClientでは読み込めず，開発が難航してしまうためです．</p>
+<p>このような事情があるため，ビルドを行うためには，Stackとnpmが必要になります．</p>
+<h4 class="title is-5 bd-anchor-title" id="github-actionsの設定">GitHub Actionsの設定</h4>
+<p>まず，GitHubのプロジェクトページの一番上にあるタブからActionsタブをクリックします．</p>
+<p><img src="https://i.imgur.com/eG9gNcCh.png" class="image is-in-article" /></p>
+<p>Actionタブを開くと，GitHubのレポジトリの主要言語から使用するワークフローの雛形を作ってくれます．とても便利です．</p>
+<p>上述したとおり，今回はStackとnpmが必要になるため，GitHub ActionsのActionsとして，以下のものを使用しました．</p>
+<ul>
+<li><code>actions/setup-haskell</code></li>
+<li><code>actions/setup-node</code></li>
+</ul>
+<p>これらを使用するのみでStackとnpmがそれぞれインストール可能です．</p>
+<p>また，今回環境としては<code>ubuntu-latest</code>を使用しました．</p>
+<p>ここまでの設定は以下のように記述します．</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> Build and Deploy</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a><span class="fu">on</span><span class="kw">:</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a><span class="at">  </span><span class="fu">push</span><span class="kw">:</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a><span class="at">    </span><span class="fu">branches</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at"> master </span><span class="kw">]</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true"></a><span class="fu">jobs</span><span class="kw">:</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true"></a><span class="at">  </span><span class="fu">build</span><span class="kw">:</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true"></a><span class="at">    </span><span class="fu">runs-on</span><span class="kw">:</span><span class="at"> ubuntu-latest</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true"></a><span class="at">    </span><span class="fu">steps</span><span class="kw">:</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/setup-haskell@v1</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true"></a><span class="at">      </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true"></a><span class="at">        </span><span class="fu">ghc-version</span><span class="kw">:</span><span class="at"> </span><span class="st">'8.8.2'</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true"></a><span class="at">        </span><span class="fu">cabal-version</span><span class="kw">:</span><span class="at"> </span><span class="st">'3.0'</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true"></a><span class="at">        </span><span class="fu">stack-version</span><span class="kw">:</span><span class="at"> </span><span class="st">'latest'</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/setup-node@v1</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true"></a><span class="at">      </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true"></a><span class="at">        </span><span class="fu">node-version</span><span class="kw">:</span><span class="at"> </span><span class="st">'13'</span></span></code></pre></div>
+<p><code>name</code>には適当な名前を指定します．<code>runs-on</code>には先程使用すると決めた<code>ubuntu-latest</code>を指定します．また，<code>steps</code>の初めの方に<code>uses</code>で使用するアクションを指定します．アクションには設定項目があることがあり，<code>with</code>で指定します．ここではそれぞれバージョンを指定しています．なお，<code>actions/setup-haskell</code>に<code>caba-version</code>を指定していますが，StackでインストールされるCabalのバージョンが低すぎて今回のプロジェクトをビルドできないので，Cabalは別入れしています．</p>
+<p>その他，レポジトリからソースコードを持ってくるために<code>actions/checkout</code>とキャッシュするために<code>actions/cache</code>を入れます．</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/checkout@v2</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Cache</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a><span class="at">  </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/cache@v1</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a><span class="at">  </span><span class="fu">env</span><span class="kw">:</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a><span class="at">    </span><span class="fu">cache-name</span><span class="kw">:</span><span class="at"> cache-stack</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a><span class="at">  </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a><span class="at">    </span><span class="fu">path</span><span class="kw">:</span><span class="at"> ~/.stack</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true"></a><span class="at">    </span><span class="fu">key</span><span class="kw">:</span><span class="at"> ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.cabal') }}-${{ hashFiles('**/stack.yaml') }}</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true"></a><span class="fu">    restore-keys</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true"></a>      ${{ runner.os }}-build-${{ env.cache-name }}-</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true"></a>      ${{ runner.os }}-build-</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true"></a>      ${{ runner.os }}-</span></code></pre></div>
+<p>cacheの方は<code>~/.stack</code>を丸々キャッシュする設定にしています．Stackでは，<code>~/.stack</code>というディレクトリにGHCから依存関係をビルドしたバイナリまで入るので，ここをキャッシュすれば十分です． ただし，このディレクトリはGHCも入る関係から非常に大きくなるため，500MBに収まらない可能性もあり，注意が必要です．</p>
+<p>つづいて，依存関係のインストールとブログのビルドまでできるようにする設定を記述します．</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Install dependencies</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a><span class="fu">  run</span><span class="kw">: </span><span class="ch">|</span><span class="at"> </span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a>    stack setup</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a>    npm install</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Build</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a><span class="at">  </span><span class="fu">run</span><span class="kw">:</span><span class="at"> stack build</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Compile site</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a><span class="fu">  run</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true"></a>    stack exec html build</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true"></a>    stack exec site build</span></code></pre></div>
+<p>ここではいくつかのステップに分けてdepsのインストールとビルド，ブログのビルドまでを行いましたが，このくらいであれば分ける必要はないかもしれないです．</p>
+<h4 class="title is-5 bd-anchor-title" id="デプロイ">デプロイ</h4>
+<p>ビルドまでできるようになったので，デプロイのための記述をします．</p>
+<p>Hakyllではプロジェクトルートに<code>_site</code>というディレクトリを作成し，その中にビルドされたブログが構成されるようになっています．</p>
+<p>今回は，この<code>_site</code>内のファイルを<code>gh-pages</code>ブランチにデプロイします．</p>
+<p>これを行うためにはまずブログをビルドしてGitの<code>--orphan</code>オプションをつけて今までの歴史を削除したブランチを作成しておきます．</p>
+<pre class="shell"><code>git checkout --orphan gh-pages</code></pre>
+<p>これを行うと，もとのブランチの<code>.gitignore</code>しているものを引き連れてくるため，この状態で<code>_site</code>ディレクトリが存在する状態になります．また，<code>.gitignore</code>は引き連れてこないため，引き連れてきたファイルはすべて<code>.gitignore</code>に入れておきます．</p>
+<p>続いて，<code>_site</code>ディレクトリ内のファイルをすべてプロジェクトルートに展開します．プロジェクトルートに展開すると，ブログの部分が差分になるため，いつもどおり<code>git add .</code>してコミットしてリモートブランチの<code>gh-pages</code>ブランチにpushします．</p>
+<pre class="shell"><code>cp -a _site/* ./
+git add .
+git commit -m &quot;initial commit&quot;</code></pre>
+<p>これで<code>gh-pages</code>ブランチの準備ができたため，次回からはここで行ったブランチの作成等はせず，後半で行った<code>_site</code>ディテクトリ内のファイルをプロジェクトルートに展開し，コミットするのみで良いです． したがって，最終的なデプロイ用のGitHub Actionsの記述は，下記のようになります．</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Deploy site</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a><span class="at">  </span><span class="fu">env</span><span class="kw">:</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a><span class="at">    </span><span class="fu">GIT_EMAIL</span><span class="kw">:</span><span class="at"> ${{ secrets.GIT_EMAIL }}</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true"></a><span class="at">    </span><span class="fu">GIT_NAME</span><span class="kw">:</span><span class="at"> ${{ secrets.GIT_NAME }}</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true"></a><span class="fu">  run</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true"></a>    git config --local user.email &quot;$GIT_EMAIL&quot;</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true"></a>    git config --local user.name &quot;$GIT_NAME&quot;</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true"></a>    git fetch</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true"></a>    git checkout gh-pages</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true"></a>    cp -a _site/* ./</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true"></a>    git add .</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true"></a>    git commit -m &quot;$GITHUB_REPOSITORY deploy no. $GITHUB_RUN_NUMBER&quot;</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Push changes</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true"></a><span class="at">  </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> ad-m/github-push-action@master</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true"></a><span class="at">  </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true"></a><span class="at">    </span><span class="fu">github_token</span><span class="kw">:</span><span class="at"> ${{ secrets.GITHUB_TOKEN }}</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true"></a><span class="at">    </span><span class="fu">branch</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;gh-pages&quot;</span></span></code></pre></div>
+<p>一番下で行っているpushは公式のアクションが見つからなかったため，サードパーティで代用しています．</p>
+<p>これでGitHub Actionsを使ってHakyllのブログをGitHub Pagesにデプロイする設定ができました．最終的な構成は，<a href="https://github.com/clockvoid/portfolio/blob/master/.github/workflows/build-and-deploy.yml">こちら</a>を御覧ください．</p>
+<h3 class="title is-4 bd-anchor-title" id="まとめ">まとめ</h3>
+<ol type="1">
+<li>Haskellのプロジェクトのビルドは時間がかかることがある</li>
+<li>ビルドに時間がかかるプロジェクトはCIサービスの無料プランではビルドできないことがある</li>
+<li>GitHub Actionsは無料プランでもかなり柔軟に対応できる</li>
+<li>GitHub PagesへのHakyllで作ったサイトのデプロイは癖がある</li>
+</ol></article><div id="disqus_thread"></div><script>(function() { var d = document, s = d.createElement('script');s.src = 'https://clockvoid-tk.disqus.com/embed.js';s.setAttribute('data-timestamp', +new Date());(d.head || d.body).appendChild(s);})();</script><noscript>Please enable JavaScript to view the<a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div></div><footer><div class="column is-three-fifths is-offset-one-fifth footer"><div class="level"><p class="level-item has-text-centered">© 2020 clockvoid</p><a href="https://twitter.com/clock_void" class="level-item has-text-centered">Twitter</a><a href="https://github.com/clockvoid" class="level-item has-text-centered">GitHub</a><figure class="image level-item has-text-centered"><img style="height: 1.75rem; width: 1.75rem;" src="https://i.imgur.com/rLs5sRT.png" class="is-rounded"></figure><a href="../about.html" class="level-item has-text-centered">About</a><a href="../blog.html" class="level-item has-text-centered">Blog</a><a href="../works.html" class="level-item has-text-centered">Works</a></div></div></footer></body></html>
