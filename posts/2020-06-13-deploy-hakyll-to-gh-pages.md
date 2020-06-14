@@ -1,5 +1,6 @@
 ---
 title: Hakyllで作ったサイトをGitHub Pagesにデプロイする
+github-link: posts/2020-06-13-deploy-hakyll-to-gh-pages.md
 summary: |
   HakyllはHaskell製の静的サイトジェネレータです．
   よくWeb上に転がっているCircle CIでのビルドではうまく行かなかったので，GitHub Actionsを使ってデプロイを行う方法を示します．
