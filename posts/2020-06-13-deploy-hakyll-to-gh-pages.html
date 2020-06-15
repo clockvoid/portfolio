@@ -10,9 +10,9 @@
 <h4 class="title is-5 bd-anchor-title" id="今回ビルドするプロジェクトの構成">今回ビルドするプロジェクトの構成</h4>
 <p>今回は今閲覧されているブログのビルドを行おうとしています．</p>
 <p>このブログのソースコードは<a href="https://github.com/clockvoid/portfolio">こちら</a>に上がっていますので，そちらも合わせて御覧ください．</p>
-<p>さて，このプロジェクトではブログを作っていますが，GitHubのLanguageのところを見ても明る通り，Haskellが98%，CSSが2%という意味のわからない構成になっています． これには</p>
+<p>さて，このプロジェクトではブログを作っていますが，GitHubのLanguageのところを見てもわかる通り，Haskellが98%，CSSが2%という意味のわからない構成になっています． これには</p>
 <ol type="1">
-<li>LucidというHaskellの言語内DSLでHTMLを生成するものを使用することでHTMLの記述が0</li>
+<li>LucidというHaskellの言語内DSLでHTMLを生成するものを使用したのでHTMLの記述がない</li>
 <li>CSSフレームワークとしてBulmaを使用し，テーマの機能などを使用するためににSassを使用した</li>
 </ol>
 <p>という理由があります．なお，余談として，実はHakyllにはSassをビルドしてCSSにまとめてデプロイするためのライブラリもあるのですが，こちらは使用せず，素直にnpmを使用しました． 理由としては，Sassのビルドを行うライブラリの依存関係がMac上のNeovimのLanguageClientでは読み込めず，開発が難航してしまうためです．</p>
@@ -49,7 +49,7 @@
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/setup-node@v1</span></span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true"></a><span class="at">      </span><span class="fu">with</span><span class="kw">:</span></span>
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true"></a><span class="at">        </span><span class="fu">node-version</span><span class="kw">:</span><span class="at"> </span><span class="st">'13'</span></span></code></pre></div>
-<p><code>name</code>には適当な名前を指定します．<code>runs-on</code>には先程使用すると決めた<code>ubuntu-latest</code>を指定します．また，<code>steps</code>の初めの方に<code>uses</code>で使用するアクションを指定します．アクションには設定項目があることがあり，<code>with</code>で指定します．ここではそれぞれバージョンを指定しています．なお，<code>actions/setup-haskell</code>に<code>caba-version</code>を指定していますが，StackでインストールされるCabalのバージョンが低すぎて今回のプロジェクトをビルドできないので，Cabalは別入れしています．</p>
+<p><code>name</code>には適当な名前を指定します．<code>runs-on</code>には先程使用すると決めた<code>ubuntu-latest</code>を指定します．また，<code>steps</code>の初めの方に<code>uses</code>で使用するアクションを指定します．アクションには設定項目があることがあり，<code>with</code>で指定します．ここではそれぞれバージョンを指定しています．なお，<code>actions/setup-haskell</code>に<code>caba-version</code>を指定していますが，StackでインストールされるCabalのバージョンが低すぎて今回のプロジェクトをビルドできないので，Cabalは別入れしています． また，今回は<code>master</code>ブランチへのプッシュでCIが走るようにしています．</p>
 <p>その他，レポジトリからソースコードを持ってくるために<code>actions/checkout</code>とキャッシュするために<code>actions/cache</code>を入れます．</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/checkout@v2</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Cache</span></span>
@@ -63,7 +63,7 @@
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true"></a>      ${{ runner.os }}-build-${{ env.cache-name }}-</span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true"></a>      ${{ runner.os }}-build-</span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true"></a>      ${{ runner.os }}-</span></code></pre></div>
-<p>cacheの方は<code>~/.stack</code>を丸々キャッシュする設定にしています．Stackでは，<code>~/.stack</code>というディレクトリにGHCから依存関係をビルドしたバイナリまで入るので，ここをキャッシュすれば十分です． ただし，このディレクトリはGHCも入る関係から非常に大きくなるため，500MBに収まらない可能性もあり，注意が必要です．</p>
+<p>cacheの方は<code>~/.stack</code>を丸々キャッシュする設定にしています．Stackでは，<code>~/.stack</code>というディレクトリにGHCの本体に加えて依存関係をビルドしたバイナリまで入るので，ここをキャッシュすれば十分です． ただし，このディレクトリはGHCも入る関係から非常に大きくなるため，500MBに収まらない可能性もあり，注意が必要です．</p>
 <p>つづいて，依存関係のインストールとブログのビルドまでできるようにする設定を記述します．</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Install dependencies</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a><span class="fu">  run</span><span class="kw">: </span><span class="ch">|</span><span class="at"> </span></span>
@@ -75,18 +75,18 @@
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a><span class="fu">  run</span><span class="kw">: </span><span class="ch">|</span></span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true"></a>    stack exec html build</span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true"></a>    stack exec site build</span></code></pre></div>
-<p>ここではいくつかのステップに分けてdepsのインストールとビルド，ブログのビルドまでを行いましたが，このくらいであれば分ける必要はないかもしれないです．</p>
+<p>ここではいくつかのステップに分けて依存関係のインストールとビルド，ブログのビルドまでを行いましたが，このくらいであれば分ける必要はないかもしれないです．</p>
 <h4 class="title is-5 bd-anchor-title" id="デプロイ">デプロイ</h4>
 <p>ビルドまでできるようになったので，デプロイのための記述をします．</p>
 <p>Hakyllではプロジェクトルートに<code>_site</code>というディレクトリを作成し，その中にビルドされたブログが構成されるようになっています．</p>
 <p>今回は，この<code>_site</code>内のファイルを<code>gh-pages</code>ブランチにデプロイします．</p>
 <p>これを行うためにはまずブログをビルドしてGitの<code>--orphan</code>オプションをつけて今までの歴史を削除したブランチを作成しておきます．</p>
-<pre class="shell"><code>git checkout --orphan gh-pages</code></pre>
-<p>これを行うと，もとのブランチの<code>.gitignore</code>しているものを引き連れてくるため，この状態で<code>_site</code>ディレクトリが存在する状態になります．また，<code>.gitignore</code>は引き連れてこないため，引き連れてきたファイルはすべて<code>.gitignore</code>に入れておきます．</p>
-<p>続いて，<code>_site</code>ディレクトリ内のファイルをすべてプロジェクトルートに展開します．プロジェクトルートに展開すると，ブログの部分が差分になるため，いつもどおり<code>git add .</code>してコミットしてリモートブランチの<code>gh-pages</code>ブランチにpushします．</p>
-<pre class="shell"><code>cp -a _site/* ./
-git add .
-git commit -m &quot;initial commit&quot;</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a>$ <span class="fu">git</span> checkout --orphan gh-pages</span></code></pre></div>
+<p>これを行うと，もとのブランチの<code>.gitignore</code>しているものを引き連れてくるため，この状態で<code>_site</code>ディレクトリが存在する状態になります．ただし，<code>.gitignore</code>そのものは引き連れてこないため，引き連れてきたファイルはすべて<code>.gitignore</code>に入れておきます．</p>
+<p>続いて，<code>_site</code>ディレクトリ内のファイルをすべてプロジェクトルートに展開します．プロジェクトルートに展開すると，ブログの部分が差分になるため，いつもどおり<code>git add .</code>してコミットしてリモートブランチの<code>gh-pages</code>ブランチにpushしておきましょう．</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a>$ <span class="fu">cp</span> -a _site/* ./</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a>$ <span class="fu">git</span> add .</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true"></a>$ <span class="fu">git</span> commit -m <span class="st">&quot;initial commit&quot;</span></span></code></pre></div>
 <p>これで<code>gh-pages</code>ブランチの準備ができたため，次回からはここで行ったブランチの作成等はせず，後半で行った<code>_site</code>ディテクトリ内のファイルをプロジェクトルートに展開し，コミットするのみで良いです． したがって，最終的なデプロイ用のGitHub Actionsの記述は，下記のようになります．</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Deploy site</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a><span class="at">  </span><span class="fu">env</span><span class="kw">:</span></span>
