@@ -11,6 +11,14 @@ mathjax: on
 
 現在，身につけた技術を人類のために使用できるようになるため，コンピュータにとどまらず，ビジネス的観点をも身につけることができるよう，修行中です．
 
+## Links
+| | |
+| --- | --- |
+| GitHub | [htts://github.com/clockvoid ](https://github.com/clockvoid) |
+| Twitter | [https://twitter.com/clock_void ](https://twitter.com/clock_void) |
+| Wantedly | [https://www.wantedly.com/users/97170304 ](https://www.wantedly.com/users/97170304) |
+| LAPRAS | [https://lapras.com/public/MMQLXH8 ](https://lapras.com/public/MMQLXH8) |
+
 # すき
 
 ![](https://i.imgur.com/7zaUUtQ.png)
