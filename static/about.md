@@ -23,7 +23,7 @@ mathjax: on
 
 ![](https://i.imgur.com/7zaUUtQ.png)
 
-- Vie
+- Vim
 - Tmux
 - Arch Linux
 - Haskell
