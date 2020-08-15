@@ -16,7 +16,7 @@ summary: |
 
 Circle CIのFreeプランではメモリ4GB，2CPUのコンテナが使用できますが，これでは足りないということなのでしょう．
 
-そこで，私はGitHub Actionsに目をつけました．これならば比較的新しい上に無料プランでも一ヶ月あたり2,000時間分の枠が用意されているため，比較的ラフに使用することができるはずです．
+そこで，私はGitHub Actionsに目をつけました．これならば比較的新しい上に無料プランでも一ヶ月あたり2,000分の枠が用意されているため，比較的ラフに使用することができるはずです．
 
 # GitHub Actions
 [GitHub ActionsのBillingページ](https://help.github.com/en/github/setting-up-and-managing-billing-and-payments-on-github/about-billing-for-github-actions)に行くとフリープランでは一ヶ月あたり500MBのキャッシュ用のストレージが用意されているということになっています．
