@@ -3,7 +3,7 @@
 <p>私はこのブログをHakyllを使って作っています．HakyllはHaskell製の静的サイトジェネレータですが，初期ビルドに非常に時間を要します． 例えば，私が今使っているMacBook Pro 13inch 2018（Core i7，16GB Memory）では15分ほどを要します． これは，Hakyllが依存するライブラリが非常に多いということに加え，今回使用したビルドツールのStackでは依存関係がバイナリで降ってこないため，すべてをビルドする必要があるからです．</p>
 <p>このようなものをCircle CIのFreeプランでビルドしようとすると，OOMします． 実際に，私のサイトをCircle CIでデプロイしようとした際，OOMに悩まされました．初期ビルドが通らなければ，キャッシュもされず，永遠にビルドが通らない状況に陥ります．</p>
 <p>Circle CIのFreeプランではメモリ4GB，2CPUのコンテナが使用できますが，これでは足りないということなのでしょう．</p>
-<p>そこで，私はGitHub Actionsに目をつけました．これならば比較的新しい上に無料プランでも一ヶ月あたり2,000時間分の枠が用意されているため，比較的ラフに使用することができるはずです．</p>
+<p>そこで，私はGitHub Actionsに目をつけました．これならば比較的新しい上に無料プランでも一ヶ月あたり2,000分の枠が用意されているため，比較的ラフに使用することができるはずです．</p>
 <h3 class="title is-4 bd-anchor-title" id="github-actions">GitHub Actions</h3>
 <p><a href="https://help.github.com/en/github/setting-up-and-managing-billing-and-payments-on-github/about-billing-for-github-actions">GitHub ActionsのBillingページ</a>に行くとフリープランでは一ヶ月あたり500MBのキャッシュ用のストレージが用意されているということになっています． しかし，搭載しているメモリがどれくらいの量なのか定かではありません．Circle CIでは2GBでも足りなかったみたいなので，殆どのCIの無料版ではビルドは通らないと思っていましたが，試しにGitHub Actionsでビルドしてみたところ，<a href="https://github.com/clockvoid/portfolio/actions/runs/107149520">41分かかって通りました</a>．41分というと非常に長いように感じますが，この時間の殆どは依存関係の解決に費やされているため，依存関係がキャッシュされてしまえば次からは4〜5分ほどで通るようになります．</p>
 <p>ただし，GitHub PagesとGitHub Actionsは両方ともGitHubの製品なのでかなり簡単にデプロイできるような機能が備わっているものかと思いきや，そんなことはありませんでした．</p>
