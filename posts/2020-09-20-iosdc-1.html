@@ -404,4 +404,502 @@
 <li>OSSなのでコードを読める</li>
 <li>パフォーマンスモニタリングが充実</li>
 <li>すべてDartで書くので，コンフリクトが少ない，コードレビューがかんたん</li>
+</ul>
+<h3 class="title is-4 bd-anchor-title" id="デバッグメニューのメンテナンスが大変だったので専用アプリを作りました">デバッグメニューのメンテナンスが大変だったので，専用アプリを作りました</h3>
+<p>Atomさんのセッション</p>
+<p>デバッグメニューとは，</p>
+<ul>
+<li>接続するAPIを切り替える</li>
+<li>新機能のON/OFF</li>
+<li>アカウントの課金状態などを切り替える</li>
+<li>キャッシュ・DBを空にする</li>
+</ul>
+<p>要するにHyperionみたいなやつ</p>
+<p>→デバッグ・開発の効率化のために使う</p>
+<h4 class="title is-5 bd-anchor-title" id="pixivでのデバッグメニューの状態">pixivでのデバッグメニューの状態</h4>
+<p>あったりなかったり，UIが違ったり，実装方法も様々</p>
+<ul>
+<li>社内テストのためにマニュアルを作らなくてはならない</li>
+<li>学習コストが高い</li>
+<li>新規導入コストが高い</li>
+<li>開発優先度が低く，メンテナンスがされにくい</li>
+<li>散財する<code>#if DEBUG</code>による自己リスク</li>
+</ul>
+<p>→すべてのアプリのデバッグメニューを一つのアプリにすればよいのでは？</p>
+<p>このアプリのことを「Chusya」と読んでいる</p>
+<p>アプリの外側から他のアプリの状態を変更してた</p>
+<h4 class="title is-5 bd-anchor-title" id="仕組み">仕組み</h4>
+<p>App Groups + UserDefaults</p>
+<p>App Grpupsとは，同一のデベロッパーのアプリ間でデータ共有ができるようになる仕組み</p>
+<p>アプリ側とChusya側でそれぞれUserDefaultsにアクセスできるようにし，それをApp Groupsを使って共有させる</p>
+<p>UserDefaultsはKeyValue型のDBっぽい</p>
+<h4 class="title is-5 bd-anchor-title" id="app-groupsの設定">App Groupsの設定</h4>
+<p>AppleのWeb SiteでCertificationのところでCapabilityからApp Groupsを選択し，追加する．</p>
+<p>Xcode側でも同様にCapabilityからApp Groupsを選択し，追加する． このとき，上のサイトで作ったものが表示されるので，チェックする．</p>
+<p>コードで使う場合は，UserDefaultsで使用する際に<code>suteName</code>として，App Grpupsの名前を入れるだけで使えるようになる</p>
+<h4 class="title is-5 bd-anchor-title" id="デバッグメニューアプリ作成のコツ">デバッグメニューアプリ作成のコツ</h4>
+<p>アプリの一覧とデバッグの状態を変化させる画面の2画面で構成されている．</p>
+<p>→デバッグメニューの値を増やすごとにUI作るの面倒くさい</p>
+<p>そこで，宣言的にUIを自動生成するようにした！</p>
+<p>アプリ一覧画面では，アプリの情報を</p>
+<pre class="swift"><code>App (
+  name: &quot;アプリ名&quot;,
+  id: &quot;identification id&quot;
+)</code></pre>
+<p>みたいにして追加するだけ．</p>
+<p>デバッグメニューでは</p>
+<pre class="swift"><code>StringSelector(
+  key: Keys.apiEndpoint.rawValue, // UserDefaultsのKey
+  title: &quot;接続先API&quot;, // タイトル
+  values: [ // 値
+    &quot;https://...&quot;,
+    ...
+  ]
+)</code></pre>
+<p>https://github.com/fromatom/iosdc-2020-example</p>
+<h5 class="title is-6 bd-anchor-title" id="yamlやtomlを使わない理由">YamlやTomlを使わない理由</h5>
+<ul>
+<li>正しいデータ形式か確認する機構の実装が必須
+<ul>
+<li>TAML，TOMLとしてのただしさ</li>
+<li>Chushaが扱う形としての正しさ</li>
+</ul></li>
+<li>Swiftで書けばコンパイラが正しいか見てくれる</li>
+<li>[Atomさんの感想]読み書きするのきつくない？</li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="ci時のコツ">CI時のコツ</h4>
+<p>CIで自動生成される（！？）</p>
+<p>実機用の<code>.ipa</code>とシミュレータ用の<code>.app</code>を自動生成している．</p>
+<p><code>.app</code>だけ節目詠する．</p>
+<p>Fastlaneでxcodebuildでiphonesimulatorを使うか，Bitriseにはxcodebuild for simulatorというそのままのタスクが存在する．</p>
+<p>あとはこれをGitHub Releeasesにアップロードするだけ．かんたん．</p>
+<p>出てきた<code>.app</code>はドラッグ・アンド・ドロップするだけでインストールできる．</p>
+<h4 class="title is-5 bd-anchor-title" id="メリット-1">メリット</h4>
+<ul>
+<li>一つのアプリで複数のアプリにデバッグ情報を注入できる</li>
+<li>起動した時点でデバッグ情報が注入できる</li>
+<li>App Storeに公開されているアプリでも使える</li>
+<li><code>#if DEBUG</code>がなくなる</li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="デメリット">デメリット</h4>
+<ul>
+<li>Chushaインストールが必要になる</li>
+<li>別アプリに移動しないといけない</li>
+<li>即時反映系の機能が作りにくい
+<ul>
+<li>DBクリア，キャッシュクリアなどがフラグ起因で起こるので，すぐには実行されない</li>
+</ul></li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="ask-the-speaker-2">Ask-the-speaker</h4>
+<ul>
+<li>Hyperionは？
+<ul>
+<li>複数のアプリの共通化をしたかったので今回は採用見送り</li>
+<li>アプリが一つ，2つくらいであればHyperionで良いと思う</li>
+</ul></li>
+<li>アプリが多すぎてChushaのリリースタイミングがぐちゃぐちゃになるのでは？
+<ul>
+<li>今の所起こっていない</li>
+<li>ビルド時にテストが通ってれば他のアプリには鑑賞しないということが保証されている</li>
+</ul></li>
+<li>Chushaのアップデートはどのくらいの頻度？
+<ul>
+<li>全然更新されえないw</li>
+</ul></li>
+<li>Chushaは注入だけではなくて抽出もできる！
+<ul>
+<li>App Store版がおかしくなったらUserDefaultsを抽出して確認することも可能</li>
+</ul></li>
+</ul>
+<h3 class="title is-4 bd-anchor-title" id="エラーアーキテクチャ設計について考える">エラーアーキテクチャ設計について考える</h3>
+<p>Androidもやってる人っぽい</p>
+<p>Androidの話もするっぽいw</p>
+<h4 class="title is-5 bd-anchor-title" id="モチベーション">モチベーション</h4>
+<p>エラーをいい感じに扱いたい！</p>
+<h4 class="title is-5 bd-anchor-title" id="iosアプリでエラーハンドリングを改善した話">iOSアプリでエラーハンドリングを改善した話</h4>
+<p>ユースケースのエラーをもっと表現力豊かにしたいなぁ</p>
+<ul>
+<li>Rxを使用</li>
+<li>クリーンアーキテクチャ</li>
+<li>Singleを使っていることにする</li>
+</ul>
+<p>onErrorで帰ってきた値をSwitchで分岐して実装</p>
+<p>→これだとどんなラーが起こるのかget()メソッドに帰って見る必要があるのと，Switchだとdefaultを設定しないといけない</p>
+<p>→そこで，Enumでエラーを定義する</p>
+<p>UseCaseでUseCaseErrorに変換する</p>
+<p>UseCaseErrorはapplyだけがあるProtocolで，実際にはそれぞれのUseCaseでそれぞれ必要なエラー型を定義し，applyで変換する</p>
+<p>早速使ってみた</p>
+<p>UseCaseResultにくるむのはかんたん．しかもEnumでSwitchすれば良いので，考慮漏れも起きづらい</p>
+<h4 class="title is-5 bd-anchor-title" id="androidアプリの場合">Androidアプリの場合</h4>
+<p>機能の個別エラーを追加しづらい</p>
+<ul>
+<li>クリーンアーキテクチャ</li>
+<li>Eitherに変換するのがむずい</li>
+<li>抜け漏れなくやりたい</li>
+</ul>
+<p>ある特定の固有エラーが有っても共通機構に則って処理しないと行けなくなっていた</p>
+<p>いろんな機能の知識が一箇所にまとまるため，そこがどんどん太っていく．「神エラー」ができてしまう．</p>
+<ul>
+<li>機能個別のエラーは個別定義</li>
+<li>それぞれは機能だけに閉じているべき</li>
+<li>もともとあった共通処理は残したい</li>
+</ul>
+<p>FeatureSpecificというExceptionを定義しておき，機能ごとに個別に定義する</p>
+<p>変換処理は「共通 + 個別」</p>
+<p>個別エラーのみ，外から差し込まれたメソッドに変換処理を移譲する</p>
+<p>固有のエラーの変換機構は利用側がにない，共通の仕組みはその詳細を知らない状態を作った</p>
+<h4 class="title is-5 bd-anchor-title" id="エラーアーキテクチャについて">エラーアーキテクチャについて</h4>
+<ul>
+<li>型で成約をかける</li>
+<li>列挙型を使用する</li>
+<li>個別のエラーは個別に定義・処理する</li>
+</ul>
+<p>The Clean Architeecture「優れたアーキテクチャはユースケースを強調し，周辺の関心事からユースケースを切り離すのだ」</p>
+<p>強調・分離すべきユースケストは？</p>
+<ul>
+<li>基本コース: 晴れの日
+<ul>
+<li>いつもどおりのシナリオ</li>
+</ul></li>
+<li>代替コース: 雨の日
+<ul>
+<li>なにか悪いことが起こったときにシナリオ</li>
+</ul></li>
+</ul>
+<p>エラーアーキテクチャは雨の日のシナリオを強調する</p>
+<p>Error型を使うと，雨の日のシナリオは実装依存になっています</p>
+<p>AppUseCaseErrorを使うと，雨の日のシナリオを強調し，分離している</p>
+<p>「基本コースの中で，何が起こるのか問いかけることで，雨の日で起こることを探し出すことができる」</p>
+<p>「エラーアーキテクチャとは，雨の日にも道を照らす街灯」</p>
+<h4 class="title is-5 bd-anchor-title" id="ask-the-speaker-3">Ask-the-speaker</h4>
+<ul>
+<li>スライドで使っていたかわいい画像はどこから？
+<ul>
+<li><a href="https://www.canva.com/">https://www.canva.com/</a></li>
+</ul></li>
+</ul>
+<h3 class="title is-4 bd-anchor-title" id="マルチモジュールビルド速度快適化">マルチモジュール，ビルド速度快適化</h3>
+<p>Googler．なんか強そう</p>
+<p>Androidチームの人</p>
+<p>Google入社の前の内容の発表</p>
+<h4 class="title is-5 bd-anchor-title" id="実践マルチモジュール編">実践マルチモジュール編</h4>
+<p>モジュールを分ける基準</p>
+<ul>
+<li>ドメインロジックがグループに分けられる</li>
+<li>スコープが well-definedである</li>
+<li>複数のアプリで適用可能なアプリ</li>
+<li>既存モジュールと明確に違う依存性を要するモジュール</li>
+<li>長期間担当するチームが存在している</li>
+</ul>
+<p>→Single Responsibility Principle</p>
+<p>中規模以上じゃないとやりすぎでは？と思っていたが，2人以上ならやらない理由はない．あとから分離するのは難しいので，できれば初期段階で分けたほうが良い</p>
+<h5 class="title is-6 bd-anchor-title" id="マルチモジュール設計">マルチモジュール設計</h5>
+<ul>
+<li>コードベース全般に破壊的な影響を与える．
+<ul>
+<li>モジュール化のためのPRをマージすると大量のcnflictが必然的に起こる</li>
+</ul></li>
+<li>QAさんとのすり合わせ（フルリグレッションテストの必要性がある）</li>
+</ul>
+<h5 class="title is-6 bd-anchor-title" id="モジュールをどう分けるのか">モジュールをどう分けるのか？</h5>
+<ul>
+<li>ドメインごとにモジュールを分ける</li>
+<li>画面ごとに分けるのもあり</li>
+<li>すべての場所から呼び出せるものを切り出すのも大事
+<ul>
+<li>コンポーネントとか，apiとか．ただ，基本的にdata層は各モジュールごとに定義されるべき</li>
+</ul></li>
+</ul>
+<h5 class="title is-6 bd-anchor-title" id="common-module分離">Common Module分離</h5>
+<ul>
+<li>Project生成の仕組み作成
+<ul>
+<li>XcodeGenとかを使う</li>
+<li>既存のxcodeprojはgitから削除</li>
+<li>意外と大量のコミュニケーションを要する</li>
+</ul></li>
+<li>共通モジュールだけ分離する</li>
+</ul>
+<h5 class="title is-6 bd-anchor-title" id="各domain-module分離">各domain module分離</h5>
+<ul>
+<li>必要なら，各モジュールのエンジニアとペアプロしながらやる</li>
+<li>この段階で作られたものがその後の基準になるため，なるべく正しくやるべき</li>
+<li>最も時間がかかる作業
+<ul>
+<li>複数のモジュールが同じクラスを参照してしまっている場合</li>
+<li>複数の責務を持っている可能性があるので，分ける．</li>
+<li>それ以外の場合，上位のモジュールを作る</li>
+</ul></li>
+<li>ファイルが分離された場合
+<ul>
+<li>2つのファイルの一つはgitの履歴を失ってしまう．</li>
+<li>もとのファイルのblameのGitHubのリンクを新規作成したファイルに貼ると良い</li>
+</ul></li>
+</ul>
+<h5 class="title is-6 bd-anchor-title" id="domainごとの分離">Domainごとの分離</h5>
+<ul>
+<li>各ドメインを3-4のレイヤに分離
+<ul>
+<li>binding: モジュールをせえっとアップするための浅いレイヤ</li>
+<li>presentation: UIとビジネスロジックのレイヤ
+<ul>
+<li>そこまでたくさん切らなくても良い: モバイルには複雑なロジックが入らないため．</li>
+</ul></li>
+<li>data: databaseとnetworkコード等</li>
+<li>共通パーツ</li>
+</ul></li>
+<li>依存性逆転の原則
+<ul>
+<li>上位レベルのモジュールは下位レベルのモジュールに依存すべきではない</li>
+<li>上位モジュールにProtocolをつくって下位モジュールはそのProtocolの実装を行う</li>
+<li>この作業は面倒くさい
+<ul>
+<li>スクリプトを作るとかすると良い</li>
+</ul></li>
+</ul></li>
+<li>struct…
+<ul>
+<li>struct のdefault initメソッドはintrenal
+<ul>
+<li>public initを別途書かないといけない</li>
+<li>[Refactor] - [Generate Memberwise Initializer]</li>
+</ul></li>
+<li>フィールドもいちいちpublicにしないと行けない</li>
+</ul></li>
+</ul>
+<h5 class="title is-6 bd-anchor-title" id="一旦完了">一旦完了</h5>
+<ul>
+<li>これだけで，small incremental buildの速度は2〜50倍まdえ上昇
+<ul>
+<li>でもlarg incrementalはそんなに変わらない</li>
+<li>モジュールごとの作業だけならかなりはやくなる</li>
+</ul></li>
+<li>チームとしても良い</li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="ビルド編-googlebazel">ビルド編 google/bazel</h4>
+<p>bazelとは？</p>
+<ul>
+<li>Blaze基盤のビルドシステム→非常に巨大で複雑なビルドシステム</li>
+<li>クロスプラットフォーム（host/target）</li>
+<li>マルチ言語</li>
+<li>拡張性:Skylarkを見るとわかるが，非常に柔軟</li>
+<li>密閉（Hermetic）:依存性グラフ</li>
+<li>正しさ（Correct）:一つ一つのアクションが相互に影響しない
+<ul>
+<li>パフォーマンスにもつながる．</li>
+<li>暗黙的な依存性がない</li>
+<li>Bazelは必要なときだけ再ビルドする</li>
+</ul></li>
+<li>スケーラブ</li>
+</ul>
+<p>ビルドフェーズは3つ</p>
+<ul>
+<li>Loading Phase
+<ul>
+<li>ビルドファイルを解析し，グラフを作る</li>
+<li>ルールの過不足チェック，循環参照チェック</li>
+</ul></li>
+<li>Analytics Phase
+<ul>
+<li>ルールが効率的に設定されていないと時間かかることがある</li>
+</ul></li>
+<li>Execution Phase
+<ul>
+<li>実際にビルドされる</li>
+<li>Actionごとにキャッシュが利用できる場合は利用する</li>
+<li>ターミナルのログの殆どはここで見える</li>
+</ul></li>
+</ul>
+<p>→嘘みたいなパフォーマンスが得られる →なぜかClean buildも早い</p>
+<p>嘘みたいなビルド環境</p>
+<ul>
+<li>Linuxでビルド可能
+<ul>
+<li>分析段階とかだけならLinuxでできるので，ここだけサーバに送って高速化可能</li>
+<li>CIの負荷も軽減</li>
+</ul></li>
+</ul>
+<p>→使わない理由なくない？</p>
+<ul>
+<li>何故かClean buildも早い件
+<ul>
+<li>サンプルが去年の例で，Legacy buildとの比較だった</li>
+</ul></li>
+<li>ビルド自体がリモートで実行できる件
+<ul>
+<li>Remote Executionの設定の難易度が高い</li>
+</ul></li>
+<li>Setting bazel is extremely painful
+<ul>
+<li>リモート環境で使っているlibcのバージョンが違ったりすると動かない</li>
+<li>Xcodeとの相性が悪い💩</li>
+</ul></li>
+</ul>
+<h5 class="title is-6 bd-anchor-title" id="欠点の対策">欠点の対策</h5>
+<ul>
+<li>まずはCIサーバへの対応を目標にする</li>
+<li>BazelのBuild→.xcodeproj生成</li>
+<li>Cocoapods，Carthage，SPM→BUILD
+<ul>
+<li>podsだとPodToBUILDがある</li>
+<li>ほかは手動</li>
+</ul></li>
+<li>分析が遅いので，最適化が必要
+<ul>
+<li>ソースコードをNFSに格納しない．</li>
+<li>profileしまくって改善する</li>
+<li>最も依存せえいチェインが長いものから修正</li>
+</ul></li>
+</ul>
+<h5 class="title is-6 bd-anchor-title" id="xcodeとの基本連携">Xcodeとの基本連携</h5>
+<ul>
+<li>.app + .xctestなどのコピーせ彫ってい</li>
+<li>デバッグ設定を生成</li>
+</ul>
+<h5 class="title is-6 bd-anchor-title" id="その他">その他</h5>
+<ul>
+<li><p>Indexingができない</p></li>
+<li><p>Debugにも問題がある</p></li>
+<li><p>バックグラウンドでのIndexingは永遠にできない</p></li>
+<li><p>Googleが色々やってくれるのは朗報</p>
+<ul>
+<li>ルールとかもメンテしてくれる</li>
+<li>バグレポートとかもやってくる</li>
+</ul></li>
+<li><p>他の会社も積極的にサポート</p></li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="テスト">テスト</h4>
+<p>Googleはこれだけ大量のコードベースを管理する方法として，テストを中心とした開発体系をとっている．</p>
+<p>良いテストの条件</p>
+<ul>
+<li><p>実際のアプリの期待している行動と一致している</p></li>
+<li><p>テストケースはドキュメントにもなりうるべき</p></li>
+<li><p>目的または行動の変更がない限り変更しない</p></li>
+<li><p>基本的にはAPIはfakeを使う．どうしてもというときだけモックを使う</p></li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="ask-the-speaker-4">Ask-the-speaker</h4>
+<ul>
+<li>サンプルはあるか？
+<ul>
+<li>https://docs.bazel.build/versions/master/tutorial/ios-app.html にチュートリアルとかはあるが，あまり良くない．今後Googleが色々やるようなので出てくることに期待</li>
+</ul></li>
+<li>Xcodeのビルドボタンを押したら何が起こるのか？
+<ul>
+<li>Xcodeでボタンを押したときに実行されるスクリプトを切り替えて一応ビルドすることは可能</li>
+</ul></li>
+<li>デバッグができないと言っていたがどういうことか？
+<ul>
+<li>一応できる．設定を頑張れば結構なんとかなる</li>
+</ul></li>
+<li>Incremental Buildはマルチモジュールじゃないとできないのか？
+<ul>
+<li>できる．だが，もっと効率よくIncremental Buildできるようにするためにマルチモジュール化する</li>
+<li>ただし，普通はClean buildは遅くなるので，それを改善するためにBazelを使用する</li>
+</ul></li>
+<li>Remote Executionはラスボス
+<ul>
+<li>Googleにはそのための組織すらあるw</li>
+</ul></li>
+<li>ドメインと言っていたのは，ドメイン層の話ではなく，機能の塊の話をしていた．</li>
+</ul>
+<h3 class="title is-4 bd-anchor-title" id="無料トライアル施策のしくじりから学ぶサブスクリプションベストプラクティス">無料トライアル施策のしくじりから学ぶサブスクリプションベストプラクティス</h3>
+<p>自動更新サブスクリプションでしくじった．</p>
+<p>自社から◯十万円のお返しが発生した・・・</p>
+<ul>
+<li>無料トライアルとかってサクッとできる？</li>
+<li>3日だけとかミニマルでできる？</li>
+<li>重複課金とか怖いなー</li>
+</ul>
+<p>と言われてしまった</p>
+<h4 class="title is-5 bd-anchor-title" id="検証">検証</h4>
+<ul>
+<li>Appleが無料トライアルの仕組みを提供してる？
+<ul>
+<li>お試しオファーとか言うものがある</li>
+</ul></li>
+<li>期間の指定は？
+<ul>
+<li>期間とかも設定できる</li>
+<li>審査無しでできる</li>
+</ul></li>
+<li>プランの構成は？
+<ul>
+<li>アップグレード</li>
+<li>ダウングレード</li>
+<li>クロスグレード</li>
+</ul></li>
+<li>ガイドラインによる規制は？
+<ul>
+<li>同じ期間・同じサービスのプランを作ってもよいのか？</li>
+<li>ベストプラクティス，クソ長い</li>
+<li>意図的にアプリ側がプランの対象ユーザを制限してよいのか？
+<ul>
+<li>記載なし</li>
+</ul></li>
+</ul></li>
+<li>無料トライアルプランのテストはできる？
+<ul>
+<li>サンドボックスで試験できる</li>
+<li>この環境では時間の流れが歪んでいる</li>
+<li>1アカウント一回しかオファーは購入できない</li>
+<li>アカウントの作成にはAPIがある</li>
+<li>fastlaneで10数行でアカウントは作成可能</li>
+<li>アカウントは量産しよう</li>
+</ul></li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="プランの申請">プランの申請</h4>
+<p>アプリとともに審査されるため，早めに審査する必要がある 審査は通過！</p>
+<p>→買えないはずのプランがユーザに買われてしまったwww</p>
+<p>アプリ外からプランを購入する動線がある！:AppStore，端末の設定から変えてしまう</p>
+<p>別グループであれば購入は防げるのではないか →審査してみた→リジェクトされた！</p>
+<p>不必要にグループを分けることがベストプラクティスではない．→アプリ外からの購入を防ぐのは諦めるしかない．</p>
+<p>プラン名を若干変更してもう一度リリースした</p>
+<p>しかし，本当の悲劇はこれからだった</p>
+<h4 class="title is-5 bd-anchor-title" id="キャンペーン検証の最終日">キャンペーン検証の最終日</h4>
+<p>トライアルを購入したのに決済が走った</p>
+<p>何故かトライアルが有効なレシートが突然全部消えた</p>
+<p>お試しオファーの終了日という項目は，その日からオファーを無効化するという意味だった！（初見殺し）</p>
+<h4 class="title is-5 bd-anchor-title" id="補足対象を限定した無料トライアルはできない">補足対象を限定した無料トライアルはできない？</h4>
+<ul>
+<li>リジェクトされえないためには既存グループに追加する必要がある</li>
+<li>アプリ外からの動線は隠せない</li>
+<li>オファーコードと言うものがAppleから出た
+<ul>
+<li>一度しか利用できないコードを配ることが可能</li>
+<li>ただし，非営利目的でしか使えない</li>
+<li>あとiOS 14以上</li>
+</ul></li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="学び">学び</h4>
+<ul>
+<li>アプリ外の購入動線があるため，既存グループでの新しいプランはストアに反映した瞬間から購入され得うる</li>
+<li>別のグループに同じ内容のプランを作るとリジェクトされる</li>
+<li>App Storeの終了日は期間終了日の翌日に設定する必要がある</li>
+<li>オファーコードの登場により，対象を性外縁した無料トライアル，割引の提供ができるかも</li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="ask-the-speaker-5">Ask-the-speaker</h4>
+<ul>
+<li>終了日は時間まで指定できる？
+<ul>
+<li>ちょっと聞き取れなかったが，できなさそう</li>
+</ul></li>
+<li>タイムゾーンはどうなっているか？
+<ul>
+<li>地域を選べる</li>
+<li>→今回は日本だけにしたので，日本時間ですべてが起こった</li>
+<li>おそらく，提供する地域のタイムゾーンに合わせてイベントが起こるようになっている</li>
+</ul></li>
+<li>Appleに支払った30%は帰ってこない？
+<ul>
+<li>今回はこちらのミスなので，Appleからの返金は絶望的</li>
+</ul></li>
+<li>課金周りは最近改善されているが，まだ改善してほしいことはある？
+<ul>
+<li>サンドボックスの改善をしてほしい</li>
+</ul></li>
+<li>最終日に買ったということだが，ユーザ側のTouchIDとかはどうなっていた？
+<ul>
+<li>注意深く見れば，期間と課金開始日時のズレは気づいたかもしれない</li>
+</ul></li>
+<li>オファーコードは今後スタンダードになっていくと思うので．キャッチアップしていってほしい</li>
 </ul></article><div id="disqus_thread"></div><script>(function() { var d = document, s = d.createElement('script');s.src = 'https://clockvoid-tk.disqus.com/embed.js';s.setAttribute('data-timestamp', +new Date());(d.head || d.body).appendChild(s);})();</script><noscript>Please enable JavaScript to view the<a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div></div><footer><div class="column is-three-fifths is-offset-one-fifth footer"><div class="level"><p class="level-item has-text-centered">© 2020 clockvoid</p><a href="https://twitter.com/clock_void" class="level-item has-text-centered">Twitter</a><a href="https://github.com/clockvoid" class="level-item has-text-centered">GitHub</a><figure class="image level-item has-text-centered"><img style="height: 1.75rem; width: 1.75rem;" src="https://i.imgur.com/rLs5sRT.png" class="is-rounded"></figure><a href="../about.html" class="level-item has-text-centered">About</a><a href="../blog.html" class="level-item has-text-centered">Blog</a><a href="../works.html" class="level-item has-text-centered">Works</a></div></div></footer></body></html>
