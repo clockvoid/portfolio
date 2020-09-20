@@ -1,0 +1,407 @@
+<!DOCTYPE HTML><html><head><title>clockvoid - iOSDC 2020 第1日目</title><meta charset="utf-8"><meta content="ie=edge" http-equiv="x-ua-compatible"><meta content="width=device-width, initial-scale=1" name="viewport"><meta content="summary" name="twitter:card"><meta content="@clock_void" name="og:site"><meta content="iOSDC 2020 第1日目" name="og:title"><meta content="https://i.imgur.com/rLs5sRT.png" name="og:image"><meta content="article" name="og:type"><link href="../favicon.ico" type="image/x-icon" rel="shortcut icon"><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/dracula.min.css" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();</script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>window.twttr=(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))returnt;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);t._e=[];t.ready=function(f){t._e.push(f);};return t;}(document,'script','twitter-wjs'));</script><link href="../css/mystyles.css" rel="stylesheet"></head><body class="has-navbar-fixed-top"><div class="navbar is-fixed-top has-shadow"><div class="container"><div class="navbar-brand"><div class="navbar-item"><a href="../"><figure class="image"><img style="height: 1.75rem; width: 1.75rem;" src="https://i.imgur.com/rLs5sRT.png" class="is-rounded"></figure></a></div><div onclick="document.querySelector('.navbar-menu').classList.toggle('is-active');" class="navbar-burger burger"><span></span><span></span><span></span></div></div><div class="navbar-menu"><div class="navbar-start"><a href="../" class="navbar-item">Home</a><a href="../about.html" class="navbar-item">About</a><a href="../blog.html" class="navbar-item">Blog</a><a href="../works.html" class="navbar-item">Works</a></div><div class="navbar-end"><div class="navbar-item"><a href="https://github.com/clockvoid/portfolio/blob/master/posts/2020-09-20-iosdc-1.md " class="button is-primary"><span class="icon"><i class="fab fa-github"></i></span><span>View it in GitHub</span></a></div></div></div></div></div><div class="container"><div class="column is-three-fifths is-offset-one-fifth"><h1 class="title">iOSDC 2020 第1日目</h1><a href="https://twitter.com/intent/tweet?text=iOSDC 2020 第1日目&amp;via=clock_void" class="twitter-share-button">Tweet</a><p class="date">Posted on 2020-09-20 </p><p style="margin-bottom: 1.5rem"> iOSDC 一日目で気になったことと初めて知ったことをまとめます． </p><article class="content"><h3 class="title is-4 bd-anchor-title" id="年間運用する中で表示速度が落ちた画面を改善する中で得た知見">4年間運用する中で表示速度が落ちた画面を改善する中で得た知見</h3>
+<p>古い端末のほうが標示が顕著に遅くなってしまう</p>
+<p>iPhone 8などを使用しても一秒以上かかってしまう</p>
+<p><code>init</code>から<code>viewDidAppear</code>までの時間を測定した</p>
+<h4 class="title is-5 bd-anchor-title" id="画面の構成">画面の構成</h4>
+<p>上から，</p>
+<ul>
+<li>VideoPlayerViewController</li>
+<li>DetailViewController</li>
+<li>VideoFullScreenViewController</li>
+</ul>
+<p>となっている</p>
+<p>VideoFullScreenViewControllerがまず初期化され，その中でVideoPlayerViewContollerを初期化するなどの処理を行う</p>
+<p>はじめはDetailだけを表示するだけだったが，プレイヤとかも追加された</p>
+<p>DetailViewは</p>
+<ul>
+<li>サムネイル</li>
+<li>Expandする詳細</li>
+<li>アクションのアイコン</li>
+<li>縦方向のTableView</li>
+<li>一番下にレコメンド</li>
+</ul>
+<p>という感じで，StackViewで作られている</p>
+<p>これ以外に横画面に対応するためのStackViewとかもいる</p>
+<p>サムネイルはすぐに表示されるが，動画が初期化されたらプレイヤを表示する</p>
+<h4 class="title is-5 bd-anchor-title" id="表示を遅くした原因">表示を遅くした原因</h4>
+<p>Nibは一回生成されるとキャッシュされる</p>
+<p>→殆どの場合で二回目以降は少し早い</p>
+<p>よくあるNibの初期化が遅くなる原因</p>
+<ul>
+<li>フォントの参照が切れる
+<ul>
+<li>System Fontを使用していたため，ない</li>
+</ul></li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="改善案">改善案</h4>
+<ul>
+<li>Xibをやめてコードで作る</li>
+<li>Viewの初期化を遅延させる
+<ul>
+<li>こっちを採用</li>
+</ul></li>
+</ul>
+<p>レコメンド</p>
+<ul>
+<li>はじめはHide</li>
+<li>取得が終わったらレイアウト処理</li>
+</ul>
+<p>Expand</p>
+<ul>
+<li>はじめはHide</li>
+<li>タップするとレイアウト処理</li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="改善方法">改善方法</h4>
+<p>一個一個Viewが初期化された後別のViewを初期化するみたいな遅延初期化をするようにした</p>
+<p>ViewModelとObservableをつなぐクラスを作った</p>
+<p>ViewModelが初期化完了したかどうかを知るObservableを作った</p>
+<p>Viewの初期化が終了したときのObservableを作り，それが終わったらレコメンドのレイアウトを開始する</p>
+<p>…ということをして高速化した</p>
+<p>結果，半分くらいの表示速度になった</p>
+<ul>
+<li>StakViewのdidSetでarrangedSubViewしていたViewをviewDidAppear後に遅延初期化してそのタイミングでarrangedSubviewするように修正</li>
+<li>viewDidLoadでbindしていたObserver・ObservableをLazyRelaysのPublishRelayを経由するようにして遅延初期化に対応</li>
+<li>レコメンドの取得をViewのち円初期化後に変更（レコメンドの描画その後になる</li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="画面の回転について">画面の回転について</h4>
+<p>画面の回転時も時間がかかる</p>
+<p>collectionViewの高さのConstraintに合わせてView自体の高さを決めるため，Cellは再利用されずに，すべて再描画され</p>
+<p>縦横回転をするとStackViewのスタック方向が変わる→遅延初期化後に方向をチェックする</p>
+<h4 class="title is-5 bd-anchor-title" id="改善">改善</h4>
+<p>StackViewだったところをCollectionViewに変更</p>
+<p>CollectionViewで表示するときにLazyViewを再利用できるようにした →差分更新を使って描画する</p>
+<p>RxDataSourceを使ってサムネイルとかレコメンドセルとかをいい感じに流すようにした（？）</p>
+<p>副次的な効果として，A/Bテストが簡単にできた</p>
+<ul>
+<li>UIScrollView + UIStackViewの構成からUICollectionViewに変更</li>
+<li>各ViewからUIStackView + arrangedSubviewsの実装を別Viewに分離</li>
+<li>UIStackViewのarrangedSubViewのisHiddenによるレイアウト更新を差分更新ライブラリを用いたUICollectionViewのアニメーションに更新</li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="まとめ">まとめ</h4>
+<ul>
+<li>Xibは初回ロードに大幅に時間がかかる</li>
+<li>画面の表示速度が遅くなった場合にViewの生成を遅延させると効果が出やすい．（bindした直後に処理がは閣下し，レイアウト処理が実行された事によって表示が遅延してしまっていた可能性もある）</li>
+<li>UICollectionView（またはUITableView）でデータソースの受け渡しを遅延させれば，Viewの生成を遅延させることもできる</li>
+<li>データソースを宣言的にすることで，モジュールの入れ替えや追加がかんたんになる</li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="ask-the-speaker">Ask-the-speaker</h4>
+<ul>
+<li><p>最終的に表示するタイミングは変わらないが，ちゃんとプログレスバーが表示されて，ユーザがちゃんとロードしていることが理解できるようにしたというお話だった</p></li>
+<li><p>Nibを使わないという方法があったと思うが，あれはどうなのか？</p>
+<ul>
+<li>着手できなかったのでわからない</li>
+</ul></li>
+<li><p>ユーザに対する改善はあったのか</p>
+<ul>
+<li>もともと数値が伸びていなかった→このスピードが問題なんじゃないかということで，改善</li>
+<li>結果，あまり関係はしていなかったが，事業として進められたのはとても良かった</li>
+</ul></li>
+</ul>
+<h3 class="title is-4 bd-anchor-title" id="そろそろ始めるcombine">そろそろ始めるCombine</h3>
+<p>非同期処理の難しさ - いつ値が帰ってくるかわからない！</p>
+<p>ライブラリもたくさんあるが，処理の方法が場合によって異なるため，難しい</p>
+<p>→そこでCombineの登場！</p>
+<h4 class="title is-5 bd-anchor-title" id="combine">Combine</h4>
+<p>すべての処理をPublisherで行うため，一通りの書き方で様々な場合に対応できる</p>
+<p>最終的な値の更新も一連の流れでできる</p>
+<p>複数箇所からのデータの同期も，データとViewの更新を一箇所に集約できる！</p>
+<p>→多種類の非同期処理などを単一の方法で行うもの！</p>
+<p>タイマー，通知，ユーザアクアションなど，繰り返し行うものについても記述可能</p>
+<h5 class="title is-6 bd-anchor-title" id="宣言的とは">「宣言的」とは？</h5>
+<p>対義語は「指示的」．指示的だと手順を頑張って書く必要がある．</p>
+<p>宣言的に書くと，目的のみが簡素に簡素に書かれることになる</p>
+<h4 class="title is-5 bd-anchor-title" id="主要なクラス">主要なクラス</h4>
+<ul>
+<li>Publisher
+<ul>
+<li>特定の型の値を時間とともに連続的に流す</li>
+<li><code>Publisher&lt;Output, Failuer: Error&gt;</code></li>
+<li>Value: Output</li>
+<li>Completion: Finished or Failuer</li>
+<li>Completionが起きると値は二度と出力されない</li>
+</ul></li>
+<li>Subscriber
+<ul>
+<li>Publisherからほしい文だけ値を受け取る</li>
+<li><code>Subscriber&lt;Output, Failuer: Error&gt;</code></li>
+<li>OutputとFailuerの型はPublisherと一致させる必要がある</li>
+<li>複数のSubscriberを一つのPublisherをwatchすることも可能</li>
+<li>Subscriberが要求しなければPublisherは値を放出しない（BackPressure）</li>
+<li>Subscriberがほしい量も要求可能（<code>maxPublishers</code>とかを使う模様）</li>
+</ul></li>
+<li>Subscription
+<ul>
+<li>PublisherとSubscriberの仲介役</li>
+<li>Publisherが生成，Subscriberにわたす→そうすると，SubscriberはSubscriptionを介してPublisherから値をもらう</li>
+<li><code>cancel</code>というメソッドが生えており，これを呼ぶとPublisherから値が送られなくなる．</li>
+<li>AnyCancellableというものがあり，こいつを使うとインスタンスの開放時に自動的に<code>cancel</code>されるので最高．（これがDisposable）</li>
+<li>ただし，AnyCancellableは値を保持しないとちゃんとcancelしない（ワーニング出るので良き）</li>
+</ul></li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="処理の流れ">処理の流れ</h4>
+<ol type="1">
+<li>始まりはSubscriberからPublisherに「値が欲しい」というメッセージを飛ばす</li>
+<li>PublisherがSubscriptionを生成し，Subscriberにわたす</li>
+<li>SubscriberがDemandを渡す</li>
+<li>値を繰り返しやり取りする</li>
+<li>Completionが呼ばれて終了</li>
+</ol>
+<h5 class="title is-6 bd-anchor-title" id="使えるメソッド">使えるメソッド</h5>
+<ul>
+<li>sink</li>
+<li>assign</li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="その他のクラス">その他のクラス</h4>
+<ul>
+<li>Subject
+<ul>
+<li>Publisherの一種．手動で値を流したりできる</li>
+<li>CurrentValueSubjectは現在の値をとって置くこともできる</li>
+<li>通常の変数に<code>@Published</code>をつけるとPublisherのように振る舞うようにすることが可能．<code>$</code>を頭につけるとPublisherのとして関数に渡せる
+<ul>
+<li><code>@Published</code>はClassのメンバにしかなれない</li>
+</ul></li>
+<li>Classのインスタンスに<code>@Published</code>を使用すると内部の値の更新がフックされないので値が流れない</li>
+</ul></li>
+<li>Operator
+<ul>
+<li>Publisherの更新時に新しいPublisherを生成して流すことが可能</li>
+<li>SwiftのCollectionと使い方が似ていることが多い</li>
+<li>これまでのPublisherを包んで新しい型を作るため，呼び出しまくることで値が複雑になる
+<ul>
+<li><code>eraseToAnyPublisher</code>することで内部の複雑な型を削除してシンプルにすることはできる</li>
+</ul></li>
+</ul></li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="他のフレームワークとの連携">他のフレームワークとの連携</h4>
+<p>Appleは様々なものをCombineとくっつけて全部Combineの世界にしている</p>
+<ul>
+<li>URLSession
+<ul>
+<li><code>dataTaskPublisher(fron: url)</code>を使用することでPublisherを生成可能</li>
+</ul></li>
+<li>NotificationCenter
+<ul>
+<li><code>NotificationCenter.default.publisher()</code>が生えてる</li>
+</ul></li>
+<li>SwiftUI
+<ul>
+<li>UIKitを使っていてもViewModelを使うことで値の共有が可能</li>
+<li>ViewModelをObservableObjectに適合させると双方向データバインディングが可能</li>
+<li>UIKitの場合，UIそのものにも状態があるため，状態の二重管理になってしまい，副作用が怖いが，SwiftUIではViewが状態を持たないので二重管理にならない（Single Source of Truth）</li>
+</ul></li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="既存の実装に取り込む">既存の実装に取り込む</h4>
+<ul>
+<li>UIKit + Combine
+<ul>
+<li>Delegateからの値をCombine出遅れる</li>
+<li>handleEventsでタイミングを調整できる</li>
+</ul></li>
+<li>Result -&gt; Publisher
+<ul>
+<li>Featureを使うと非同期で帰ってきたResultをPublisherにできる</li>
+<li>値の出力は一度だけ</li>
+<li>Featureはインスタンスを生成したタイミングですぐに処理されてしまう．
+<ul>
+<li>そこで，Defferedを使用することで遅延評価が可能</li>
+</ul></li>
+</ul></li>
+<li>KVOの活用
+<ul>
+<li>イベントに合わせてUIの大きさなどを変えるなどが可能</li>
+</ul></li>
+<li>Custom Publisher
+<ul>
+<li>自分でPublisher作れる</li>
+<li>実装方法はいくつか存在する．Appleのレポジトリなどを眺めると良い</li>
+</ul></li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="困ったときのデバッグ方法">困ったときのデバッグ方法</h4>
+<p>処理を一つにつなげることができる反面，一箇所の問題がすべての破綻を招く可能性がある</p>
+<p>ユニットテストでもいいが，アプリを動かしながら試したいことがある</p>
+<h5 class="title is-6 bd-anchor-title" id="コンソールで見られる">コンソールで見られる</h5>
+<ul>
+<li>print
+<ul>
+<li>すべての出力値を表示</li>
+</ul></li>
+<li>handleEvent
+<ul>
+<li>種類を選べる</li>
+</ul></li>
+</ul>
+<h5 class="title is-6 bd-anchor-title" id="ブレークポイント系">ブレークポイント系</h5>
+<ul>
+<li>breakpointOnError
+<ul>
+<li>エラー時に止まる</li>
+</ul></li>
+<li>もう一個あったけどメモしきれなかった</li>
+</ul>
+<h5 class="title is-6 bd-anchor-title" id="アプリ系">アプリ系</h5>
+<ul>
+<li>Timelane
+<ul>
+<li>状態をタイムリーに見られるアプリ</li>
+</ul></li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="もっとcombine">もっとCombine！</h4>
+<ul>
+<li>WWDCセッション</li>
+<li>Appleのドキュメント</li>
+<li>YouTubeなど</li>
+<li>書籍など</li>
+<li>実際に使ってみる
+<ul>
+<li>Playground</li>
+<li>チュートリアル</li>
+<li>公式リファレンスを都度検証</li>
+<li>個人アプリを作る</li>
+</ul></li>
+<li>困ったときは
+<ul>
+<li>デバッグツールを使う</li>
+<li>困っている人がいないか探す</li>
+<li>combinecommunity.slack.com</li>
+<li>スピーカーの方のレポジトリもある</li>
+</ul></li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="まとめ-1">まとめ</h4>
+<p>使い方わからずに見切り発車してしまうと後々困ったりしてしまう</p>
+<p>この機会に学ぼう！</p>
+<h4 class="title is-5 bd-anchor-title" id="ask-the-speaker-1">Ask-the-speaker</h4>
+<ul>
+<li>テスト時に時間の流れを見ながらテストできる？（RxのTestScheduler的なもの）
+<ul>
+<li>公式にはない．</li>
+<li>頑張って自力で実装すればできるが，できれば公式でやってほしいw</li>
+</ul></li>
+<li><code>@Publisher</code>はiOS14じゃないと使えないの？
+<ul>
+<li>使える．<code>assign</code>の引数の一部がiOS14から導入された</li>
+</ul></li>
+<li>Rxから乗り換える必要はある？
+<ul>
+<li>近々ではRxがサポートされ続けるはずなので問題はない</li>
+<li>ただし，App Clipなど，アプリサイズが制限される場合では使わざるを得ないはず</li>
+</ul></li>
+<li>現在のところCombineを使うとRxより良いところは？
+<ul>
+<li>CombineのメリットはAppleが出しているところ</li>
+<li>OSのバージョンアップでもすぐにサポートされる</li>
+<li>新しいアプリではCombineを使うべきなのでは</li>
+<li>ただし，Backpressureが破綻しているらしい・・・？</li>
+</ul></li>
+<li>Rxからの乗り換えでハマるところはある？
+<ul>
+<li>エラーの型がしっかりしているのがRxと違う上にXcodeが不親切なのでコンパイルエラーでハマるかも</li>
+</ul></li>
+<li>RxはRealm（モバイルDB）とかと連携できるが，そのへんはどうか
+<ul>
+<li>今の所自力で変換するコードを書かないと行けない
+<ul>
+<li>Combine Realmというライブラリもある！すごい！</li>
+</ul></li>
+<li>CoreDataならちゃんと連携されている…はず</li>
+</ul></li>
+<li>学習コストはRxに比べてどう？
+<ul>
+<li>オペレータなどがSwiftと同じなので，そのへんのコストは低くなる</li>
+<li>ただし，はじめの導入はRxと同じくらいコスト高い</li>
+</ul></li>
+<li>オペレーターを自作するのは難しそう？
+<ul>
+<li>Appleが公式で出しているコードが有る！</li>
+<li>こういうのを見て学習していくと良さそう</li>
+</ul></li>
+</ul>
+<h3 class="title is-4 bd-anchor-title" id="flutter移行の苦労と乗り越えた先に得られたもの">Flutter移行の苦労と，乗り越えた先に得られたもの</h3>
+<p>じゃらんでは，Flutter移行にチャレンジしているとのこと</p>
+<p>じゃらんはiOS/Androidともにリリースから10年を迎えている</p>
+<ul>
+<li>プロジェクトの大規模化によるビルド時間の増加</li>
+<li>全体的にコードが古い</li>
+</ul>
+<p>という問題があり，フルルニューアルを考えた</p>
+<p>→クロスプラットフォーム技術の採用 →Flutterがもっとも生産性が高いという技術検証からの結論があったとのこと</p>
+<h4 class="title is-5 bd-anchor-title" id="移行の手法">移行の手法</h4>
+<p>段階的にリプレースする．</p>
+<p>Add-to-appというものを使用し，既存のネイティブプロジェクトにFlutterプロジェクトを部分的に組み込む．</p>
+<p>→部分的に組み込んだものをFlutterモジュールと呼ぶことにする</p>
+<h4 class="title is-5 bd-anchor-title" id="レイアウト構築">レイアウト構築</h4>
+<ul>
+<li>Widget
+<ul>
+<li>UIの構成情報を保持するクラス</li>
+<li>デザインもWidgetを用いて表現する</li>
+</ul></li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="直面した課題">直面した課題</h4>
+<ol type="1">
+<li>タブ切り替えのパフォーマンス</li>
+</ol>
+<ul>
+<li>Aにテキスト，Bに1000このリストを入れておき，Bのリストを一番下までスクロールしてから再度Aに戻り，その後Bに戻ると重くなる</li>
+<li>タブを切り替えた際，表示されていないWidgetはツリーから除外される．</li>
+<li>タブが保持するリストのアイテムの高さが可変の場合，1つ目のアイテムから順番に大きさを計算しなくてはならず，結果としてスクロール位置までのすべてのアイテムの大きさを計算し直すため重くなる</li>
+<li></li>
+</ul>
+<ol start="2" type="1">
+<li>Flutterの画面が初期化されない</li>
+</ol>
+<ul>
+<li>Nativeの画面からFlutterの画面を閉じて再度開くと，前回開いていた状態が復元されてしまう</li>
+<li>画面を破棄して再生成したのに状態が残るのはおかしい:thinking_face:</li>
+<li>Flutterの画面を閉じるとFlutterViewContollerは破棄されるが，FlutterEngineは破棄されない（Flutter Engineの初期化はコストが大きいため，AppDelegate等で予め行う）ため，Dart内部の状態は全部残る</li>
+<li>InitialPageという空のページを生成しておき，ここで前回表示していた画面をすべて破棄し，新しい画面を開くようにした</li>
+</ul>
+<ol start="3" type="1">
+<li>ネットワーク通信がproxyサーバを経由しない</li>
+</ol>
+<ul>
+<li>パケットモニタリングを使用したいことがあったが，通信がProxyサーバを経由せずに，使えなかった</li>
+<li>HttpClientクラスにプロキシ自動設定（PAC）を手動で設定する必要がある
+<ul>
+<li>system_proxyというパッケージがあり，システムのProxy設定を取ってきて指定することが可能</li>
+</ul></li>
+</ul>
+<ol start="4" type="1">
+<li>Google Mapsがクラッシュする</li>
+</ol>
+<ul>
+<li>google_maps_flutterパッケージを使用</li>
+<li>Developers Previewだった</li>
+<li>何度も開くとクラッシュする→メモリが開放されなず，メモリリークがあった．</li>
+<li>PlatformViewに循環参照があり，メモリリークしてたw</li>
+<li>1.15.17にアップデートしたら治った</li>
+<li>Developer Previewでは既知の問題にはIssueタグが付与されており，一覧できる</li>
+</ul>
+<p>プラットフォームとして未成熟かも？ →だけど，一応使えるので，プロダクション採用を見送るまでには行かなかった．</p>
+<h4 class="title is-5 bd-anchor-title" id="メリット">メリット</h4>
+<ul>
+<li>開発効率の向上
+<ul>
+<li>従来の2〜3割り増し？</li>
+<li>既成部品が充実していた</li>
+<li>hot reeload / restart
+<ul>
+<li>ビルド時間が大幅に短縮した</li>
+</ul></li>
+<li>IDE（Android Studio）がXcodeに比べてつよい
+<ul>
+<li>Widget上でoption+Enterを押すと</li>
+<li>stless stfulで自動的にリソースを作成</li>
+</ul></li>
+</ul></li>
+<li>工数の削減
+<ul>
+<li>じゃらんはメディアであり，プラットフォーム依存のコードは少ない</li>
+<li>iOS/Androidの使用差分をなるべく減らし，デザインはマテリアルデザインにといういつされているため，やりやすかった</li>
+<li>段階以降を行っているため，各プラットフォーム固有のコードを書く必要はあるが，大部分が共通化されているので良い</li>
+</ul></li>
+<li>宣言的UI</li>
+<li>OSSなのでコードを読める</li>
+<li>パフォーマンスモニタリングが充実</li>
+<li>すべてDartで書くので，コンフリクトが少ない，コードレビューがかんたん</li>
+</ul></article><div id="disqus_thread"></div><script>(function() { var d = document, s = d.createElement('script');s.src = 'https://clockvoid-tk.disqus.com/embed.js';s.setAttribute('data-timestamp', +new Date());(d.head || d.body).appendChild(s);})();</script><noscript>Please enable JavaScript to view the<a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div></div><footer><div class="column is-three-fifths is-offset-one-fifth footer"><div class="level"><p class="level-item has-text-centered">© 2020 clockvoid</p><a href="https://twitter.com/clock_void" class="level-item has-text-centered">Twitter</a><a href="https://github.com/clockvoid" class="level-item has-text-centered">GitHub</a><figure class="image level-item has-text-centered"><img style="height: 1.75rem; width: 1.75rem;" src="https://i.imgur.com/rLs5sRT.png" class="is-rounded"></figure><a href="../about.html" class="level-item has-text-centered">About</a><a href="../blog.html" class="level-item has-text-centered">Blog</a><a href="../works.html" class="level-item has-text-centered">Works</a></div></div></footer></body></html>
