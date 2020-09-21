@@ -1,0 +1,159 @@
+<!DOCTYPE HTML><html><head><title>clockvoid - iOSDC 2020 2日目</title><meta charset="utf-8"><meta content="ie=edge" http-equiv="x-ua-compatible"><meta content="width=device-width, initial-scale=1" name="viewport"><meta content="summary" name="twitter:card"><meta content="@clock_void" name="og:site"><meta content="iOSDC 2020 2日目" name="og:title"><meta content="https://i.imgur.com/rLs5sRT.png" name="og:image"><meta content="article" name="og:type"><link href="../favicon.ico" type="image/x-icon" rel="shortcut icon"><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/dracula.min.css" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();</script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>window.twttr=(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))returnt;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);t._e=[];t.ready=function(f){t._e.push(f);};return t;}(document,'script','twitter-wjs'));</script><link href="../css/mystyles.css" rel="stylesheet"></head><body class="has-navbar-fixed-top"><div class="navbar is-fixed-top has-shadow"><div class="container"><div class="navbar-brand"><div class="navbar-item"><a href="../"><figure class="image"><img style="height: 1.75rem; width: 1.75rem;" src="https://i.imgur.com/rLs5sRT.png" class="is-rounded"></figure></a></div><div onclick="document.querySelector('.navbar-menu').classList.toggle('is-active');" class="navbar-burger burger"><span></span><span></span><span></span></div></div><div class="navbar-menu"><div class="navbar-start"><a href="../" class="navbar-item">Home</a><a href="../about.html" class="navbar-item">About</a><a href="../blog.html" class="navbar-item">Blog</a><a href="../works.html" class="navbar-item">Works</a></div><div class="navbar-end"><div class="navbar-item"><a href="https://github.com/clockvoid/portfolio/blob/master/posts/2020-09-21-iosdc-2.md " class="button is-primary"><span class="icon"><i class="fab fa-github"></i></span><span>View it in GitHub</span></a></div></div></div></div></div><div class="container"><div class="column is-three-fifths is-offset-one-fifth"><h1 class="title">iOSDC 2020 2日目</h1><a href="https://twitter.com/intent/tweet?text=iOSDC 2020 2日目&amp;via=clock_void" class="twitter-share-button">Tweet</a><p class="date">Posted on 2020-09-21 </p><p style="margin-bottom: 1.5rem"> iOSDC 2020 2日目で気になったセッションや初めて知ったことをまとめます </p><article class="content"><h3 class="title is-4 bd-anchor-title" id="the-composable-architeecture">The Composable Architeecture</h3>
+<p>TCAと略される</p>
+<p>ライブラリとして提供されており，Fluxっぽいアーキテクチャを難しいことがわからなくてもかんたんに構築できる．</p>
+<p><a href="https://github.com/pointfreeco/swift-composable-architecture">GitHub</a></p>
+<p>ケースタディとしていくつかのサンプルが公開されている</p>
+<h4 class="title is-5 bd-anchor-title" id="特徴">特徴</h4>
+<ul>
+<li>State management</li>
+<li>Composition</li>
+<li>Side effects</li>
+<li>Testing</li>
+<li>Ergonomics</li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="ケーススタディ">ケーススタディ</h4>
+<ul>
+<li>EffectsBasic
+<ul>
+<li>プラスとマイナスボタンがあり，マイナスがタップされると1秒後に自動的にプラスされ，戻される</li>
+<li>更に，Number Factボタンが有り，それを押すと今のカウントでWebAPIを呼び出す</li>
+<li>Reducer
+<ul>
+<li>マイナスボタンが呼び出されると，delayが入ったEffectを作って返している</li>
+<li>Number Factボタンが呼び出されると，現在のstateに対してAPIを呼び出し，返り値をEffectにmapして流している
+<ul>
+<li>成功するとSuccess，失敗するとFailureが流れるようになっている</li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li>Stateを変更できるのはReducerのみ</li>
+<li>Viewとロジックをひとまとめにして，それを部品として組み合わせられる</li>
+<li>大きなReducerを並べなくて良い</li>
+<li>副作用はEffect型にして，次のエフェクトも繋げられる</li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="中で何をしているのか">中で何をしているのか</h4>
+<ul>
+<li>WithViewStore
+<ul>
+<li>内部としてはSwiftUIのView</li>
+<li>外からStoreを入れて，中でViewStoreにしている</li>
+<li>ViewStoreとは，ObservedObject→SwiftUIと相性が良い</li>
+</ul></li>
+<li>ViewStore
+<ul>
+<li>ObservedObjectのwillChange時にStateを送れるようになっている</li>
+</ul></li>
+<li>Effect
+<ul>
+<li>CombineのPublisherに準拠している</li>
+<li>TCA内部でSubscriber監視できる</li>
+<li>オペレーターで処理をチェインできる</li>
+<li>StoreはViewStoreからActionを呼び出すと，現在のActionのキューに保存</li>
+<li>Actionを順次呼び出し</li>
+<li>Effectを順次実行</li>
+</ul></li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="テストコード">テストコード</h4>
+<p>どういうふうにテストを書くかが明文化されている</p>
+<p>ActionによってReducerがStateを期待通り変更できるか？が知りたい →ニセのEffectを入れることが可能．テスト用のScheduerもある．</p>
+<p>Effectに対するテストを書きたいときは，単体テストを書くと良い</p>
+<p>まずTestStoreを作る</p>
+<ul>
+<li><p>Environmentにテスト用のEffectを渡す</p></li>
+<li><p><code>store.assert</code>で期待するStateと比較できる</p></li>
+<li><p><code>do</code>メソッドでTestScheduerを一つすすめることで，副作用が適用される</p></li>
+<li><p><code>receive</code>メソッドで</p></li>
+<li><p>TCAはReducer用のテストコードを提供してくれる</p></li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="まとめ">まとめ</h4>
+<ul>
+<li>良いところ
+<ul>
+<li>ReducerからしかStateを扱えない</li>
+<li>Reducerを分割できるため，大きなReducerを作らなくて良い</li>
+<li>SwiftUIでも使いやすい（UIKitで扱う方法も書いてある）</li>
+<li>Combineをあんまり理解していなくても，実行と監視の恩恵がある</li>
+<li>テストスケジューラとテスト方法を提供してくれる</li>
+</ul></li>
+<li>難しいところ
+<ul>
+<li>ある程度Combineを理解していないと何が起こっているのかわからない</li>
+<li>CombineがOSSじゃないので，Combine自体のコードが読めない</li>
+<li>基本的にはアプリ設計はTCAでやりきらないといけない（気がする）
+<ul>
+<li>他の画面はMVVMでやるとかは難しい</li>
+<li>ライブラリに依存するという覚悟はいる</li>
+</ul></li>
+</ul></li>
+</ul>
+<p>Qiitaにも記事を挙げられている</p>
+<ul>
+<li>SwiftUI時代のFunctional iOS Architeectureというトークもある</li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="ask-the-speaker">Ask-the-speaker</h4>
+<ul>
+<li>Reducerはアプリ全体で一つではなく，画面ごと？
+<ul>
+<li>厳密に言うと，画面がなくても作れるので，画面ごとではない
+<ul>
+<li>複数Reducerがあって良い</li>
+<li>画面に紐付いていなくて良い</li>
+</ul></li>
+<li>Core/DateとかでDataBaseの監視用のものを作ることがあるが，それをStore（Reducer含む）で監視することも可能
+<ul>
+<li>WithViewStoreとかは画面ごとに存在する</li>
+</ul></li>
+</ul></li>
+<li>Effectは細かいものをたくさん作る？
+<ul>
+<li>そう．で，サブスクライブしてつないでいく．</li>
+</ul></li>
+<li>API呼び出しとかは全部Effectで表現する？
+<ul>
+<li>そう．Completionとかも表現できるよ</li>
+</ul></li>
+<li>Effectが副作用をまとめて管理している？
+<ul>
+<li>そう</li>
+</ul></li>
+<li>Storeについてアクションを発行できない
+<ul>
+<li>ユニバーサルリンクのイベントとかどうするんだろう</li>
+<li>SwiftUIだとiOS 14だとエントリポイントのViewがユニバーサルリンクのイベントをハンドリングしてくれそう？</li>
+<li>Appのデータ持っているのはStoreで，それをwithViewStoreでViewStoreに変換する
+<ul>
+<li>スコープ作る</li>
+<li>そのwithViewStoreに対してアクションを呼び出せばOK</li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 class="title is-4 bd-anchor-title" id="スモールビジネスを支えるfreeeのモバイル技術">スモールビジネスを支えるfreeeのモバイル技術</h3>
+<p>全ては見てはいないので軽くメモ</p>
+<ul>
+<li>iOSアプリ開発ではよくUIモジュールをライブラリ化してそれを使うようにしているのを見かける
+<ul>
+<li>おそらく，テーマがないので部品をCustom Viewみたいな感じで作っておいてそれを使う感じと推測</li>
+</ul></li>
+<li>「会計ドメイン」はロジックがすべてのプラットフォームで同じなので，Kotlin MPPを使用してロジック部分を共通化している
+<ul>
+<li>iOS向けにはframeworkがGradleにより生成される</li>
+<li>ライブラリ呼び出しは非常に自然</li>
+</ul></li>
+<li>Kotlin MPPのframework生成について詳しく
+<ul>
+<li>frameworkの中には，コンパイルされたバイナリファイルとヘッダファイルが含まれている</li>
+<li>バイナリはx86，arm_64などで別ディレクトリに吐き出される</li>
+<li>ヘッダファイルの型などはObjective-CベースなのでSwiftから呼び出すときには成約が出てしまう</li>
+<li>Kotlin MPPがKotlinとの型の差分を埋めるために定義する型も存在する
+<ul>
+<li>例えばLongなど</li>
+<li>NullableのLongはSwiftではSampleLongという型がKotlin MPPにより生成されて使用される</li>
+<li>SampleLongはSampleNumberの実装で，SampleNumberはNSNumberの実装になっている</li>
+</ul></li>
+<li>expect/actualで各プラットフォームに処理を委譲できる
+<ul>
+<li>でもこれやりすぎたら共通化できてなくね？（？）</li>
+<li>できればCommonに全部かければ良いと思う・・・（個人的な感想）</li>
+</ul></li>
+</ul></li>
+</ul></article><div id="disqus_thread"></div><script>(function() { var d = document, s = d.createElement('script');s.src = 'https://clockvoid-tk.disqus.com/embed.js';s.setAttribute('data-timestamp', +new Date());(d.head || d.body).appendChild(s);})();</script><noscript>Please enable JavaScript to view the<a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div></div><footer><div class="column is-three-fifths is-offset-one-fifth footer"><div class="level"><p class="level-item has-text-centered">© 2020 clockvoid</p><a href="https://twitter.com/clock_void" class="level-item has-text-centered">Twitter</a><a href="https://github.com/clockvoid" class="level-item has-text-centered">GitHub</a><figure class="image level-item has-text-centered"><img style="height: 1.75rem; width: 1.75rem;" src="https://i.imgur.com/rLs5sRT.png" class="is-rounded"></figure><a href="../about.html" class="level-item has-text-centered">About</a><a href="../blog.html" class="level-item has-text-centered">Blog</a><a href="../works.html" class="level-item has-text-centered">Works</a></div></div></footer></body></html>
