@@ -156,4 +156,460 @@
 <li>できればCommonに全部かければ良いと思う・・・（個人的な感想）</li>
 </ul></li>
 </ul></li>
+</ul>
+<h3 class="title is-4 bd-anchor-title" id="webとネイティブアプリの付き合い方を改めて考える">Webとネイティブアプリの付き合い方を改めて考える</h3>
+<div class="table is-striped is-bordered">
+<table>
+<thead>
+<tr class="header">
+<th>技術</th>
+<th>Web</th>
+<th>PWA</th>
+<th>ネイティブ</th>
+<th>AppClip</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 class="title is-5 bd-anchor-title" id="webとネイティブアプリの付き合い方">Webとネイティブアプリの付き合い方</h4>
+<ul>
+<li>ネイティブアプリと同じ体験をWeb（PWS含む）でも提供できるか？
+<ul>
+<li>難しい．</li>
+<li>WebAPIを利用することで機能としては同等の機能を提供できる</li>
+<li>ただし，画面遷移やまだ使えない技術が多いため，難しい</li>
+</ul></li>
+<li>どう言うときにWebを使用したら良い？
+<ul>
+<li>Webのメリットを享受したいと聞か，ネイティブアプリのリスクを回避したいとき</li>
+<li>細かいUXの完成度より，まず広めることを重視するとき</li>
+<li>PUSH通知とかがいらないとき</li>
+<li>ネイティブアプリのデメリット
+<ul>
+<li>専門性が高い</li>
+<li>Android版も作らないといけない</li>
+</ul></li>
+<li>Webのメリット
+<ul>
+<li>検索からの流入が見込める</li>
+<li>両OSに対応できる
+<ul>
+<li>ただし，それぞれのOSでユーザがなれたUIを提供するには独自実装が必要</li>
+</ul></li>
+<li>審査不要</li>
+</ul></li>
+</ul></li>
+<li>両方を提供するメリットは？
+<ul>
+<li>いろいろな戦略を取ることが可能になる</li>
+<li>ネイティブアプリとWebではそもそも流入経路が違う</li>
+<li>iOSネイティブ+PWAを組み合わせると，マルチデバイスを低コストで実現可能</li>
+</ul></li>
+<li>WebとApp Clipsの療法を提供するメリットは？
+<ul>
+<li>App Clipsはネイティブアプリの呼び水として</li>
+<li>リアル接点を持たないWebサービスから見ると，App Clipsを提供するメリットは限定的</li>
+</ul></li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="まとめ-1">まとめ</h4>
+<ul>
+<li>ブラウザの進化により，「ネイティブじゃないと機能を提供できない」という状況は減ってきている</li>
+<li>メリデメを考えて比較検討しよう</li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="ask-the-speaker-1">Ask-the-speaker</h4>
+<ul>
+<li>Webでネイティブと同じ体験を提供するのが難しい部分について，もう少し詳しく
+<ul>
+<li>PUSH通知</li>
+<li>アニメーション
+<ul>
+<li>なめらかな画面遷移をOSのバックアップを受けながら実装できる</li>
+</ul></li>
+<li>Webのものをホーム画面に追加というアクションそのものにユーザが不慣れ</li>
+</ul></li>
+<li>開発環境はどう？
+<ul>
+<li>Webでも最近だとTypeScriptなどがあるので大規模開発もできそう</li>
+<li>一応ブラウザの機能も規格化されているため，勝手に誰かが開発してぶっ壊れることも少ないのでは</li>
+</ul></li>
+<li>側ネイティブがPWAとかに比べてメリットになるのはどういうとき？
+<ul>
+<li>Webでメインを作りながら，アプリも提供できる</li>
+<li>ただし，Appleとしては側ネイティブはやめてくれ，と言っている</li>
+<li>Webからネイティブを呼び出したくなったときなど，ネイティブの知識が必要になることがある</li>
+<li>Webのほうが作りやすいならWebViewで，というのもありそう</li>
+</ul></li>
+<li>オフライン対応はどうか？
+<ul>
+<li>オフライン対応を半強制的に考えないといけないのはネイティブ</li>
+<li>Webならアクセスできなければ真っ白になるか，ブラウザのエラーが出るのでそれで良しとすることも可能</li>
+<li>PWAでもキャッシュする部分を指定して側の部分だけをキャッシュしておいて，オフラインでも使えるようにすることは可能</li>
+</ul></li>
+</ul>
+<h3 class="title is-4 bd-anchor-title" id="swiftのwebassembly対応の軌跡">SwiftのWebAssembly対応の軌跡</h3>
+<p>WebAssemblyとは，スタックベースの仮想マシン上で動く命令セットの一部</p>
+<p>ポータブルに動くのがウリ</p>
+<p>通常，クロスプラットフォームに対応するためにはそれぞれの環境に対応するバイナリを配布することになる</p>
+<p>→WebAssemblyなら一つのバイナリをブラウザなど様々な環境で動かすことが可能</p>
+<p>Swiftでは正式サポートはされていない</p>
+<h4 class="title is-5 bd-anchor-title" id="swiftがwebasmに対応すると嬉しいこと">SwiftがWebAsmに対応すると嬉しいこと</h4>
+<ul>
+<li>SwiftでWebフロントがかける</li>
+<li>Server Side SwiftやiOSとコード共有可能</li>
+<li>Switが対応していない環境でもWasmランタイムさえあれば動く</li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="swiftwasm-projet">SwiftWasm Projet</h4>
+<ul>
+<li>SwiftのWebAsm対応をするためのプロジェクト</li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="demo">Demo</h4>
+<p><a href="https://swiftwasm-pad.netlify.app">デモ</a></p>
+<ul>
+<li>ブラウザ上でSwiftを実行することが可能！（すごい）
+<ul>
+<li>コンパイルはサーバでやるが，実行はブラウザ上でやるので安全</li>
+</ul></li>
+<li>GUIも作れる（DOM）もいじれる</li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="swiftwasmプロジェクトの道のり">SwiftWasmプロジェクトの道のり</h4>
+<p>コンパイラのWebAsm対応</p>
+<p>Paese→AST→Sama→SILGen→SIL（中間表現）→IRGen→LLVM IR→ASM</p>
+<p>LLVM for WebAssembly</p>
+<ul>
+<li>Swift Wasmプロジェクト以前からWeb Assemblyをサポート</li>
+<li>SwiftのSILの一部の機能をWasmが対応していなかったため，Swiftが吐き出したLLVM IRはそのままだとWebAmsとして動かなかった</li>
+<li>→これを治すパッチを出した</li>
+</ul>
+<h5 class="title is-6 bd-anchor-title" id="ランタイムライブラリ標準ライブラリのwasmサポート">ランタイムライブラリ&amp;標準ライブラリのWasmサポート</h5>
+<ul>
+<li>Swiftのランタイムを作るときにいくつかの特殊なテクニックが使われていた
+<ul>
+<li>→これをWasmに導入した</li>
+</ul></li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="エコシステム">エコシステム</h4>
+<ul>
+<li>swiftwasm/JavaScriptKit
+<ul>
+<li>Dom操作をSwiftから行える</li>
+<li>JavaScriptライクなオブジェクト操作APIを提供</li>
+<li>メモリ管理等の差を吸収</li>
+</ul></li>
+<li>swiftwasm/carton
+<ul>
+<li>SwiftWasm製Webアプリのビルドツール</li>
+</ul></li>
+<li>TokamakUI/Tokamak
+<ul>
+<li>SwiftUI互換のUIライブラリ</li>
+<li>DOM操作と静的HTML生成をサポートしている</li>
+</ul></li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="現状の課題">現状の課題</h4>
+<ul>
+<li>バイナリサイズ問題
+<ul>
+<li>他の言語と比べるとWasmにしたときにサイズが大きい</li>
+<li>SwiftはUnicodeデータベースや正規化のためにICUに依存している</li>
+<li>ICUだけで4MB以上ある</li>
+<li>Swiftの標準ライブラリは非常に大きい
+<ul>
+<li>GoやRustは細かく別れていて使われないものはリンクされない</li>
+<li>使われない機能もバイナリに含まれてしまう</li>
+<li>一応標準ライブラリのサイズ最適化機能の実装プロジェクトがある
+<ul>
+<li>モジュールをまたいで使われていないコードを削除することでサイズを削減するコードが書かれている</li>
+<li>SILレベルでSwiftのセマンティクスを最適化</li>
+<li>LLVMレベルより積極的な最適化が行える</li>
+<li>最適化すれば60%ほどの削減を達成</li>
+</ul></li>
+<li>kateinoigakun/swift-lto-benchmark</li>
+</ul></li>
+</ul></li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="まとめ-2">まとめ</h4>
+<ul>
+<li>実験段階として利用可能</li>
+<li>周辺ツールやライブラリの対応も進んでいる</li>
+<li>バイナリサイズは改善の余地あり</li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="ask-the-speaker-2">Ask-the-speaker</h4>
+<ul>
+<li>Webブラウザ以外でも動くといっていたが，例は？
+<ul>
+<li>実験段階だが，k8sのランタイムとしてDockerが一般的だが，ランタイムとしてWasmが使われる可能性がある</li>
+<li>CDNのフィルタ</li>
+<li>Emboyの安全なプラグインとして使われている</li>
+</ul></li>
+<li>Swiftで書いているOSSのライブリをWasmに対応させようとしたら大変？
+<ul>
+<li>ネットワークのURLSessionとかUIKitとかがまずそう</li>
+<li>UI部分に依存しないOSSなら良さそう</li>
+<li>FileIOとかはサポートしている</li>
+<li>Objective-Cが入っていると辛い？</li>
+<li>libdispatchがリンクできなかった（結論）</li>
+</ul></li>
+<li>SwiftWasmにContributionしたいと思ったときにどこから始めたら良い？
+<ul>
+<li>Tokamakが一番とっかかりやすい</li>
+</ul></li>
+<li>Webブラウザ上でDebugしたいときはどんな感じ？
+<ul>
+<li>ブレークポイントとかどう？</li>
+<li>ほぼできないChromiumとかの実装が必要になってくる</li>
+<li>ちょっとだけ入っているが，SwiftのWasmのバイナリサイズが大きいからか，デバッグ情報のパースがうまく行かなかったりする</li>
+<li>kateinoigakunさんがコンソールでデバッグできるやつを書いた</li>
+</ul></li>
+<li>大学との両立とかは？
+<ul>
+<li>サークルとかには行かずにインターネット上で友達とかを作って色々やっていた</li>
+<li>インターンで特定のタスクにアサインされていないのでそういう働き方ができているのかも？</li>
+</ul></li>
+<li>TokamakでCSS当てるのはどうする予定？
+<ul>
+<li>まだ決まってはいない</li>
+<li>どの程度までCSSの存在を隠蔽するかなど，難しいところが多そう</li>
+<li>隠蔽せずにCSSを生でかけたほうが幸せという意見アリ</li>
+<li>HTMLタグの名前のView部品を組み合わせられると嬉しいなぁ</li>
+</ul></li>
+</ul>
+<h3 class="title is-4 bd-anchor-title" id="swiftui時代のfunctional-ios-architecture">SwiftUI時代のFunctional iOS Architecture</h3>
+<p>昔は関数型アーキテクチャはほぼ実現できなかった</p>
+<p>SwiftUIとCombineで時代が来た</p>
+<h4 class="title is-5 bd-anchor-title" id="harvest">Harvest</h4>
+<p>発表者が作ったライブラリ？</p>
+<ul>
+<li>基本的にはElm Architecture</li>
+<li>副作用をキューで管理する</li>
+<li>FRPの考え方を活用している</li>
+<li>Optics
+<ul>
+<li>Lens: 状態（通常はstruct直積型）に対する2つの操作</li>
+<li>Prism: アクション（通常はenum直和型）に対する2つの操作</li>
+<li>これがあることにより，状態やアクションのツリーの深い階層の一箇所を更新するときに便利？
+<ul>
+<li>各階層間のget/setペアのことをLensと呼ぶ
+<ul>
+<li>これら2つを合成してdeepなget/setが可能</li>
+</ul></li>
+<li>アクションでは矢印が逆になる
+<ul>
+<li>子が発火すると戻って親まで伝搬し，そこからさらに子に戻ってくる．</li>
+<li>その差異，build/try getを使用する</li>
+<li>これも合成可能</li>
+</ul></li>
+</ul></li>
+<li>証明に米田の補題を使うらしい．かなり来てるぞ</li>
+<li>ChildStateからParentStateへのReducerはFunctorとみなせる</li>
+<li>→Reducerの型変換ができ，更にそれを合成可能！</li>
+<li>状態とアクションを各コンポーネントごとに疎結合に管理できる</li>
+<li>アプリのStateとActionを巨大にせず，ツリー構造に分解</li>
+</ul></li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="composable-architecture">Composable Architecture</h4>
+<ul>
+<li>point-freeチームによるElm Architecture風の実相</li>
+<li>Multi-Store方式を採用している
+<ul>
+<li>最上位ではなく，親と子コンポーネントそれぞれに対してStoreが紐付いている</li>
+<li>それぞれのStoreはコピーとしてView階層に持たせる．Single Source of Truthではない</li>
+<li>重複レンダリング対策のため，removeDuplicatesが行われる</li>
+</ul></li>
+<li>swift-case-pathsを使ったPrism実装
+<ul>
+<li>structのkeypathのenum版</li>
+<li>Swiftのリフレクションを使用して，embedからextractを自動生成→本来両方いるが，embedだけで良い</li>
+</ul></li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="bow-arch">Bow Arch</h4>
+<ul>
+<li>Bow: lightweight higher kinded polymorphism
+<ul>
+<li>高カインド多相を実現できる</li>
+<li>Comonadic UI</li>
+<li>コモナド=オブジェクト指向-可変参照
+<ul>
+<li>SwiftUIのViewをコモナドとして捉えている</li>
+<li>モナドはreturnとjoin</li>
+<li>コモナドはextractとduplicate
+<ul>
+<li>extractはオブジェクトからコンテキストを消費してDを出力</li>
+<li>duplicate: オブジェクトの取りうる未来を映し出す（？）</li>
+</ul></li>
+<li>Component=Storeコモナド
+<ul>
+<li>実際のComponentはイベントハンドラがついているが，Storeコモナドを維持している</li>
+</ul></li>
+<li>Stateモナドを使ってComponentを操作する
+<ul>
+<li>→コモナドはモナドとPairをなし，モナドで操作する（らしい）</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="コモナドx副作用io">コモナドx副作用（IO）</h4>
+<ul>
+<li><code>EffectComponent&lt;W, V&gt;</code>はOOPにおける「オブジェクト」（その複雑さを「コモナド」と「副作用」に分解する）</li>
+<li><code>EffectComponent&lt;W, V&gt;</code>は他のコモナドWにも使えるのでは？
+<ul>
+<li>Mooreコモナド</li>
+<li>Elm ArchitectureやReduxで使われている</li>
+</ul></li>
+<li>余自由コモナド（Cofree）
+<ul>
+<li>ペアは自由モナド</li>
+<li>PureScript Halogen</li>
+</ul></li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="まとめ-3">まとめ</h4>
+<ul>
+<li>Comonad → Architecture</li>
+<li>Store → React</li>
+<li>Moore → Elm</li>
+<li>Cofree → PureScript</li>
+</ul>
+<p>コモナドはアーキテクチャを規定する</p>
+<ul>
+<li>SwiftUIの本質はコモなど</li>
+<li>コモナドの構造がUIアーキテクチャのパターンを決める</li>
+<li>状態，リアクション，Reducerを各コンポーネントごとに分解し，Opticsを使ってまとめ上げる</li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="ask-the-speaker-3">Ask-the-speaker</h4>
+<ul>
+<li>参考書
+<ul>
+<li>プログラマが書いた本を読んだら良い</li>
+<li>Haskellやりながらが良い</li>
+<li>YouTubeとかでプログラミングから見た圏論を解説している人の動画とかから見始めると良い</li>
+<li><a href="https://qiita.com/inamiy/items/922d4220bf407efa2dab">稲見さんのおすすめ</a></li>
+</ul></li>
+<li>TCAは関数合成を意図的に避けている？
+<ul>
+<li>副作用を子から親に伝搬するときは関数合成はしていない？</li>
+<li>ツリー構造は副作用がない</li>
+<li>副作用が絡むとモナドが出てくるので合成がやりにくくなる</li>
+</ul></li>
+</ul>
+<h3 class="title is-4 bd-anchor-title" id="テストコードが増えるとバグは減るのだろうか060.3で見えた世界の話">テストコードが増えるとバグは減るのだろうか？「0→60.3%」で見えた世界の話</h3>
+<p>テストは大切なので皆さんも積極的にテストをしましょう</p>
+<ul>
+<li>テストを実装すればバグが減ると思った</li>
+<li>QAチームからのバグ報告が多かった</li>
+<li>当時はまともに動くテストコードほとんどなく既存のコードの正当性が疑わしかった
+<ul>
+<li>これから実装するものに関してだけでもテストを実装すれば未来の人にとても良いのではないか</li>
+</ul></li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="メリット">メリット</h4>
+<ul>
+<li>使用の確認・理解に大きく貢献する</li>
+<li>仕様の確認が強制的になされる</li>
+<li>リリース後に不具合が発覚するかも
+<ul>
+<li>テストの種類
+<ul>
+<li>動的テスト
+<ul>
+<li>プログラムでテスト</li>
+</ul></li>
+<li>静的テスト
+<ul>
+<li>レビューとか</li>
+</ul></li>
+<li>両方やると大きな効果を得る</li>
+</ul></li>
+</ul></li>
+<li>不具合の検証がしやすい
+<ul>
+<li>機能追加を繰り返すと度のタイミングでバグが発生したのか，よくわからなくなってくる</li>
+<li>テストが入っているとこの検証がやりやすくなる！</li>
+</ul></li>
+<li>レアケースの再現が容易になる
+<ul>
+<li>普通怒らないようなレアなケースについて検証が可能</li>
+</ul></li>
+<li>テストへの意識・モチベーションの上昇
+<ul>
+<li>お互いに学び合う環境が生まれる</li>
+</ul></li>
+<li>心理的な安全
+<ul>
+<li>自分が書いたコードに自身がありますか？</li>
+<li>→テストを書けば自信が持てる！</li>
+</ul></li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="デメリット">デメリット</h4>
+<ul>
+<li>学習コスト
+<ul>
+<li>勉強することがたくさんある</li>
+<li>知識や経験なしに適切なテストを書くのは難しい</li>
+</ul></li>
+<li>メンテナンスコスト
+<ul>
+<li>気づいたらテストが動かなくなっている</li>
+<li>テストがない開発に慣れているので回収をする際にテストを直さない事がある</li>
+<li>壊れたコードを治すのに時間がかかり，意味不明な感じになる</li>
+</ul></li>
+<li>テストコードの神格化
+<ul>
+<li>テストコードは万能ではない</li>
+<li>テスト導入ですべての問題が解決するわけではない</li>
+<li>テスト導入の良い点が語られがちだが，悪い点もあることを理解する事が大事</li>
+</ul></li>
+<li>その効果が目で見て分かりづらい</li>
+<li>テスト実装が考慮されていないコードにテストを導入するのはほとんど不可能</li>
+<li>開発工数が増えるのでそこを考慮する必要がある</li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="組織にあったテストの導入">組織にあったテストの導入</h4>
+<ul>
+<li>テストを導入する理由
+<ul>
+<li>「課題」を解決するため</li>
+</ul></li>
+</ul>
+<p>課題</p>
+<ul>
+<li>レガシーコードからの脱却</li>
+<li>エンジニア・デザイナ間のコミュニケーションコスト
+<ul>
+<li>レイアウトの変更があるとデザイナに確認する必要がある</li>
+<li>スナップショットテストを導入
+<ul>
+<li>エンジニアのみでリグレッションテストが可能</li>
+</ul></li>
+</ul></li>
+</ul>
+<p>ポイント</p>
+<ul>
+<li>現状の課題をよく分析し，最適なテスト手法を導入する</li>
+<li>費用対効果を意識する．導入に対して対価がどれだけあるのか？を考える</li>
+</ul>
+<h4 class="title is-5 bd-anchor-title" id="まとめ-4">まとめ</h4>
+<ul>
+<li>テストコードが増えるとバグは減るのか？
+<ul>
+<li>▲</li>
+<li>テストコードにバグがないこと</li>
+<li>テスト手法が適切である</li>
+<li>テストケースが適切に考えられていること</li>
+<li>本当にテストすべき箇所にテストが実装されていること</li>
+<li>という条件を満たしていないとバグは減らない</li>
+</ul></li>
+<li>テスト導入でどんな変化があったか？
+<ul>
+<li>保守性が生まれた</li>
+<li>未来を見据えて本当に良い設計はなにか</li>
+<li>開発が効率化</li>
+<li>デバッグ・機能開発でスピード感が生まれた！</li>
+</ul></li>
 </ul></article><div id="disqus_thread"></div><script>(function() { var d = document, s = d.createElement('script');s.src = 'https://clockvoid-tk.disqus.com/embed.js';s.setAttribute('data-timestamp', +new Date());(d.head || d.body).appendChild(s);})();</script><noscript>Please enable JavaScript to view the<a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div></div><footer><div class="column is-three-fifths is-offset-one-fifth footer"><div class="level"><p class="level-item has-text-centered">© 2020 clockvoid</p><a href="https://twitter.com/clock_void" class="level-item has-text-centered">Twitter</a><a href="https://github.com/clockvoid" class="level-item has-text-centered">GitHub</a><figure class="image level-item has-text-centered"><img style="height: 1.75rem; width: 1.75rem;" src="https://i.imgur.com/rLs5sRT.png" class="is-rounded"></figure><a href="../about.html" class="level-item has-text-centered">About</a><a href="../blog.html" class="level-item has-text-centered">Blog</a><a href="../works.html" class="level-item has-text-centered">Works</a></div></div></footer></body></html>
