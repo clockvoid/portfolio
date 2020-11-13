@@ -18,14 +18,16 @@ jobs:
       with:
         node-version: '13'
     - name: Cache
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       env:
         cache-name: cache-stack
       with:
         path: ~/.stack
-        key: ${{ runner.os }}-build-${{ hashFiles('**/*.cabal') }}-${{ hashFiles('**/stack.yaml') }}
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.cabal') }}-${{ hashFiles('**/stack.yaml') }}
         restore-keys: |
-          ${{ runner.os }}-build
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
     - name: Install dependencies
       run: | 
         stack setup
