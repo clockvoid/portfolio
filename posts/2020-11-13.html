@@ -1,0 +1,110 @@
+<!DOCTYPE HTML><html><head><title>clockvoid - AndroidでArmデスクトップ環境を先取りしよう</title><meta charset="utf-8"><meta content="ie=edge" http-equiv="x-ua-compatible"><meta content="width=device-width, initial-scale=1" name="viewport"><meta content="summary" name="twitter:card"><meta content="@clock_void" name="og:site"><meta content="AndroidでArmデスクトップ環境を先取りしよう" name="og:title"><meta content="https://i.imgur.com/rLs5sRT.png" name="og:image"><meta content="article" name="og:type"><link href="../favicon.ico" type="image/x-icon" rel="shortcut icon"><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/dracula.min.css" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();</script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script><script>window.twttr=(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))returnt;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);t._e=[];t.ready=function(f){t._e.push(f);};return t;}(document,'script','twitter-wjs'));</script><link href="../css/mystyles.css" rel="stylesheet"></head><body class="has-navbar-fixed-top"><div class="navbar is-fixed-top has-shadow"><div class="container"><div class="navbar-brand"><div class="navbar-item"><a href="../"><figure class="image"><img style="height: 1.75rem; width: 1.75rem;" src="https://i.imgur.com/rLs5sRT.png" class="is-rounded"></figure></a></div><div onclick="document.querySelector('.navbar-menu').classList.toggle('is-active');" class="navbar-burger burger"><span></span><span></span><span></span></div></div><div class="navbar-menu"><div class="navbar-start"><a href="../" class="navbar-item">Home</a><a href="../about.html" class="navbar-item">About</a><a href="../blog.html" class="navbar-item">Blog</a><a href="../works.html" class="navbar-item">Works</a></div><div class="navbar-end"><div class="navbar-item"><a href="https://github.com/clockvoid/portfolio/blob/master/posts/2020-11-13.md " class="button is-primary"><span class="icon"><i class="fab fa-github"></i></span><span>View it in GitHub</span></a></div></div></div></div></div><div class="container"><div class="column is-three-fifths is-offset-one-fifth"><h1 class="title">AndroidでArmデスクトップ環境を先取りしよう</h1><a href="https://twitter.com/intent/tweet?text=AndroidでArmデスクトップ環境を先取りしよう&amp;via=clock_void" class="twitter-share-button">Tweet</a><p class="date">Posted on 2020-11-13 </p><p style="margin-bottom: 1.5rem"> 昨日AppleからApple Siliconの紹介とそれを搭載した新たなMacbook Air，Macbook Pro，Mac miniが発表されました． 世の中からは「本当にArmで今まで通りの生活ができるのか」と疑問視する声も上がっています．この記事では，Termuxを使用してAndroid上にネイティブでX環境を用意することにより，Android端末でLinuxデスクトップを動かし，Armデスクトップを先行体験するためのノウハウについてまとめます． </p><article class="content"><h3 class="title is-4 bd-anchor-title" id="はじめに">はじめに</h3>
+<p>一応この記事ではroot権限など，特殊なものは全く必要ないですが，ここで紹介する行為は各携帯電話メーカーが推奨する行為ではなく，この記事で紹介されている手法に関して発生した損害については筆者は一切の責任を追うことはできません．自己責任でお願いします．</p>
+<p>また，この記事にかかれていることをすべてやろうとするとストレージが10GBほど必要になります．注意してください．</p>
+<h3 class="title is-4 bd-anchor-title" id="termuxとは">Termuxとは</h3>
+<p>TermuxとはAndroidで動くターミナルエミュレータです．</p>
+<p>ただし，TermuxはGoogle Playで配信されているほど凡庸なアプリで，root権限など，特殊なものを要求しません．</p>
+<p>また，Termuxはアプリ内にAndroid向けにビルドされた一式のツール群を持っており，一般的なGNU/Linuxのような環境を提供することができています．</p>
+<p>多少の違いはありますが，Bashでできる基本的なことはできるため，Android向けに提供されているターミナルエミュレータの中でも非常に強力な部類だと思います．</p>
+<p>詳しくは<a href="https://wiki.termux.com/wiki/Getting_started">公式サイト</a>で詳しく説明されています．</p>
+<p>なお，Termuxは推奨環境をAndroid 7.0 - 9.0としており，10.0以降では問題が発生するかもしれないとのことです．この記事ではZenfone 4，Android 8.0を使用して解説を行いますが，当方でPixel 3a，Android 11で試しても動きはしたので10以降はチェックできていない，くらいの温度感だと思います．</p>
+<p>では，このTermuxを使ってどうやってX環境を構築するのでしょうか．実はTermuxはデフォルトでX環境を構築するすべを持っています：<a href="https://wiki.termux.com/wiki/Graphical_Environment">https://wiki.termux.com/wiki/Graphical_Environment</a></p>
+<p>しかし，ここではこの方法は使用しません．Termuxが提供しているパッケージマネージャで使えるソフトウェアは限られており，皆様が使いたいものがない可能性があるからです．ここではより柔軟な方法を使いたいです．</p>
+<p>そこで，今回は<a href="https://github.com/TermuxArch/TermuxArch">TermuxArch</a>というものを使用します．次章からTermuxArchについて解説します．</p>
+<h3 class="title is-4 bd-anchor-title" id="termuxarch">TermuxArch</h3>
+<p>まずはTermuxArchの概要について説明します．</p>
+<p>TermuxArchはPRootと呼ばれる特殊な（全容は筆者もよく知らないです）chroot jailの中でArch Linux環境を作ってしまう，という魔法のようなプロジェクトです．</p>
+<p>詳しくは<a href="https://github.com/TermuxArch/TermuxArch/blob/master/README.md">README</a>に色々書いてあります．</p>
+<h4 class="title is-5 bd-anchor-title" id="termuxarch環境のインストール">TermuxArch環境のインストール</h4>
+<p>では早速インストールしましょう．すべての情報は<a href="https://termuxarch.github.io/docsTermuxArch/install">Installページ</a>に書いてありますが，ここではかいつまんで日本語訳します．</p>
+<p>まずはTermuxで<a href="https://raw.githubusercontent.com/TermuxArch/TermuxArch/master/setupTermuxArch">setupTermuxArch.sh</a>をダウンロードします．</p>
+<p>下のコマンドをTermuxのコンソールに打ち込んでください．</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a>$ <span class="ex">curl</span> https://raw.githubusercontent.com/TermuxArch/TermuxArch/master/setupTermuxArch <span class="op">&gt;</span> setupTermuxArch.sh</span></code></pre></div>
+<p>ダウンロードしたらこのスクリプトを実行します．</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>$ <span class="fu">bash</span> ./setupTermuxArch.sh</span></code></pre></div>
+<p>実行するとたくさん文字が流れ始めますが，忍耐強く待ちます．終わったら自動的にプロンプトが切り替わり，Arch Linuxの環境に入ります．</p>
+<p>プロンプトが，</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a>[<span class="ex">root21</span>:57~]$</span></code></pre></div>
+<p>のような表示になっていれば成功です．（数字は違うかもしれません）</p>
+<h4 class="title is-5 bd-anchor-title" id="yayのインストール">yayのインストール</h4>
+<p>これでArch Linuxの環境はインストールできたわけですが，パッケージマネージャとして，yayというものを導入すると幸せになれます．</p>
+<p>Arch Linuxのパッケージマネージャはpacmanというものが使用されており，このツールでは<a href="https://wiki.archlinux.org/index.php/official_repositories">Official Repository</a>でメンテナンスされているパッケージをインストールすることが可能です．</p>
+<p>Arch Linuxではこれとは別に，AUR（Arch User Repository）というものが存在しており，Official Repositoryに含まれないようなパッケージが管理されています．AURでは色んな人が色んなものを公開しているので，多種多様なアプリケーションをインストールすることができる一方で古くて壊れたパッケージが放置されていることもあるので注意が必要です．ただし，AURが便利なのは間違いがないので，AURからのパッケージのインストールもいい感じに行えると便利です．</p>
+<p>そこで，yayを使います．yayはGo製のパッケージマネージャで，AURからのパッケージのインストールに対応しています．（昔はyaourtというものを使用していましたが，メンテナ不在で使われなくなりました）</p>
+<p>yayのインストールをする前にユーザを作っておきましょう．yayはrootでの実行を許可しません．</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a>$ <span class="ex">useradd</span> -m <span class="op">&lt;</span>newuser<span class="op">&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a>$ <span class="ex">usermod</span> -G wheel <span class="op">&lt;</span>newuser<span class="op">&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a>$ <span class="fu">passwd</span> <span class="op">&lt;</span>newuser<span class="op">&gt;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a><span class="ex">Enter</span> new UNIX password:</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a><span class="ex">Retype</span> new UNIX password:</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a><span class="ex">passwd</span>: password updated successfully</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true"></a>$ <span class="fu">su</span> <span class="op">&lt;</span>newuser<span class="op">&gt;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true"></a>$ <span class="bu">cd</span></span></code></pre></div>
+<p><code>&lt;newuser&gt;</code>の部分は自分のお好きな名前に変えて打ち込んでください．</p>
+<p>これでプロンプトが以下のように変わるはずです</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a>[<span class="op">&lt;</span><span class="ex">newuser</span><span class="op">&gt;</span>@localhost ~]$ </span></code></pre></div>
+<p>この状態で，</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a>$ <span class="ex">makeyay</span></span></code></pre></div>
+<p>と入力すると，さっきと同じように文字が流れ，どこかでエラーで止まるはずです．（2020年11月13日現在は止まります，そのうち修正されて止まらなくなるかも．）</p>
+<p>止まったら，</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a>$ <span class="bu">cd</span> fakeroot-tcp</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true"></a>$ <span class="ex">vi</span> PKGBUILD</span></code></pre></div>
+<p>として，<code>source=</code>と書いてある行で，<code>http://ftp.debian.org/debian/pool/main/f/$_pkgname/${_pkgname}_${pkgver}.orig.tar.gz</code>と書かれているものを<code>http://old.kali.org/kali/pool/main/f/fakeroot/fakeroot_1.24.orig.tar.gz</code>に置換してください．</p>
+<p>置換した状態でそのまま，</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a>$ <span class="bu">cd</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a>$ <span class="ex">makeyay</span></span></code></pre></div>
+<p>すると今度は成功で終了すると思います．</p>
+<p>これで<code>yay</code>のインストールが終わりました．試しに<code>yay android studio</code>すると以下のように表示されると思います．</p>
+<p><a href="https://i.imgur.com/TUI9C5U.png"><img src="https://i.imgur.com/TUI9C5Um.png" class="image is-in-article" /></a></p>
+<p>ここまででTermuxArchの準備は終わったので次章からいよいよXの環境を構築します</p>
+<h3 class="title is-4 bd-anchor-title" id="vncサーバとxfce4の導入">VNCサーバとXfce4の導入</h3>
+<p>続いて，X環境を構築してAndroid上でいじれるようにします．Androidでは良いX Serverがないので，ここではVNC ClientでXを使用できるようにします．VNCというのリモートデスクトップの一種です．</p>
+<p>VNC Clientには<a href="https://play.google.com/store/apps/details?id=com.realvnc.viewer.android&amp;hl=en">VNC Viewer</a>を使用します．インストールしたら右下のプラスボタンを押し，Addressのところに<code>localhost:5901</code>，Nameのところにお好みの名前を入れ，CREATEボタンを押します．</p>
+<p><a href="https://i.imgur.com/xG9ZN1b.png"><img src="https://i.imgur.com/xG9ZN1bm.png" class="image is-in-article" /></a></p>
+<p>すると，以下のような画面になるのでこのアプリは一旦このままにし，Termuxへ戻ります．</p>
+<p><a href="https://i.imgur.com/ZqpKKw4.png"><img src="https://i.imgur.com/ZqpKKw4m.png" class="image is-in-article" /></a></p>
+<p>Termuxへ戻ったら，以下のコマンドを入力し，vnc serverとxfce4をインストールします．</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a>$ <span class="ex">yay</span> -S tigervnc xfce4-session</span></code></pre></div>
+<p>しばらく時間がかかるので待ちます．</p>
+<p>インストールできたら，vncで接続する際に使用するパスワードを設定します．</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a>$ <span class="ex">vncpasswd</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true"></a><span class="ex">Password</span>:</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true"></a><span class="ex">Verify</span>:</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true"></a><span class="ex">Would</span> you like to enter a view-only password (y/n)<span class="ex">?</span> n</span></code></pre></div>
+<p>これができたら，VNCサーバを立ち上げたときにXfce4が起動するような設定にします．</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a>$ <span class="bu">cd</span> .vnc</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true"></a>$ <span class="ex">vi</span> xstartup</span></code></pre></div>
+<p>これで<code>xstartup</code>に以下のようなコードを書きます．</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a><span class="co">#!/usr/bin/sh</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a><span class="ex">xfce4-session</span> <span class="kw">&amp;</span></span></code></pre></div>
+<p>ここまでできたら，vncサーバを起動しておきます．</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true"></a>$ <span class="ex">vncserver</span> :1 <span class="kw">&amp;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true"></a>$ <span class="bu">export</span> <span class="va">DISPLAY=</span>:1</span></code></pre></div>
+<p>二行目で<code>DISPLAY</code>環境変数を指定していますが，これを行うことで，これから起動するGUIアプリはVNCクライアントに表示できる形で起動します．</p>
+<p>これができたら，VNC Viewerに戻り，実際にサーバにアクセスできるか試してみましょう．</p>
+<p>VNC Viewerはこの画面になっているはずです．</p>
+<p><a href="https://i.imgur.com/ZqpKKw4.png"><img src="https://i.imgur.com/ZqpKKw4m.png" class="image is-in-article" /></a></p>
+<p>この画面の一番下の緑色のボタンを押すと，次のような画面が出てくることがありますが，気にせず接続しましょう．（ローカル接続なのでポート開放していなければ盗聴は難しいです）</p>
+<p><a href="https://i.imgur.com/GhA5kvK.png"><img src="https://i.imgur.com/GhA5kvKm.png" class="image is-in-article" /></a></p>
+<p>右上のOKボタンを押すと，次のような画面になるので先程設定したパスワードを入力し，右上のCONNECTボタンを押します．</p>
+<p><a href="https://i.imgur.com/DnO3wRq.png"><img src="https://i.imgur.com/DnO3wRqm.png" class="image is-in-article" /></a></p>
+<p>これで接続が確立し，次のような画面になるはずです．</p>
+<p><a href="https://i.imgur.com/bRzOLv6.png"><img src="https://i.imgur.com/bRzOLv6m.png" class="image is-in-article" /></a></p>
+<p>これで一通りの導入は終わりました！おめでとうございます！</p>
+<h3 class="title is-4 bd-anchor-title" id="あそぶ">あそぶ</h3>
+<p>あとはいろんなソフトをインストールして遊んでみましょう．</p>
+<p>例として，Firefoxで遊んでみます．</p>
+<p>Termuxに戻り，Firefoxをインストールして，起動します</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true"></a>$ <span class="ex">yay</span> -S firefox</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true"></a><span class="ex">~~</span>（たくさん出てくる，割愛）</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true"></a>$ <span class="ex">firefox</span> <span class="kw">&amp;</span></span></code></pre></div>
+<p>もう一度VNC Viewerに戻ると，次の画像のようにFirefoxが起動しているはずです．（画像はWikipediaにアクセスしたところ）</p>
+<p><a href="https://i.imgur.com/ywwUx30.png"><img src="https://i.imgur.com/ywwUx30m.png" class="image is-in-article" /></a></p>
+<p>おそらく皆様の環境ではデフォルトで日本語の環境が入っていないため，日本語のサイトを見ると文字化けすると思います．日本語環境の導入はArch Wikiが詳しいので参照してみてください：<a href="https://wiki.archlinux.org/index.php/font_configuration">https://wiki.archlinux.org/index.php/font_configuration</a></p>
+<h3 class="title is-4 bd-anchor-title" id="まとめ">まとめ</h3>
+<p>今回紹介した環境を導入すれば，<code>yay</code>が入っているのでFirefox以外にもなんとAndroid Studioや，その他の様々なアプリがインストール可能で，Armデスクトップの世界を少しだけ感じることができます．</p>
+<figure>
+<img src="https://i.imgur.com/awQ4G08m.png" class="image is-in-article" alt /><figcaption>Android Studioが起動する</figcaption>
+</figure>
+<p>もちろん，この環境はAndroidなのでmacOSとは違いますが，どんなことができてどんな事ができないのか，実際に試してみると面白いと思います． ただし，Arch LinuxはArm向けのバイナリを割と配布している方のディストリビューションなので，意外と動いちゃうかもしれません．Macではもう少し厳しいと思ったほうが良いかもしれないです．</p>
+<p>以上，少しおかしな話ですが，AndroidでArmデスクトップ環境を先取りしよう！でした．</p></article><div id="disqus_thread"></div><script>(function() { var d = document, s = d.createElement('script');s.src = 'https://clockvoid-tk.disqus.com/embed.js';s.setAttribute('data-timestamp', +new Date());(d.head || d.body).appendChild(s);})();</script><noscript>Please enable JavaScript to view the<a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div></div><footer><div class="column is-three-fifths is-offset-one-fifth footer"><div class="level"><p class="level-item has-text-centered">© 2020 clockvoid</p><a href="https://twitter.com/clock_void" class="level-item has-text-centered">Twitter</a><a href="https://github.com/clockvoid" class="level-item has-text-centered">GitHub</a><figure class="image level-item has-text-centered"><img style="height: 1.75rem; width: 1.75rem;" src="https://i.imgur.com/rLs5sRT.png" class="is-rounded"></figure><a href="../about.html" class="level-item has-text-centered">About</a><a href="../blog.html" class="level-item has-text-centered">Blog</a><a href="../works.html" class="level-item has-text-centered">Works</a></div></div></footer></body></html>
