@@ -1,10 +1,10 @@
 cradle:
   stack:
+    - path: "./src"
+      component: "portfolio:lib"
+
     - path: "./app/Site.hs"
       component: "portfolio:exe:site"
 
     - path: "./app/Html.hs"
       component: "portfolio:exe:html"
-
-    - path: "./src"
-      component: "portfolio:lib"
