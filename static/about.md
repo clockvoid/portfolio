@@ -15,7 +15,7 @@ mathjax: on
 | | |
 | --- | --- |
 | GitHub | [htts://github.com/clockvoid ](https://github.com/clockvoid) |
-| Twitter | [https://twitter.com/clock_void ](https://twitter.com/clock_void) |
+| Twitter | [https://twitter.com/clockvoid ](https://twitter.com/clockvoid) |
 | Wantedly | [https://www.wantedly.com/users/97170304 ](https://www.wantedly.com/users/97170304) |
 | LAPRAS | [https://lapras.com/public/MMQLXH8 ](https://lapras.com/public/MMQLXH8) |
 | Google Play | [https://play.google.com/store/apps/dev?id=6094433200525863600 ](https://play.google.com/store/apps/dev?id=6094433200525863600) |

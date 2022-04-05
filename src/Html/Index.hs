@@ -4,11 +4,11 @@ module Html.Index
   ( indexPage
   ) where
 
-import Data.Text
-import Lucid
+import           Data.Text
+import           Lucid
 
 imgClockvoid :: Text
-imgClockvoid = "https://i.imgur.com/rLs5sRT.png"
+imgClockvoid = "https://i.imgur.com/XUDiIoIm.jpg"
 
 indexPage :: (FilePath, Html ())
 indexPage = (indexPath, indexHtml)
@@ -26,7 +26,7 @@ indexHtml = do
       meta_ [httpEquiv_ "x-ua-compatible", content_ "ie=edge"]
       meta_ [name_ "viewport", content_ "width=device-width, initial-scale=1"]
       meta_ [name_ "twitter:card", content_ "summary"]
-      meta_ [name_ "og:site", content_ "@clock_void"]
+      meta_ [name_ "og:site", content_ "@clockvoid"]
       meta_ [name_ "og:title", content_ "$title$"]
       meta_ [name_ "og:image", content_ imgClockvoid]
       meta_ [name_ "og:type", content_ "website"]
