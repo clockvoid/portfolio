@@ -8,7 +8,7 @@ import           Data.Text
 import           Lucid
 
 imgClockvoid :: Text
-imgClockvoid = "https://i.imgur.com/XUDiIoIm.jpg"
+imgClockvoid = "https://i.imgur.com/AqecEsx.png"
 
 articleTemplate :: (FilePath, Html ())
 articleTemplate = (articlePath, articleHtml)
