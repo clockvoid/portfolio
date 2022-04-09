@@ -49,8 +49,10 @@ jobs:
         git fetch
         git checkout gh-pages
         cp -a _site/* ./
-        git add .
-        git commit -m "$GITHUB_REPOSITORY deploy no. $GITHUB_RUN_NUMBER"
+        if [ "$(git diff)" != "" ]; then
+          git add .
+          git commit -m "$GITHUB_REPOSITORY deploy no. $GITHUB_RUN_NUMBER"
+        fi
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
