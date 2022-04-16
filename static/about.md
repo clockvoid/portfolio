@@ -5,51 +5,52 @@ mathjax: on
 ---
 
 # 概略
-コンピュータが好きな大学院生です．
+Arch Linuxをこよなく愛するネイティブアプリエンジニア．何故かFPGAも好きです．
 
-中学二年のとき，ゲームを買ってもらえない反動から自分でコンピュータを買い，自らコンピュータについての技術を身に着けてきました．
+中学2年のとき，ゲームを買ってもらえない反動から自分でコンピュータを買い，パソコンにハマって抜け出せなくなりました．
 
-現在，身につけた技術を人類のために使用できるようになるため，コンピュータにとどまらず，ビジネス的観点をも身につけることができるよう，修行中です．
+コンピュータを人類のために活用できるようになるために，技術研鑽をしつつ，ビジネスについても勉強中です．
 
 ## Links
 | | |
 | --- | --- |
-| GitHub | [htts://github.com/clockvoid ](https://github.com/clockvoid) |
+| GitHub | [https://github.com/clockvoid ](https://github.com/clockvoid) |
 | Twitter | [https://twitter.com/clockvoid ](https://twitter.com/clockvoid) |
-| Wantedly | [https://www.wantedly.com/users/97170304 ](https://www.wantedly.com/users/97170304) |
-| LAPRAS | [https://lapras.com/public/MMQLXH8 ](https://lapras.com/public/MMQLXH8) |
 | Google Play | [https://play.google.com/store/apps/dev?id=6094433200525863600 ](https://play.google.com/store/apps/dev?id=6094433200525863600) |
 
 # すき
 
-![](https://i.imgur.com/7zaUUtQ.png)
+![](https://i.imgur.com/p8DGO2Sh.png)
 
-- Vim
-- Tmux
-- Arch Linux
-- Haskell
-- Android
+私はシンプルで簡素なものが好きです．したがって，コンピュータは全く向いていないと思われます．
 
-僕はシンプルで簡素な系を好みます．したがって，コンピュータは全く向いていません．
 それでもVimやAndroidといった非常に複雑な系も好いている矛盾した感情も持っています．多分複雑な系をシンプルに使うことに喜びを感じています．
 
+最近はユーザが求める志向が複雑化していることもあり，複雑な要件やアニメーションをアプリ上で表現しなければいけないことも増えてきましたが，一見制御不能なカオスを制御可能な形でアプリとして表現することに喜びを感じています．
+
 # エンジニアリング
-現在，私はAndroidを中心としてプログラミングを学び，エンジニアとしての道を見つめています．
+現在，業務では主にAndroidアプリ開発をやっています．
 
-Androidはプラットフォームとしては中学2年の頃から開発を行っており，業務では業務委託にて1年の開発経験があり，思い入れが強いです．
+Androidはプラットフォームとしては中学2年の頃から開発を行っており，ユーザとしても，アプリエンジニアとしても10年以上の付き合いとなっており，思い入れが強いです．
 
-Android以外にももちろん興味はあり，業務経験こそないものの，このサイトの構築はすべて1から自分で行っています．
+また，Android以外にも，このサイトの構築はすべて1から自分で行っているほか，大学ではFPGAをつかって論理回路を設計していました．このような経験から，ハードウェアレベルの低レイヤからWebアプリケーションまで，縦に広く興味があります．
 
 <br>
 
-使用技術
+キーワード
 
+- iOS
 - Android
-- Kotlin
-    - Coroutine
-- Jetpack
-
-など
+- Linux
+  - Arch Linux
+    - Tmux
+    - Neovim
+  - Device Driver (Character deveice)
+  - Binary analysis
+- FPGA
+  - VerilogHDL
+  - Vivado HLS
+  - Zynq
 
 # 研究
 
@@ -68,5 +69,6 @@ Android以外にももちろん興味はあり，業務経験こそないもの�
 使用技術
 
 - FPGA（Xilinx社のものを使用）
+- VerilogHDL
 - 高位合成
 
