@@ -40,7 +40,7 @@ indexHtml = do
             div_ [class_ "navbar-brand"] $ do
               a_ [class_ "navbar-item", href_ "https://github.com/clockvoid"] $
                 span_ [class_ "icon media-icon is-medium"] $ i_ [class_ "fab fa-lg fa-github"] ""
-              a_ [class_ "navbar-item", href_ "https://twitter.com/clock_void"] $
+              a_ [class_ "navbar-item", href_ "https://twitter.com/clockvoid"] $
                 span_ [class_ "icon media-icon is-medium"] $ i_ [class_ "fab fa-lg fa-twitter"] ""
         div_ [class_ "hero-body"] $
           div_ [class_ "container has-text-centered"] $ do

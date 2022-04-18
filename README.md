@@ -1,4 +1,4 @@
-# clock_void portfolio
+# clockvoid portfolio
 [![Build and Deploy](https://github.com/clockvoid/portfolio/actions/workflows/build-and-deploy.yml/badge.svg?event=push)](https://github.com/clockvoid/portfolio/actions/workflows/build-and-deploy.yml)
 
 This is portfolio site about [me](https://clockvoid.tk/about.html).
