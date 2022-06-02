@@ -30,7 +30,7 @@ indexHtml = do
       meta_ [name_ "og:title", content_ "$title$"]
       meta_ [name_ "og:image", content_ imgClockvoid]
       meta_ [name_ "og:type", content_ "website"]
-      meta_ [name_ "og:url", content_ "https://clockvoid.tk"]
+      meta_ [name_ "og:url", content_ "https://clockvoid.com"]
       link_ [rel_ "shortcut icon", href_ "/favicon.ico", type_ "image/x-icon"]
       link_ [rel_ "stylesheet", href_ "/css/mystyles.css"]
     body_ $
