@@ -66,12 +66,6 @@ img.is-in-article {
   margin: 0.75rem auto 0.75rem auto;
 }
 
-.content {
-  p {
-    margin-bottom: 0 !important;
-  }
-}
-
 div.footer {
   font-size: 0.8rem;
   margin-top: 3rem;
@@ -87,6 +81,13 @@ div.footer {
   h4, h5, h6 {
     margin-top: 1.3em;
   }
+  p {
+    margin-bottom: 0 !important;
+  }
+}
+
+.title:not(:last-child) {
+  margin-bottom: 1rem;
 }
 
 blockquote {
@@ -120,3 +121,6 @@ code {
   word-wrap: break-word;
 }
 
+body {
+  font-weight: 500;
+}
