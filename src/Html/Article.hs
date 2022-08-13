@@ -8,7 +8,7 @@ import           Data.Text
 import           Lucid
 
 imgClockvoid :: Text
-imgClockvoid = "https://i.imgur.com/SBwBOuB.png"
+imgClockvoid = "https://github.com/clockvoid.png"
 
 articleTemplate :: (FilePath, Html ())
 articleTemplate = (articlePath, articleHtml)
@@ -62,9 +62,9 @@ articleHtml = do
                     i_ [class_ "fab fa-github"] ""
                   span_ [] "View it in GitHub"
       div_ [class_ "container"] $
-        div_ [class_ "column is-three-fifths is-offset-one-fifth"] "$body$"
+        div_ [class_ "column is-10 is-offset-1"] "$body$"
       footer_ [] $
-        div_ [class_ "column is-three-fifths is-offset-one-fifth footer"] $
+        div_ [class_ "column is-10 is-offset-1 footer"] $
           div_ [class_ "level"] $ do
             p_ [class_ "level-item has-text-centered"] "© 2020 clockvoid"
             a_ [href_ "https://twitter.com/clockvoid", class_ "level-item has-text-centered"] "Twitter"
