@@ -32,7 +32,7 @@ toBulmaImage (Image attrs xs target) = Image newAttrs xs target
 toBulmaImage x = x
 
 toBulmaTable :: Block -> Block
-toBulmaTable (Table a b c d e) = Div ("", [pack "table is-striped is-bordered"], []) [Table a b c d e]
+toBulmaTable (Table a b c d e f) = Div ("", [pack "table is-striped is-bordered"], []) [Table a b c d e f]
 toBulmaTable x = x
 
 -- ! Transform (or filter) to format heading to Bulma's heading classes.

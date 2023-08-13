@@ -1,7 +1,6 @@
-resolver: nightly-2020-05-12  # Adapt this as needed
+resolver: lts-21.6
 packages:
   - .
 extra-deps:
-  - hakyll-4.13.3.0  # Or a later version you installed
-  - lucid-2.9.12
-  - optparse-applicative-0.15.1.0
+  - hakyll-4.16.0.0
+  - lucid-2.11.20230408

@@ -5,29 +5,22 @@
 
 packages:
 - completed:
-    hackage: hakyll-4.13.3.0@sha256:7d8903f03974691aec049a6188ace8d93457563bad9f078c6faf4c9156e27a33,8867
+    hackage: hakyll-4.16.0.0@sha256:68426098d96f8bd17216c0f53a34856dc0e6386c7405f38afbd891f3fa878ed3,10198
     pantry-tree:
-      size: 7841
-      sha256: bdbacc241f680dd0c8d7666c9ec4e7d230dad85172067e106cc35f7c125cd7ab
+      sha256: 59ace0aab85d131b505ad85eab16d532a99cdd041b2328c28a153921768340aa
+      size: 9052
   original:
-    hackage: hakyll-4.13.3.0
+    hackage: hakyll-4.16.0.0
 - completed:
-    hackage: lucid-2.9.12@sha256:096395b2f434dbe1b10652c05ad8ebe245663dcec665aba474dd2a66cb841cb8,2887
+    hackage: lucid-2.11.20230408@sha256:a8bbc65cd2b77e37140f8a89112e250a254591a8a341dc0cbb7db9db71686017,3046
     pantry-tree:
+      sha256: 42280d6e5ea91134cbb917d262af9f8af1739812f887e6701eeda3d06ccd6202
       size: 779
-      sha256: acc60fda3ca44528739ca12ab0280c64d182daccf8dc0ac1453c51760cdb7863
   original:
-    hackage: lucid-2.9.12
-- completed:
-    hackage: optparse-applicative-0.15.1.0@sha256:29ff6146aabf54d46c4c8788e8d1eadaea27c94f6d360c690c5f6c93dac4b07e,4810
-    pantry-tree:
-      size: 2904
-      sha256: 04ad3816bc580cbe0834d3d1f4729ddd386abfe31b43e5b14968885f636d1b0d
-  original:
-    hackage: optparse-applicative-0.15.1.0
+    hackage: lucid-2.11.20230408
 snapshots:
 - completed:
-    size: 523340
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2020/5/12.yaml
-    sha256: 81f68a93699855cf96115756e8fbc26f6053a1a55b7545d80138415ab348ba27
-  original: nightly-2020-05-12
+    sha256: 2e7d4a730d8eb5373b2d383fac84efcf7c81e3b7a5fce71b4c2e19a1768f25a6
+    size: 640239
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/21/6.yaml
+  original: lts-21.6
