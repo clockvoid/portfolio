@@ -16,23 +16,19 @@ $card-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1);
 
 .home-breadcrumb {
   @extend .breadcrumb;
-  a {
-    color: $white;
-    font-weight: bold;
-    &:hover {
-      color: $turquoise;
-    }
-  }
-  li {
-    &.is-active {
-      a {
-        color: $grey-dark;
-      }
-    }
-    & + li::before {
-      color: $white;
-    }
-  }
+}
+
+.home-breadcrumb li {
+  color: $white;
+  font-weight: bold;
+}
+
+.home-breadcrumb li:hover {
+  color: $turquoise;
+}
+
+.home-breadcrumb li + li::before {
+  color: $white;
 }
 
 @media screen and (min-width: 1024px)  {
@@ -44,9 +40,10 @@ $card-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1);
 span.media-icon {
   padding: 1.5rem 1.5rem 1.5rem 1.5rem;
   color: $white;
-  &:hover {
-    color: $turquoise;
-  }
+}
+
+span.media-icon:hover {
+  color: $turquoise;
 }
 
 p.date {
