@@ -31,6 +31,7 @@ executable site
   main-is:          app/Site.hs
   build-depends:    base
                   , hakyll
+                  , hakyll-sass
                   , template-haskell
                   , portfolio
                   , lucid

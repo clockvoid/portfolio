@@ -1,17 +1,14 @@
-{-| 
-   Lucidaを使ってコンパイルしたHTMLを所定のフォルダに書き出すためのコマンドを生成する．
-   引数のパースには[optparser-applicative](https://hackage.haskell.org/package/optparse-applicative)を使った．
-   また，このプログラムは<https://github.com/jaspervdj/hakyll/blob/master/lib/Hakyll/Main.hs>を参考にして作成した．
--}
+-- \|
+--   Lucidaを使ってコンパイルしたHTMLを所定のフォルダに書き出すためのコマンドを生成する．
+--   引数のパースには[optparser-applicative](https://hackage.haskell.org/package/optparse-applicative)を使った．
+--   また，このプログラムは<https://github.com/jaspervdj/hakyll/blob/master/lib/Hakyll/Main.hs>を参考にして作成した．
 
+import Html.Lib (compile, deleteAllFilesInDirectory, deployDirectory, pages, templatesDirectory)
 import qualified Options.Applicative as OA
-
 import System.Environment (getProgName)
-import System.IO.Unsafe (unsafePerformIO)
 import System.Exit (ExitCode (ExitSuccess), exitWith)
+import System.IO.Unsafe (unsafePerformIO)
 import System.Process
-
-import Html.Lib (deployDirectory, templatesDirectory, pages, compile, deleteAllFilesInDirectory)
 
 -- | コマンドを表現する直積型
 data Command
@@ -25,19 +22,19 @@ commandParser = OA.subparser $ foldr ((<>) . produceCommand) mempty commands
   where
     produceCommand (text, command, description) = OA.command text (OA.info command description)
 
-    {- |
-        コマンドを表現するトリプルのリスト．
-        要素は(期待する引数 :: String, コマンド型のApplicative :: OA.Parser Command, コマンドの説明 :: OA.InfoMod String
-    -}
-    commands = 
-      [("clean"
-       , pure Clean
-       , OA.fullDesc <> OA.progDesc "clean renderd HTML."
-       )
-      ,("build"
-       , pure Build
-       , OA.fullDesc <> OA.progDesc "build HTML and render to file."
-       )
+    -- \|
+    --        コマンドを表現するトリプルのリスト．
+    --        要素は(期待する引数 :: String, コマンド型のApplicative :: OA.Parser Command, コマンドの説明 :: OA.InfoMod String
+    --
+    commands =
+      [ ( "clean",
+          pure Clean,
+          OA.fullDesc <> OA.progDesc "clean renderd HTML."
+        ),
+        ( "build",
+          pure Build,
+          OA.fullDesc <> OA.progDesc "build HTML and render to file."
+        )
       ]
 
 -- | optparser-applicativeの設定と表示する情報を付与する
@@ -66,11 +63,11 @@ invokCommand = do
   case arg of
     Clean -> do
       deleteAllFilesInDirectory $ deployDirectory <> templatesDirectory
-      deleteAllFilesInDirectory deployDirectory 
+      deleteAllFilesInDirectory deployDirectory
     Build -> do
-      putStrLn =<< readProcess "npm" ["run", "css-build"] ""
+      putStrLn =<< readProcess "npm" ["install"] ""
+      putStrLn =<< readProcess "cp" ["-r", "node_modules/@fortawesome/fontawesome-free/webfonts", "_site/"] ""
       compile deployDirectory pages
 
 main :: IO ()
 main = invokCommand >>= exitWith
-

@@ -51,7 +51,6 @@ articleHtml = do
               span_ [] ""
           div_ [class_ "navbar-menu"] $ do
             div_ [class_ "navbar-start"] $ do
-              a_ [class_ "navbar-item", href_ "/"] "Home"
               a_ [class_ "navbar-item", href_ "/about.html"] "About"
               a_ [class_ "navbar-item", href_ "/blog.html"] "Blog"
               a_ [class_ "navbar-item", href_ "/works.html"] "Works"

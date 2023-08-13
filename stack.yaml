@@ -4,3 +4,4 @@ packages:
 extra-deps:
   - hakyll-4.16.0.0
   - lucid-2.11.20230408
+  - hakyll-sass-0.2.4
