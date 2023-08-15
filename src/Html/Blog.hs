@@ -1,8 +1,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Html.Blog
-  ( blogTemplate
-  ) where
+  ( blogTemplate,
+  )
+where
 
 import Data.Text
 import Lucid
@@ -19,7 +20,7 @@ blogHtml = do
   h1_ [style_ "margin: 3rem auto auto 0; text-align: center;", class_ "title"] "投稿はまだありません"
   "$else$"
   ul_ $ do
-    "$for(posts)$" 
+    "$for(posts)$"
     li_ [style_ "margin-bottom: 0.5rem"] $
       div_ [class_ "box card", href_ "$url$", style_ "padding: 0"] $ do
         div_ [class_ "card-content"] $ do

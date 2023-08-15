@@ -1,20 +1,19 @@
 module Html.Lib
-  ( deployDirectory
-  , templatesDirectory
-  , pages
-  , compile
-  , deleteAllFilesInDirectory
-  ) where
+  ( deployDirectory,
+    templatesDirectory,
+    pages,
+    compile,
+    deleteAllFilesInDirectory,
+  )
+where
 
-import System.Directory
-import System.Exit (ExitCode (ExitFailure), ExitCode (ExitSuccess))
-
-import Lucid
-
-import Html.Index
+import Html.Article
 import Html.Blog
 import Html.BlogPost
-import Html.Article
+import Html.Index
+import Lucid
+import System.Directory
+import System.Exit (ExitCode (ExitFailure, ExitSuccess))
 
 deployDirectory :: FilePath
 deployDirectory = "_html/"
@@ -23,12 +22,12 @@ templatesDirectory :: FilePath
 templatesDirectory = "templates/"
 
 pages :: [(FilePath, Html ())]
-pages = [
-          indexPage
-        , blogTemplate
-        , blogPostTemplate
-        , articleTemplate
-        ]
+pages =
+  [ indexPage,
+    blogTemplate,
+    blogPostTemplate,
+    articleTemplate
+  ]
 
 compile :: FilePath -> [(FilePath, Html ())] -> IO ExitCode
 compile directory pages = do
@@ -45,18 +44,17 @@ deleteAllFilesInDirectory :: FilePath -> IO ExitCode
 deleteAllFilesInDirectory directory = do
   isDirectoryExist <- doesDirectoryExist directory
   if isDirectoryExist
-     then do
-       files <- listDirectory directory
-       foldMap (removeFileInDirectory directory) files
-       return ExitSuccess
-  else doWhenDirectoryNotFound directory
-    where
-      removeFileInDirectory directory file = do
-        putStrLn $ "Deleting... " <> directory <> file
-        removeFile $ directory <> file
+    then do
+      files <- listDirectory directory
+      foldMap (removeFileInDirectory directory) files
+      return ExitSuccess
+    else doWhenDirectoryNotFound directory
+  where
+    removeFileInDirectory directory file = do
+      putStrLn $ "Deleting... " <> directory <> file
+      removeFile $ directory <> file
 
 doWhenDirectoryNotFound :: FilePath -> IO ExitCode
 doWhenDirectoryNotFound directory = do
   putStrLn $ "Directory " <> directory <> " not found."
   return $ ExitFailure 1
-

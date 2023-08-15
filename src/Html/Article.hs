@@ -1,11 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Html.Article
-  ( articleTemplate
-  ) where
+  ( articleTemplate,
+  )
+where
 
-import           Data.Text
-import           Lucid
+import Data.Text
+import Lucid
 
 imgClockvoid :: Text
 imgClockvoid = "https://github.com/clockvoid.png"
@@ -34,7 +35,7 @@ articleHtml = do
       link_ [rel_ "stylesheet", href_ "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/dracula.min.css"]
       script_ [src_ "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"] empty
       script_ "hljs.initHighlightingOnLoad();"
-      script_ [src_ "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML" ] empty
+      script_ [src_ "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"] empty
       script_ "window.twttr=(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))returnt;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);t._e=[];t.ready=function(f){t._e.push(f);};return t;}(document,'script','twitter-wjs'));"
       link_ [rel_ "stylesheet", href_ "/css/mystyles.css"]
     body_ [class_ "has-navbar-fixed-top"] $ do

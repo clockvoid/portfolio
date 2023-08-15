@@ -1,11 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Html.BlogPost
-  ( blogPostTemplate
-  ) where
+  ( blogPostTemplate,
+  )
+where
 
-import           Data.Text
-import           Lucid
+import Data.Text
+import Lucid
 
 blogPostTemplate :: (FilePath, Html ())
 blogPostTemplate = (blogPostPath, blogPostHtml)
@@ -25,4 +26,3 @@ blogPostHtml = do
   noscript_ $ do
     "Please enable JavaScript to view the"
     a_ [href_ "http://disqus.com/?ref_noscript"] "comments powered by Disqus."
-
