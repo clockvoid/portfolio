@@ -1,34 +1,32 @@
-{-|
-  Copyright Laurent P. René de Cotret (c) 
-  This code is made from https://github.com/LaurentRDC/personal-website.
-|-}
-
 {-# LANGUAGE OverloadedStrings #-}
 
+-- |
+--  Copyright Laurent P. René de Cotret (c)
+--  This code is made from https://github.com/LaurentRDC/personal-website.
+-- |
 module Site.Pandoc
-  ( myPandocCompiler 
-  ) where
-
-import Text.Pandoc.Definition (Attr, Block (..), Inline (..), Pandoc)
-import Text.Pandoc.Walk       (walk)
-import Text.Pandoc.Options
-
-import Hakyll
+  ( myPandocCompiler,
+  )
+where
 
 import Data.Text
+import Hakyll
+import Text.Pandoc.Definition (Attr, Block (..), Inline (..), Pandoc)
+import Text.Pandoc.Options
+import Text.Pandoc.Walk (walk)
 
 toBulmaHeading :: Block -> Block
 toBulmaHeading (Header level attrs xs) = Header (level + 2) newAttrs xs
-    where
-        (identifier, classes, keyvals) = attrs
-        newAttrs = (identifier, classes <> ["title", "is-" <> pack (show $ level + 3), "bd-anchor-title"], keyvals)
+  where
+    (identifier, classes, keyvals) = attrs
+    newAttrs = (identifier, classes <> ["title", "is-" <> pack (show $ level + 3), "bd-anchor-title"], keyvals)
 toBulmaHeading x = x
 
 toBulmaImage :: Inline -> Inline
 toBulmaImage (Image attrs xs target) = Image newAttrs xs target
-    where
-        (identifier, classes, keyvals) = attrs
-        newAttrs = (identifier, classes <> ["image", "is-in-article"], keyvals)
+  where
+    (identifier, classes, keyvals) = attrs
+    newAttrs = (identifier, classes <> ["image", "is-in-article"], keyvals)
 toBulmaImage x = x
 
 toBulmaTable :: Block -> Block
@@ -60,5 +58,4 @@ bulmaTransform = bulmaHeadingTransform . bulmaImagesTransform . bulmaTablesTrans
 -- | Allow math display, code highlighting, table-of-content, and Pandoc filters
 -- Note that the Bulma pandoc filter is always applied last
 myPandocCompiler :: Compiler (Item String)
-myPandocCompiler = pandocCompilerWithTransform defaultHakyllReaderOptions (defaultHakyllWriterOptions { writerHTMLMathMethod = MathJax "" }) bulmaTransform
-
+myPandocCompiler = pandocCompilerWithTransform defaultHakyllReaderOptions (defaultHakyllWriterOptions {writerHTMLMathMethod = MathJax ""}) bulmaTransform

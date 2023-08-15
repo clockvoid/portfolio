@@ -1,10 +1,10 @@
 module Site.Works
-  ( works
-  ) where
+  ( works,
+  )
+where
 
 import Data.Monoid (mappend)
 import Hakyll
-
 import Site.Lib
 import Site.Pandoc (myPandocCompiler)
 
@@ -13,13 +13,13 @@ worksMd = fromRegex "static/works.md"
 
 works :: Rules ()
 works = match worksMd $ do
-    route $ constRoute "works.html"
-    let ctx =
-          constField "github-link" "static/works.md" `mappend`
-          postCtx
+  route $ constRoute "works.html"
+  let ctx =
+        constField "github-link" "static/works.md"
+          `mappend` postCtx
 
-    compile $ myPandocCompiler
-        >>= loadAndApplyTemplate postTemplate ctx
-        >>= loadAndApplyTemplate articleTemplate ctx
-        >>= relativizeUrls
-
+  compile $
+    myPandocCompiler
+      >>= loadAndApplyTemplate postTemplate ctx
+      >>= loadAndApplyTemplate articleTemplate ctx
+      >>= relativizeUrls

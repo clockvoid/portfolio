@@ -1,6 +1,7 @@
 module Site.Images
-  ( images
-  ) where
+  ( images,
+  )
+where
 
 import Data.Monoid (mappend)
 import Hakyll
@@ -10,6 +11,5 @@ pattern = fromRegex "favicon.ico"
 
 images :: Rules ()
 images = match pattern $ do
-    route   idRoute
-    compile copyFileCompiler
-
+  route idRoute
+  compile copyFileCompiler
