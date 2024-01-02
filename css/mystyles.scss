@@ -10,6 +10,10 @@ $card-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1);
 
 @import "../node_modules/bulma/bulma.sass";
 
+.hero.is-fullheight {
+  min-height: 100svh;
+}
+
 .disable-scrolling {
   overflow: hidden !important;
 }
