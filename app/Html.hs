@@ -1,10 +1,12 @@
+{-# LANGUAGE ImportQualifiedPost #-}
+
 -- \|
 --   Lucidaを使ってコンパイルしたHTMLを所定のフォルダに書き出すためのコマンドを生成する．
 --   引数のパースには[optparser-applicative](https://hackage.haskell.org/package/optparse-applicative)を使った．
 --   また，このプログラムは<https://github.com/jaspervdj/hakyll/blob/master/lib/Hakyll/Main.hs>を参考にして作成した．
 
 import Html.Lib (compile, deleteAllFilesInDirectory, deployDirectory, pages, templatesDirectory)
-import qualified Options.Applicative as OA
+import Options.Applicative qualified as OA
 import System.Environment (getProgName)
 import System.Exit (ExitCode (ExitSuccess), exitWith)
 import System.IO.Unsafe (unsafePerformIO)

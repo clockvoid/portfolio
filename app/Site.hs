@@ -1,10 +1,11 @@
+{-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 import Data.List (isPrefixOf, isSuffixOf)
 import Data.Monoid (mappend)
 import Hakyll
 import Hakyll.Web.Sass (sassCompiler)
-import qualified Html.Lib as HL
+import Html.Lib qualified as HL
 import Site.About
 import Site.Blog
 import Site.Images
