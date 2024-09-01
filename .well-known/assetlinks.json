@@ -1,0 +1,15 @@
+[
+  {
+    "relation" : [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target" : {
+      "namespace" : "android_app",
+      "package_name" : "com.clockvoid.sample.debug",
+      "sha256_cert_fingerprints" : [
+        "4F:32:EE:E3:9A:E4:21:3C:CF:C5:5B:20:DA:9C:27:95:07:A3:09:5F:DE:2B:66:FF:4B:BE:2A:0D:E3:BD:07:19"
+      ]
+    }
+  }
+]
